@@ -135,7 +135,7 @@ export const DistributorsView: React.FC<DistributorsViewProps> = ({
         const matchesName = partner.name.toLowerCase().includes(q);
         const matchesDesc = partner.description.toLowerCase().includes(q);
         const matchesLoc = partner.location.toLowerCase().includes(q);
-        const matchesTags = partner.tags.some((t) => t.toLowerCase().includes(q));
+        const matchesTags = partner.tags?.some((t) => t.toLowerCase().includes(q)) ?? false;
         if (!matchesName && !matchesDesc && !matchesLoc && !matchesTags) return false;
       }
 
@@ -158,9 +158,9 @@ export const DistributorsView: React.FC<DistributorsViewProps> = ({
           tools: ['tools', 'equipment', 'furniture', 'dryer']
         };
         const keywords = catMap[selectedCategory] || [selectedCategory];
-        const hasMatch = partner.tags.some((tag) =>
+        const hasMatch = (partner.tags && partner.tags.some((tag) =>
           keywords.some((kw) => tag.toLowerCase().includes(kw))
-        ) || keywords.some((kw) => partner.description.toLowerCase().includes(kw));
+        )) || keywords.some((kw) => partner.description.toLowerCase().includes(kw));
         if (!hasMatch) return false;
       }
 
@@ -752,7 +752,7 @@ export const DistributorsView: React.FC<DistributorsViewProps> = ({
                             key={i}
                             className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg bg-[#F0EDEC] border border-[#E8E8E8] overflow-hidden shrink-0"
                           >
-                            <img src={imgSrc} alt="Sample product" className="w-full h-full object-cover" />
+                            <img src={imgSrc || undefined} alt="Sample product" className="w-full h-full object-cover" />
                           </div>
                         ))}
                         <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg bg-[#F7F2F2] border border-[#E8E8E8] flex flex-col items-center justify-center text-[#594047] text-xs font-bold shrink-0">
@@ -772,7 +772,7 @@ export const DistributorsView: React.FC<DistributorsViewProps> = ({
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-5 pt-4 border-t border-[#F0EDEC]">
                       {/* Tags */}
                       <div className="flex flex-wrap gap-1.5">
-                        {supplier.tags.slice(0, 3).map((tag) => (
+                        {supplier.tags?.slice(0, 3).map((tag) => (
                           <span
                             key={tag}
                             className="bg-[#FCF9F8] border border-[#E0BEC6] px-3 py-1 rounded-md text-[11px] font-semibold text-[#594047]"

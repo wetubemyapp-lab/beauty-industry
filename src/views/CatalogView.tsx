@@ -593,7 +593,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                   }`}
                 >
                   <img
-                    src={product.image}
+                    src={product.image || undefined}
                     alt={product.name}
                     className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                   />

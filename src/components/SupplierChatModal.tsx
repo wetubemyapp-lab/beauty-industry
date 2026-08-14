@@ -237,7 +237,7 @@ export const SupplierChatModal: React.FC<SupplierChatModalProps> = ({
           <div className="bg-[#FFF9FB] px-4 py-2.5 border-b border-[#FFD1E3] flex items-center justify-between gap-3 shrink-0">
             <div className="flex items-center gap-2.5 min-w-0">
               <img
-                src={productContext.image}
+                src={productContext.image || undefined}
                 alt={productContext.name}
                 className="w-10 h-10 rounded-lg object-cover border border-[#FFD6E5] shrink-0"
               />
@@ -318,7 +318,7 @@ export const SupplierChatModal: React.FC<SupplierChatModalProps> = ({
                     {msg.productContext && (
                       <div className="mb-2 p-2 rounded-xl bg-[#FFF0F5] border border-[#FFD1E3] text-[#1E1E1E] flex items-center gap-2">
                         <img
-                          src={msg.productContext.image}
+                          src={msg.productContext.image || undefined}
                           alt={msg.productContext.name}
                           className="w-8 h-8 rounded-md object-cover"
                         />

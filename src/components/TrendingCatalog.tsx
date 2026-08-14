@@ -89,7 +89,7 @@ export const TrendingCatalog: React.FC<TrendingCatalogProps> = ({
               {/* Image Container with Luxury Badges */}
               <div className="relative w-full aspect-[4/3] bg-[#F7F5F0] overflow-hidden">
                 <img
-                  src={product.image}
+                  src={product.image || undefined}
                   alt={product.name}
                   className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                 />

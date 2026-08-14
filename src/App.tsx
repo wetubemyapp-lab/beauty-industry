@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navbar } from './components/Navbar';
+import { Navbar, NavTab } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { ExploreCategories } from './components/ExploreCategories';
 import { PremiumPartners } from './components/PremiumPartners';
@@ -19,21 +19,31 @@ import { CompareModal } from './components/CompareModal';
 import { CompareFloatingBar } from './components/CompareFloatingBar';
 import { VideoPlayerModal } from './components/VideoPlayerModal';
 import { SubmitVideoModal } from './components/SubmitVideoModal';
+import { UploadGalleryModal } from './components/UploadGalleryModal';
 
 // Views
 import { CatalogView } from './views/CatalogView';
 import { BrandsView } from './views/BrandsView';
 import { DistributorsView } from './views/DistributorsView';
 import { BusinessView } from './views/BusinessView';
+import { OffersView } from './views/OffersView';
+import { GalleryView } from './components/GalleryView';
+import { OwnerGalleryModeration } from './components/OwnerGalleryModeration';
 
-// Data
+// Data & Types
 import { MOCK_PRODUCTS, MOCK_PARTNERS, MOCK_VIDEO_TESTIMONIALS, DEFAULT_USER } from './data/mockData';
+import { INITIAL_GALLERY_ITEMS } from './data/galleryData';
+import { GalleryItem, GalleryStatus } from './types/gallery';
 import { Product, SupplierPartner, CategoryId, QuoteItem, UserProfile, VideoTestimonial } from './types';
 import { CheckCircle2, Info, ShoppingBag } from 'lucide-react';
 
 export function App() {
   // Navigation
-  const [currentTab, setCurrentTab] = useState<'home' | 'products' | 'brands' | 'distributors' | 'business'>('home');
+  const [currentTab, setCurrentTab] = useState<NavTab>('home');
+  
+  // Gallery State
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(INITIAL_GALLERY_ITEMS);
+  const [isUploadGalleryOpen, setIsUploadGalleryOpen] = useState(false);
   
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState('');
@@ -259,6 +269,28 @@ export function App() {
     setQuoteItems([]);
   };
 
+  // Gallery Handlers
+  const handleUploadGallerySubmit = (newItem: GalleryItem) => {
+    setGalleryItems((prev) => [newItem, ...prev]);
+    showToast(`Upload submitted! Waiting for owner moderation. (Status: Pending)`, 'info');
+  };
+
+  const handleUpdateGalleryStatus = (itemId: string, newStatus: GalleryStatus, rejectionReason?: string) => {
+    setGalleryItems((prev) =>
+      prev.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              status: newStatus,
+              rejectionReason: rejectionReason || item.rejectionReason,
+              reviewedAt: new Date().toISOString(),
+              reviewedBy: 'Owner #salon-101'
+            }
+          : item
+      )
+    );
+  };
+
   const totalQuoteUnits = quoteItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
@@ -392,6 +424,30 @@ export function App() {
             onOpenRegister={() => setIsRegisterOpen(true)}
           />
         )}
+
+        {currentTab === 'offers' && (
+          <OffersView
+            onAddToQuote={handleAddToQuote}
+            onOpenRegister={() => setIsRegisterOpen(true)}
+          />
+        )}
+
+        {currentTab === 'gallery' && (
+          <GalleryView
+            items={galleryItems}
+            onOpenUploadModal={() => setIsUploadGalleryOpen(true)}
+            onNavigateToModeration={() => setCurrentTab('gallery-moderation')}
+          />
+        )}
+
+        {currentTab === 'gallery-moderation' && (
+          <OwnerGalleryModeration
+            items={galleryItems}
+            onUpdateStatus={handleUpdateGalleryStatus}
+            onAddItem={handleUploadGallerySubmit}
+            onBackToGallery={() => setCurrentTab('gallery')}
+          />
+        )}
       </main>
 
       {/* Footer matching screenshot */}
@@ -428,6 +484,7 @@ export function App() {
             ? MOCK_PARTNERS.find((p) => p.id === selectedProduct.supplierId)
             : undefined
         }
+        allProducts={MOCK_PRODUCTS}
         isPriceAlertEnabled={selectedProduct ? !!priceAlerts[selectedProduct.id] : false}
         onClose={() => setSelectedProduct(null)}
         onAddToQuote={handleAddToQuote}
@@ -439,6 +496,7 @@ export function App() {
           handleOpenChat(sup, prod);
         }}
         onTogglePriceAlert={handleTogglePriceAlert}
+        onSelectProduct={(product) => setSelectedProduct(product)}
       />
 
       <SupplierModal
@@ -569,6 +627,16 @@ export function App() {
         products={MOCK_PRODUCTS}
         onClose={() => setIsSubmitVideoOpen(false)}
         onSubmit={handleSubmitVideo}
+      />
+
+      {/* Upload Gallery Transformation Modal */}
+      <UploadGalleryModal
+        isOpen={isUploadGalleryOpen}
+        onClose={() => setIsUploadGalleryOpen(false)}
+        onSubmit={handleUploadGallerySubmit}
+        activeTheme="barber"
+        salonId="salon-101"
+        salonName="Maison de Luxe Salon Group"
       />
     </div>
   );

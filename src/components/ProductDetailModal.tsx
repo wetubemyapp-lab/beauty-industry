@@ -1,34 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import { X, Sparkles, Building2, MapPin, CheckCircle2, ShieldCheck, Truck, Plus, Minus, FileText, MessageSquare, Bell, BellRing, Star, Zap } from 'lucide-react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { X, Sparkles, Building2, MapPin, CheckCircle2, ShieldCheck, Truck, Plus, Minus, FileText, MessageSquare, Bell, BellRing, Star, Zap, Layers, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 import { Product, SupplierPartner } from '../types';
 import { StarRating } from './StarRating';
+import { MOCK_PRODUCTS } from '../data/mockData';
 
 interface ProductDetailModalProps {
   product: Product | null;
   supplier?: SupplierPartner;
+  allProducts?: Product[];
   isPriceAlertEnabled?: boolean;
   onClose: () => void;
   onAddToQuote: (product: Product, quantity: number) => void;
   onViewSupplier: (supplier: SupplierPartner) => void;
   onMessageSupplier?: (supplier: SupplierPartner | string, product?: Product) => void;
   onTogglePriceAlert?: (product: Product, enabled: boolean) => void;
+  onSelectProduct?: (product: Product) => void;
 }
 
 export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   product,
   supplier,
+  allProducts,
   isPriceAlertEnabled = false,
   onClose,
   onAddToQuote,
   onViewSupplier,
   onMessageSupplier,
-  onTogglePriceAlert
+  onTogglePriceAlert,
+  onSelectProduct
 }) => {
   const [quantity, setQuantity] = useState(product?.moq || 10);
   const [selectedImage, setSelectedImage] = useState(product?.image || '');
   const [sampleRequested, setSampleRequested] = useState(false);
   const [activeTab, setActiveTab] = useState<'specs' | 'tiers' | 'reviews' | 'shipping'>('specs');
   const [priceAlertActive, setPriceAlertActive] = useState(isPriceAlertEnabled);
+  const [showSimilar, setShowSimilar] = useState(false);
+  const [similarFilter, setSimilarFilter] = useState<'all' | 'category' | 'brand'>('all');
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (product) {
@@ -41,7 +50,61 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     setPriceAlertActive(isPriceAlertEnabled);
   }, [isPriceAlertEnabled, product?.id]);
 
+  const catalogList = useMemo(() => {
+    return allProducts && allProducts.length > 0 ? allProducts : MOCK_PRODUCTS;
+  }, [allProducts]);
+
+  const categoryProducts = useMemo(() => {
+    if (!product) return [];
+    return catalogList.filter((p) => p.id !== product.id && p.category === product.category);
+  }, [product?.id, product?.category, catalogList]);
+
+  const brandProducts = useMemo(() => {
+    if (!product) return [];
+    return catalogList.filter(
+      (p) => p.id !== product.id && p.brand.toLowerCase() === product.brand.toLowerCase()
+    );
+  }, [product?.id, product?.brand, catalogList]);
+
+  const similarProducts = useMemo(() => {
+    if (!product) return [];
+    if (similarFilter === 'category') return categoryProducts;
+    if (similarFilter === 'brand') return brandProducts;
+
+    const combined = catalogList.filter(
+      (p) =>
+        p.id !== product.id &&
+        (p.category === product.category ||
+          p.brand.toLowerCase() === product.brand.toLowerCase() ||
+          p.supplierId === product.supplierId)
+    );
+
+    if (combined.length < 3) {
+      const rest = catalogList.filter(
+        (p) => p.id !== product.id && !combined.some((c) => c.id === p.id)
+      );
+      return [...combined, ...rest].slice(0, 10);
+    }
+    return combined;
+  }, [
+    product?.id,
+    product?.category,
+    product?.brand,
+    product?.supplierId,
+    catalogList,
+    similarFilter,
+    categoryProducts,
+    brandProducts
+  ]);
+
   if (!product) return null;
+
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    if (carouselRef.current) {
+      const scrollAmount = direction === 'left' ? -320 : 320;
+      carouselRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   const handleToggleAlert = () => {
     const newState = !priceAlertActive;
@@ -83,7 +146,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <div className="md:col-span-6 flex flex-col gap-4">
             <div className="relative w-full aspect-square bg-[#F8F8F8] rounded-2xl overflow-hidden border border-[#EDEDED]">
               <img
-                src={selectedImage}
+                src={selectedImage || product.image || undefined}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
@@ -111,7 +174,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       selectedImage === imgUrl ? 'border-[#B8005A] ring-2 ring-[#FFD1E3]' : 'border-transparent opacity-70 hover:opacity-100'
                     }`}
                   >
-                    <img src={imgUrl} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                    <img src={imgUrl || undefined} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
@@ -403,7 +466,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
                 {activeTab === 'shipping' && (
                   <div className="flex flex-wrap gap-2">
-                    {product.certifications.map((cert) => (
+                    {product.certifications?.map((cert) => (
                       <span
                         key={cert}
                         className="inline-flex items-center gap-1 text-xs font-semibold text-[#1E1E1E] bg-[#FAFAFA] border border-[#EDEDED] px-3 py-1.5 rounded-lg"
@@ -517,6 +580,208 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </div>
           </div>
         </div>
+
+        {/* View Similar Products Toggle Bar */}
+        <div className="border-t border-[#EDEDED] bg-gradient-to-r from-[#FAF8F9] via-[#FFF0F5]/40 to-[#FAF8F9] px-6 sm:px-8 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-b-3xl">
+          <div className="flex items-center gap-3">
+            <div
+              className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${
+                showSimilar
+                  ? 'bg-[#B8005A] text-white shadow-md shadow-[#B8005A]/20 scale-105'
+                  : 'bg-white text-[#B8005A] border border-[#FFD1E3] shadow-2xs'
+              }`}
+            >
+              <Layers className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-xs sm:text-sm font-bold text-[#1E1E1E] uppercase tracking-wider">
+                  View Similar Products
+                </h3>
+                <span className="text-[10px] font-bold text-[#B8005A] bg-white border border-[#FFD1E3] px-2 py-0.5 rounded-full shadow-2xs">
+                  {similarProducts.length} Available
+                </span>
+              </div>
+              <p className="text-xs text-[#737373] mt-0.5">
+                Explore alternatives from <span className="font-semibold text-[#1E1E1E]">{product.brand}</span> or <span className="font-semibold text-[#1E1E1E]">{product.categoryLabel}</span>
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 self-end sm:self-auto">
+            <button
+              type="button"
+              role="switch"
+              aria-checked={showSimilar}
+              onClick={() => setShowSimilar(!showSimilar)}
+              className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                showSimilar ? 'bg-[#B8005A]' : 'bg-[#D1D5DB]'
+              }`}
+              aria-label="Toggle view similar products carousel"
+            >
+              <span
+                className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                  showSimilar ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+            <span
+              onClick={() => setShowSimilar(!showSimilar)}
+              className={`text-xs font-bold cursor-pointer select-none transition-colors ${
+                showSimilar ? 'text-[#B8005A]' : 'text-[#737373]'
+              }`}
+            >
+              {showSimilar ? 'Hide Carousel' : 'Show Carousel'}
+            </span>
+          </div>
+        </div>
+
+        {/* Carousel Content */}
+        <AnimatePresence>
+          {showSimilar && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="overflow-hidden bg-[#FAF8F9] border-t border-[#FFD1E3] px-6 sm:px-8 py-5 rounded-b-3xl"
+            >
+              {/* Carousel Header & Controls */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 w-full sm:w-auto">
+                  <button
+                    onClick={() => setSimilarFilter('all')}
+                    className={`text-xs font-bold px-3 py-1.5 rounded-xl border transition-all cursor-pointer whitespace-nowrap ${
+                      similarFilter === 'all'
+                        ? 'bg-[#B8005A] text-white border-[#B8005A] shadow-xs'
+                        : 'bg-white text-[#525252] border-[#E5E5E5] hover:border-[#B8005A]/40'
+                    }`}
+                  >
+                    All Similar ({catalogList.filter((p) => p.id !== product.id && (p.category === product.category || p.brand.toLowerCase() === product.brand.toLowerCase() || p.supplierId === product.supplierId)).length})
+                  </button>
+
+                  <button
+                    onClick={() => setSimilarFilter('category')}
+                    className={`text-xs font-bold px-3 py-1.5 rounded-xl border transition-all cursor-pointer whitespace-nowrap ${
+                      similarFilter === 'category'
+                        ? 'bg-[#B8005A] text-white border-[#B8005A] shadow-xs'
+                        : 'bg-white text-[#525252] border-[#E5E5E5] hover:border-[#B8005A]/40'
+                    }`}
+                  >
+                    Same Category ({categoryProducts.length})
+                  </button>
+
+                  <button
+                    onClick={() => setSimilarFilter('brand')}
+                    className={`text-xs font-bold px-3 py-1.5 rounded-xl border transition-all cursor-pointer whitespace-nowrap ${
+                      similarFilter === 'brand'
+                        ? 'bg-[#B8005A] text-white border-[#B8005A] shadow-xs'
+                        : 'bg-white text-[#525252] border-[#E5E5E5] hover:border-[#B8005A]/40'
+                    }`}
+                  >
+                    Same Brand ({brandProducts.length})
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                  <button
+                    onClick={() => scrollCarousel('left')}
+                    className="w-8 h-8 rounded-full bg-white hover:bg-[#FFF0F5] text-[#1E1E1E] hover:text-[#B8005A] border border-[#E5E5E5] hover:border-[#FFD1E3] flex items-center justify-center transition-all shadow-2xs cursor-pointer active:scale-90"
+                    aria-label="Scroll left"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => scrollCarousel('right')}
+                    className="w-8 h-8 rounded-full bg-white hover:bg-[#FFF0F5] text-[#1E1E1E] hover:text-[#B8005A] border border-[#E5E5E5] hover:border-[#FFD1E3] flex items-center justify-center transition-all shadow-2xs cursor-pointer active:scale-90"
+                    aria-label="Scroll right"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Horizontal Scroll Area */}
+              <div
+                ref={carouselRef}
+                className="flex items-stretch gap-4 overflow-x-auto pb-4 pt-1 snap-x snap-mandatory"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {similarProducts.map((simProd) => (
+                  <motion.div
+                    key={simProd.id}
+                    whileHover={{ y: -4, scale: 1.01 }}
+                    transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+                    className="min-w-[210px] max-w-[210px] sm:min-w-[230px] sm:max-w-[230px] bg-white border border-[#EAE5DE] hover:border-[#B8005A]/50 rounded-2xl overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer snap-start"
+                    onClick={() => {
+                      if (onSelectProduct) {
+                        onSelectProduct(simProd);
+                      } else {
+                        setSelectedImage(simProd.image);
+                        setQuantity(simProd.moq || 10);
+                      }
+                    }}
+                  >
+                    <div>
+                      {/* Thumbnail Image */}
+                      <div className="relative w-full aspect-4/3 bg-[#F8F8F8] overflow-hidden">
+                        <img
+                          src={simProd.image || undefined}
+                          alt={simProd.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <span className="absolute top-2 left-2 bg-white/90 backdrop-blur-xs text-[10px] font-bold text-[#1E1E1E] px-2 py-0.5 rounded-full shadow-2xs">
+                          {simProd.categoryLabel}
+                        </span>
+                      </div>
+
+                      {/* Info Body */}
+                      <div className="p-3">
+                        <span className="text-[10px] font-bold text-[#8E8E93] uppercase tracking-wider block truncate">
+                          {simProd.brand}
+                        </span>
+                        <h4 className="text-xs font-bold text-[#1E1E1E] line-clamp-2 mt-0.5 leading-snug group-hover:text-[#B8005A] transition-colors">
+                          {simProd.name}
+                        </h4>
+
+                        <div className="mt-1.5 flex items-center gap-1">
+                          <StarRating rating={simProd.rating || 4.9} showCount={false} showNumber={true} size="xs" />
+                        </div>
+
+                        <div className="mt-2 pt-2 border-t border-[#F0F0F0] flex items-baseline justify-between">
+                          <div>
+                            <span className="text-sm font-extrabold text-[#1E1E1E]">
+                              ${simProd.price.toFixed(2)}
+                            </span>
+                            <span className="text-[10px] text-[#737373]"> / {simProd.unit}</span>
+                          </div>
+                          <span className="text-[10px] text-[#8E8E93] font-medium">
+                            MOQ {simProd.moq}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quick RFQ Button */}
+                    <div className="p-3 pt-0 flex gap-1.5">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onAddToQuote(simProd, simProd.moq);
+                        }}
+                        className="flex-1 bg-[#FFF0F5] hover:bg-[#B8005A] text-[#B8005A] hover:text-white border border-[#FFD1E3] hover:border-[#B8005A] py-1.5 px-2 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer active:scale-95 shadow-2xs"
+                        title="Quick Add MOQ to Quote"
+                      >
+                        <Zap className="w-3 h-3 fill-amber-400 text-amber-400 shrink-0" />
+                        <span>+ Quick RFQ</span>
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

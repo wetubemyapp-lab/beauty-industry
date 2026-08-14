@@ -36,7 +36,7 @@ export const CompareFloatingBar: React.FC<CompareFloatingBarProps> = ({
                 className="relative group flex items-center gap-1.5 bg-[#FAF8F5] border border-[#EAE5DE] rounded-xl p-1 pr-2 shadow-2xs shrink-0"
               >
                 <img
-                  src={product.image}
+                  src={product.image || undefined}
                   alt={product.name}
                   className="w-8 h-8 rounded-lg object-cover border border-[#EFEBE4]"
                 />

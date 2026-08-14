@@ -25,7 +25,7 @@ export const BrandsView: React.FC<BrandsViewProps> = ({
       const q = search.toLowerCase();
       const matchName = p.name.toLowerCase().includes(q);
       const matchLoc = p.location.toLowerCase().includes(q);
-      const matchTags = p.tags.some((t) => t.toLowerCase().includes(q));
+      const matchTags = p.tags?.some((t) => t.toLowerCase().includes(q));
       if (!matchName && !matchLoc && !matchTags) return false;
     }
     return true;
@@ -143,7 +143,7 @@ export const BrandsView: React.FC<BrandsViewProps> = ({
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-1.5 mt-4">
-                  {partner.tags.map((tag) => (
+                  {partner.tags?.map((tag) => (
                     <span
                       key={tag}
                       className="text-[11px] font-semibold text-[#525252] bg-[#F5F2EB] group-hover:bg-[#FFF0F5] group-hover:text-[#B8005A] px-2.5 py-1 rounded-lg transition-colors"

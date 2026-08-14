@@ -188,7 +188,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     const q = searchQuery.toLowerCase().trim();
     return list.filter(p => 
       p.name.toLowerCase().includes(q) ||
-      p.tags.some(t => t.toLowerCase().includes(q)) ||
+      (p.tags && p.tags.some(t => t.toLowerCase().includes(q))) ||
       p.location.toLowerCase().includes(q)
     ).slice(0, 3);
   }, [searchQuery, activeQuickFilter]);
@@ -196,19 +196,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   // Candidate terms for predictive typeahead autocompletion
   const allCandidateTerms = useMemo(() => {
     const pool = new Set<string>();
-    PRESET_POPULAR_QUERIES.forEach(q => pool.add(q));
-    MOCK_PRODUCTS.forEach(p => {
-      pool.add(p.name);
-      pool.add(`${p.brand} ${p.categoryLabel}`);
-      pool.add(p.brand);
+    (PRESET_POPULAR_QUERIES || []).forEach(q => pool.add(q));
+    (MOCK_PRODUCTS || []).forEach(p => {
+      if (p.name) pool.add(p.name);
+      if (p.brand && p.categoryLabel) pool.add(`${p.brand} ${p.categoryLabel}`);
+      if (p.brand) pool.add(p.brand);
     });
-    MOCK_PARTNERS.forEach(p => {
-      pool.add(p.name);
-      p.tags.forEach(t => pool.add(`${t} Wholesale`));
+    (MOCK_PARTNERS || []).forEach(p => {
+      if (p.name) pool.add(p.name);
+      p.tags?.forEach(t => pool.add(`${t} Wholesale`));
     });
-    CATEGORIES.forEach(c => {
-      pool.add(`${c.name} Formulations`);
-      pool.add(`${c.name} Wholesale`);
+    (CATEGORIES || []).forEach(c => {
+      if (c.name) {
+        pool.add(`${c.name} Formulations`);
+        pool.add(`${c.name} Wholesale`);
+      }
     });
     return Array.from(pool);
   }, []);
@@ -766,7 +768,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                               >
                                 <div className="flex items-center gap-2.5 min-w-0">
                                   <img 
-                                    src={p.image} 
+                                    src={p.image || undefined} 
                                     alt={p.name} 
                                     className="w-10 h-10 rounded-lg object-cover border border-[#EDEDED] shrink-0" 
                                   />

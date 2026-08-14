@@ -179,8 +179,8 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
           <div className="relative flex-1 flex items-center justify-center overflow-hidden bg-[#0A0A0A]">
             <video
               ref={videoRef}
-              src={video.videoUrl}
-              poster={video.thumbnail}
+              src={video.videoUrl || undefined}
+              poster={video.thumbnail || undefined}
               onTimeUpdate={handleTimeUpdate}
               onEnded={() => setIsPlaying(false)}
               onClick={togglePlay}
@@ -379,7 +379,7 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
               <div className="bg-[#242424] border border-[#3A3A3A] rounded-2xl p-3.5 flex items-center justify-between gap-3 group">
                 <div className="flex items-center gap-3">
                   <img
-                    src={linkedProduct?.image || video.featuredProductImage}
+                    src={linkedProduct?.image || video.featuredProductImage || undefined}
                     alt={linkedProduct?.name || video.featuredProductName}
                     className="w-14 h-14 object-cover rounded-xl border border-white/10 bg-white/5 shrink-0"
                   />
@@ -439,7 +439,7 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
                   >
                     <div className="relative aspect-video rounded-xl overflow-hidden bg-black border border-white/10 group-hover:border-[#B8005A] transition-all">
                       <img
-                        src={item.thumbnail}
+                        src={item.thumbnail || undefined}
                         alt={item.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />

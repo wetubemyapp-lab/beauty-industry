@@ -54,7 +54,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
   // Extract all unique specification keys across selected products
   const allSpecKeys = useMemo(() => {
     const keys = new Set<string>();
-    selectedProducts.forEach((p) => {
+    (selectedProducts || []).forEach((p) => {
       if (p.specifications) {
         Object.keys(p.specifications).forEach((k) => keys.add(k));
       }
@@ -65,7 +65,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
   // Extract all unique certifications
   const allCertifications = useMemo(() => {
     const certs = new Set<string>();
-    selectedProducts.forEach((p) => {
+    (selectedProducts || []).forEach((p) => {
       p.certifications?.forEach((c) => certs.add(c));
     });
     return Array.from(certs);
@@ -74,15 +74,16 @@ export const CompareModal: React.FC<CompareModalProps> = ({
   if (!isOpen) return null;
 
   // Available products to add (not currently selected)
-  const availableToAdd = allProducts.filter(
-    (p) => !selectedProducts.some((sp) => sp.id === p.id)
+  const availableToAdd = (allProducts || []).filter(
+    (p) => !(selectedProducts || []).some((sp) => sp.id === p.id)
   );
 
   // Check if a row has differences
   const hasRowDifference = (getValue: (p: Product) => any) => {
-    if (selectedProducts.length <= 1) return false;
-    const firstVal = JSON.stringify(getValue(selectedProducts[0]));
-    return selectedProducts.some((p) => JSON.stringify(getValue(p)) !== firstVal);
+    const list = selectedProducts || [];
+    if (list.length <= 1) return false;
+    const firstVal = JSON.stringify(getValue(list[0]));
+    return list.some((p) => JSON.stringify(getValue(p)) !== firstVal);
   };
 
   // Copy textual summary of comparison to clipboard
@@ -93,7 +94,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
       ''
     ];
 
-    selectedProducts.forEach((p, idx) => {
+    (selectedProducts || []).forEach((p, idx) => {
       lines.push(
         `[Product ${idx + 1}] ${p.name} (${p.brand})`,
         `Price: $${p.price.toFixed(2)} / ${p.unit} | MOQ: ${p.moq} units | Total Min: $${(p.price * p.moq).toFixed(2)}`,
@@ -114,10 +115,11 @@ export const CompareModal: React.FC<CompareModalProps> = ({
     setTimeout(() => setCopied(false), 2500);
   };
 
+  const safeSelectedProducts = selectedProducts || [];
   // Find lowest price
-  const lowestPrice = selectedProducts.length > 0 ? Math.min(...selectedProducts.map((p) => p.price)) : 0;
+  const lowestPrice = safeSelectedProducts.length > 0 ? Math.min(...safeSelectedProducts.map((p) => p.price)) : 0;
   // Find lowest MOQ
-  const lowestMoq = selectedProducts.length > 0 ? Math.min(...selectedProducts.map((p) => p.moq)) : 0;
+  const lowestMoq = safeSelectedProducts.length > 0 ? Math.min(...safeSelectedProducts.map((p) => p.moq)) : 0;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
@@ -258,7 +260,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                       className="relative aspect-square w-full rounded-xl overflow-hidden bg-white border border-[#EFEBE4] mb-3 cursor-pointer group/img"
                     >
                       <img
-                        src={product.image}
+                        src={product.image || undefined}
                         alt={product.name}
                         className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300"
                       />
@@ -369,7 +371,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                                 className="w-full flex items-center gap-2.5 p-2 rounded-xl hover:bg-[#FFF0F5] text-left transition-colors cursor-pointer group"
                               >
                                 <img
-                                  src={p.image}
+                                  src={p.image || undefined}
                                   alt={p.name}
                                   className="w-8 h-8 rounded-lg object-cover border border-gray-200 shrink-0"
                                 />
@@ -671,10 +673,10 @@ export const CompareModal: React.FC<CompareModalProps> = ({
           </div>
 
           <div className="flex items-center gap-3">
-            {selectedProducts.length > 0 && (
+            {safeSelectedProducts.length > 0 && (
               <button
                 onClick={() => {
-                  selectedProducts.forEach((p) => onRemoveProduct(p.id));
+                  safeSelectedProducts.forEach((p) => onRemoveProduct(p.id));
                 }}
                 className="px-4 py-2 text-xs font-bold text-[#737373] hover:text-[#B8005A] cursor-pointer transition-colors"
               >

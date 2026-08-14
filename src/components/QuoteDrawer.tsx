@@ -135,7 +135,7 @@ export const QuoteDrawer: React.FC<QuoteDrawerProps> = ({
                           className="p-3.5 rounded-2xl border border-[#EDEDED] bg-white flex items-center justify-between gap-3 shadow-2xs overflow-hidden"
                         >
                           <img
-                            src={item.product.image}
+                            src={item.product.image || undefined}
                             alt={item.product.name}
                             className="w-14 h-14 rounded-xl object-cover border border-[#EDEDED] shrink-0"
                           />

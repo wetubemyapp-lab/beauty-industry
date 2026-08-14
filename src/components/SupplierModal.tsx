@@ -210,7 +210,7 @@ export const SupplierModal: React.FC<SupplierModalProps> = ({
 
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <span className="text-xs text-[#8E8E93] font-medium mr-1">Specialties:</span>
-            {supplier.tags.map((tag) => (
+            {supplier.tags?.map((tag) => (
               <span key={tag} className="text-xs font-semibold text-[#B8005A] bg-white border border-[#FFD1E3] px-2.5 py-1 rounded-lg">
                 {tag}
               </span>
@@ -329,7 +329,7 @@ export const SupplierModal: React.FC<SupplierModalProps> = ({
                   >
                     <div className="flex items-center gap-3">
                       <img
-                        src={p.image}
+                        src={p.image || undefined}
                         alt={p.name}
                         className="w-14 h-14 rounded-xl object-cover border border-[#EDEDED] shrink-0"
                       />

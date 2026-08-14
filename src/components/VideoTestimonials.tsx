@@ -175,7 +175,7 @@ export const VideoTestimonials: React.FC<VideoTestimonialsProps> = ({
                   {/* Top: Video Thumbnail Cover with Play Button Overlay */}
                   <div className="relative w-full aspect-video bg-black overflow-hidden">
                     <img
-                      src={video.thumbnail}
+                      src={video.thumbnail || undefined}
                       alt={video.title}
                       className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 opacity-90 group-hover:opacity-100"
                     />
@@ -279,7 +279,7 @@ export const VideoTestimonials: React.FC<VideoTestimonialsProps> = ({
                         <div className="flex items-center justify-between gap-2 text-xs">
                           <div className="flex items-center gap-2 overflow-hidden">
                             <img
-                              src={linkedProduct?.image || video.featuredProductImage}
+                              src={linkedProduct?.image || video.featuredProductImage || undefined}
                               alt={linkedProduct?.name || video.featuredProductName}
                               className="w-9 h-9 object-cover rounded-lg border border-[#EAE5DE] bg-white shrink-0"
                             />

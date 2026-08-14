@@ -166,7 +166,7 @@ export const PremiumPartners: React.FC<PremiumPartnersProps> = ({
 
                   {/* Tags */}
                   <div className="flex flex-wrap gap-1.5 mt-4 pt-3 border-t border-[#F0EBE1]">
-                    {partner.tags.map((tag) => (
+                    {partner.tags?.map((tag) => (
                       <span
                         key={tag}
                         className="text-[11px] font-semibold text-[#525252] bg-[#F5F2EB] group-hover:bg-[#FFF0F5] group-hover:text-[#B8005A] px-2.5 py-1 rounded-lg transition-colors"
@@ -223,7 +223,7 @@ export const PremiumPartners: React.FC<PremiumPartnersProps> = ({
                     {/* Video Thumbnail with Play Button */}
                     <div className="relative w-full aspect-video bg-black overflow-hidden">
                       <img
-                        src={video.thumbnail}
+                        src={video.thumbnail || undefined}
                         alt={video.title}
                         className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 opacity-90"
                       />

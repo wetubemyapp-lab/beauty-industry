@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MapPin, User, FileText, Sparkles, Menu, X, LogOut, Check, Bell } from 'lucide-react';
 
-export type NavTab = 'home' | 'products' | 'brands' | 'distributors' | 'business';
+export type NavTab = 'home' | 'products' | 'brands' | 'distributors' | 'business' | 'offers' | 'gallery' | 'gallery-moderation';
 
 interface NavbarProps {
   currentTab?: NavTab;
@@ -121,6 +121,41 @@ export const Navbar: React.FC<NavbarProps> = ({
             {active === 'business' && (
               <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B8005A] rounded-full" />
             )}
+          </button>
+
+          <button
+            onClick={() => handleNav('offers')}
+            className={`transition-colors relative py-1 hover:text-[#B8005A] ${
+              active === 'offers' ? 'text-[#B8005A] font-semibold' : ''
+            }`}
+          >
+            Offers
+            {active === 'offers' && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B8005A] rounded-full" />
+            )}
+          </button>
+
+          <button
+            onClick={() => handleNav('gallery')}
+            className={`transition-colors relative py-1 hover:text-[#B8005A] ${
+              active === 'gallery' ? 'text-[#B8005A] font-semibold' : ''
+            }`}
+          >
+            Gallery
+            {active === 'gallery' && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B8005A] rounded-full" />
+            )}
+          </button>
+
+          <button
+            onClick={() => handleNav('gallery-moderation')}
+            className={`transition-colors relative py-1 hover:text-[#8E004B] font-bold ${
+              active === 'gallery-moderation' ? 'text-[#8E004B]' : 'text-[#8E004B]/80'
+            }`}
+          >
+            <span className="bg-[#FFF0F5] border border-[#FFD1E3] px-2.5 py-0.5 rounded-full text-xs">
+              Moderation
+            </span>
           </button>
         </nav>
 
@@ -271,6 +306,30 @@ export const Navbar: React.FC<NavbarProps> = ({
               }`}
             >
               Business Hub
+            </button>
+            <button
+              onClick={() => handleNav('offers')}
+              className={`p-2.5 rounded-xl text-xs font-semibold text-left transition-colors ${
+                active === 'offers' ? 'bg-[#FFF0F5] text-[#B8005A]' : 'bg-[#FAFAFA] text-[#4A4A4A]'
+              }`}
+            >
+              Offers & Deals
+            </button>
+            <button
+              onClick={() => handleNav('gallery')}
+              className={`p-2.5 rounded-xl text-xs font-semibold text-left transition-colors ${
+                active === 'gallery' ? 'bg-[#FFF0F5] text-[#B8005A]' : 'bg-[#FAFAFA] text-[#4A4A4A]'
+              }`}
+            >
+              Gallery
+            </button>
+            <button
+              onClick={() => handleNav('gallery-moderation')}
+              className={`p-2.5 rounded-xl text-xs font-bold text-left transition-colors col-span-2 ${
+                active === 'gallery-moderation' ? 'bg-[#8E004B] text-white' : 'bg-[#FFF0F5] text-[#8E004B]'
+              }`}
+            >
+              Owner Moderation
             </button>
           </div>
 
