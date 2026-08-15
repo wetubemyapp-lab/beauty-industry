@@ -11,7 +11,7 @@ interface OfferItem {
   title: string;
   supplier: string;
   isVerified: boolean;
-  category: 'Skincare' | 'Haircare' | 'Equipment' | 'Cosmetics' | 'Fragrance';
+  category: string;
   offerType: 'Wholesale Offers' | 'Bulk Discounts' | 'Seasonal Offers' | 'New Product Offers';
   discountText: string;
   moq: string;
@@ -61,7 +61,7 @@ const INITIAL_OFFERS: OfferItem[] = [
     title: 'Salon Equipment Clearance',
     supplier: 'Bharat Backbar Wholesalers',
     isVerified: true,
-    category: 'Equipment',
+    category: 'Salon Tools & Eq.',
     offerType: 'Bulk Discounts',
     discountText: 'Tiered Savings',
     moq: '5 Units',
@@ -107,7 +107,7 @@ const INITIAL_OFFERS: OfferItem[] = [
     title: 'Pro Ionic Dryer & Styler Bundle',
     supplier: 'Vertex Salon Technologies',
     isVerified: true,
-    category: 'Equipment',
+    category: 'Salon Tools & Eq.',
     offerType: 'Bulk Discounts',
     discountText: 'Save ₹15,000 / Set',
     moq: '3 Sets',
@@ -131,6 +131,112 @@ const INITIAL_OFFERS: OfferItem[] = [
     validUntil: '25 Days Left',
     originalPrice: '₹1,250 / pack',
     offerPrice: 'Effective ₹1,040 / pack'
+  },
+  {
+    id: 'off-7',
+    title: 'Rich Saffron Permanent Cream Color Bundle',
+    supplier: 'Aura Beauty India',
+    isVerified: true,
+    category: 'Hair Color',
+    offerType: 'Wholesale Offers',
+    discountText: 'Buy 100 Tubes Get 20 Free',
+    moq: '100 Units',
+    description: 'Professional high-pigmentation hair color cream with active herbal extracts for radiant gray coverage.',
+    image: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&q=80&w=600',
+    validUntil: '15 Days Left',
+    originalPrice: '₹35,000 / pack',
+    offerPrice: '₹28,000 / pack'
+  },
+  {
+    id: 'off-8',
+    title: 'Luxe HD Matte Foundation Pro Pack',
+    supplier: 'Royal Glamour India Supplies',
+    isVerified: true,
+    category: 'Makeup',
+    offerType: 'New Product Offers',
+    discountText: '25% Launch Discount',
+    moq: '30 Units',
+    description: 'Long-wear, high-definition foundations optimized for professional bridal makeup and photography studios.',
+    image: 'https://images.unsplash.com/photo-1522335934-FE017a119951?auto=format&fit=crop&q=80&w=600',
+    isNew: true,
+    validUntil: '30 Days Left',
+    originalPrice: '₹2,500 / unit',
+    offerPrice: '₹1,875 / unit'
+  },
+  {
+    id: 'off-9',
+    title: 'Premium Gel Polish & UV Curing Lamp Starter Set',
+    supplier: 'South India Salon Depot',
+    isVerified: false,
+    category: 'Nails',
+    offerType: 'Seasonal Offers',
+    discountText: 'Flat 15% Off Bulk',
+    moq: '15 Sets',
+    description: 'Professional salon-grade quick-dry soak-off gel polishes complete with dual light wavelength UV/LED curing lamp.',
+    image: 'https://images.unsplash.com/photo-1604654894610-df4906b147c0?auto=format&fit=crop&q=80&w=600',
+    validUntil: '10 Days Left',
+    originalPrice: '₹12,000 / set',
+    offerPrice: '₹10,200 / set'
+  },
+  {
+    id: 'off-10',
+    title: 'Pure Himalayan Herbal Spa Facial Kit',
+    supplier: 'Kavya Ayurvedic Botanicals',
+    isVerified: true,
+    category: 'Spa',
+    offerType: 'Wholesale Offers',
+    discountText: '30% Off on 10+ Kits',
+    moq: '10 Kits',
+    description: 'Holistic 5-step spa treatment facial kits containing neem, organic turmeric, and active sandalwood oils.',
+    image: 'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80&w=600',
+    validUntil: '22 Days Left',
+    originalPrice: '₹8,500 / kit',
+    offerPrice: '₹5,950 / kit'
+  },
+  {
+    id: 'off-11',
+    title: 'Therapeutic Aromatherapy Massage Oil Blend',
+    supplier: 'Jaipur Luxury Beauty Hub',
+    isVerified: true,
+    category: 'Massage',
+    offerType: 'Bulk Discounts',
+    discountText: 'Free Shipping + 20% Off',
+    moq: '20 Liters',
+    description: 'Luxury backbar aromatherapy massage oil formulated with cold-pressed sweet almond, lavender, and eucalyptus oils.',
+    image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&q=80&w=600',
+    validUntil: '14 Days Left',
+    originalPrice: '₹4,500 / liter',
+    offerPrice: '₹3,600 / liter'
+  },
+  {
+    id: 'off-12',
+    title: 'Professional Shader Needle Cartridges Pack',
+    supplier: 'Vertex Salon Technologies',
+    isVerified: true,
+    category: 'Tattoo Studio',
+    offerType: 'Seasonal Offers',
+    discountText: 'Buy 5 Boxes Get 1 Free',
+    moq: '5 Boxes',
+    description: 'Disposable membrane safety tattoo cartridges with ultra-precise point round liners and soft edge magnums.',
+    image: 'https://images.unsplash.com/photo-1598252577556-a17846c7d61b?auto=format&fit=crop&q=80&w=600',
+    validUntil: '7 Days Left',
+    originalPrice: '₹3,200 / box',
+    offerPrice: '₹2,666 / box'
+  },
+  {
+    id: 'off-13',
+    title: 'Ergonomic Hydraulic Styling Backbar Chair',
+    supplier: 'Vertex Salon Technologies',
+    isVerified: true,
+    category: 'Salon Furniture',
+    offerType: 'Bulk Discounts',
+    discountText: 'Save ₹8,000 per Chair',
+    moq: '4 Units',
+    description: 'Heavy duty luxury styling chair with high-density memory foam, polished chrome circular base, and premium eco-leather upholstery.',
+    image: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&q=80&w=600',
+    validUntil: '20 Days Left',
+    originalPrice: '₹28,000 / unit',
+    offerPrice: '₹20,000 / unit'
   }
 ];
 
@@ -368,9 +474,14 @@ export const OffersView: React.FC<OffersViewProps> = ({
                 <option value="Any Category">Any Category</option>
                 <option value="Skincare">Skincare</option>
                 <option value="Haircare">Haircare</option>
-                <option value="Equipment">Equipment</option>
-                <option value="Cosmetics">Cosmetics</option>
-                <option value="Fragrance">Fragrance</option>
+                <option value="Hair Color">Hair Color</option>
+                <option value="Makeup">Makeup</option>
+                <option value="Nails">Nails</option>
+                <option value="Spa">Spa</option>
+                <option value="Massage">Massage</option>
+                <option value="Tattoo Studio">Tattoo Studio</option>
+                <option value="Salon Furniture">Salon Furniture</option>
+                <option value="Salon Tools & Eq.">Salon Tools & Eq.</option>
               </select>
               <ChevronDown className="w-4 h-4 text-[#8C7077] absolute right-3 pointer-events-none" />
             </div>
@@ -448,12 +559,18 @@ export const OffersView: React.FC<OffersViewProps> = ({
             <h3 className="text-xs font-bold uppercase tracking-wider text-[#594047]">
               Category
             </h3>
-            <div className="flex flex-col gap-2.5 pl-1">
+            <div className="flex flex-col gap-2.5 pl-1 max-h-60 overflow-y-auto pr-1">
               {[
-                { name: 'Skincare', count: 24 },
-                { name: 'Haircare', count: 18 },
-                { name: 'Equipment', count: 9 },
-                { name: 'Cosmetics', count: 12 }
+                { name: 'Skincare', count: INITIAL_OFFERS.filter(i => i.category === 'Skincare').length + 18 },
+                { name: 'Haircare', count: INITIAL_OFFERS.filter(i => i.category === 'Haircare').length + 12 },
+                { name: 'Hair Color', count: INITIAL_OFFERS.filter(i => i.category === 'Hair Color').length + 6 },
+                { name: 'Makeup', count: INITIAL_OFFERS.filter(i => i.category === 'Makeup').length + 8 },
+                { name: 'Nails', count: INITIAL_OFFERS.filter(i => i.category === 'Nails').length + 10 },
+                { name: 'Spa', count: INITIAL_OFFERS.filter(i => i.category === 'Spa').length + 5 },
+                { name: 'Massage', count: INITIAL_OFFERS.filter(i => i.category === 'Massage').length + 4 },
+                { name: 'Tattoo Studio', count: INITIAL_OFFERS.filter(i => i.category === 'Tattoo Studio').length + 3 },
+                { name: 'Salon Furniture', count: INITIAL_OFFERS.filter(i => i.category === 'Salon Furniture').length + 4 },
+                { name: 'Salon Tools & Eq.', count: INITIAL_OFFERS.filter(i => i.category === 'Salon Tools & Eq.').length + 14 }
               ].map((cat) => {
                 const isChecked = selectedCategoryFilters.includes(cat.name);
                 return (

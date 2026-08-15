@@ -557,6 +557,7 @@ export function App() {
           setSelectedCity(city);
           showToast(`Switched market region to ${city}`);
         }}
+        currentUser={currentUser}
       />
 
       <QuoteDrawer
