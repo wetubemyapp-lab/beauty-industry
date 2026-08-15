@@ -379,12 +379,12 @@ export const DistributorsView: React.FC<DistributorsViewProps> = ({
         <nav aria-label="Breadcrumb" className="flex text-sm text-[#594047]">
           <ol className="inline-flex items-center space-x-1 md:space-x-2">
             <li className="inline-flex items-center">
-              <a href="#" className="text-xs font-medium hover:text-[#B90064] transition-colors">Home</a>
+              <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-xs font-medium hover:text-[#B90064] transition-colors cursor-pointer">Home</button>
             </li>
             <li>
               <div className="flex items-center">
                 <span className="text-xs mx-1">›</span>
-                <a href="#" className="text-xs font-medium hover:text-[#B90064] transition-colors">Beauty Industry Directory</a>
+                <button onClick={() => handleFilterTypeChange('all')} className="text-xs font-medium hover:text-[#B90064] transition-colors cursor-pointer">Beauty Industry Directory</button>
               </div>
             </li>
             <li aria-current="page">
