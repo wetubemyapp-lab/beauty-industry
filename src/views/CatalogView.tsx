@@ -128,6 +128,9 @@ interface CatalogViewProps {
   onSelectCategory: (cat: CategoryId | 'all') => void;
   currentUser?: any;
   onOpenOnboarding?: () => void;
+  initialEditProduct?: Product | null;
+  forceOpenAddModal?: boolean;
+  onClearInitialStates?: () => void;
 }
 
 export const CatalogView: React.FC<CatalogViewProps> = ({
@@ -144,7 +147,10 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   onSelectProduct,
   onSelectCategory,
   currentUser,
-  onOpenOnboarding
+  onOpenOnboarding,
+  initialEditProduct,
+  forceOpenAddModal,
+  onClearInitialStates
 }) => {
   const [activeCategory, setActiveCategory] = useState<CategoryId | 'all'>(selectedCategory);
   const [localSearch, setLocalSearch] = useState(initialSearchQuery || '');
@@ -177,6 +183,22 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   });
 
   const [modalStep, setModalStep] = useState<1 | 2 | 3 | 4 | 5 | 6>(1);
+
+  // Phase 9: Handle external triggers for Edit/Add
+  useEffect(() => {
+    if (initialEditProduct) {
+      handleEditProduct(initialEditProduct);
+      onClearInitialStates?.();
+    }
+  }, [initialEditProduct]);
+
+  useEffect(() => {
+    if (forceOpenAddModal) {
+      setModalStep(1);
+      setIsAddProductOpen(true);
+      onClearInitialStates?.();
+    }
+  }, [forceOpenAddModal]);
 
   // Phase 2 Product Basic Information states
   const [brand, setBrand] = useState('');

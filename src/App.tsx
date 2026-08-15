@@ -102,6 +102,8 @@ export function App() {
   const [isQuoteDrawerOpen, setIsQuoteDrawerOpen] = useState(false);
   const [isBusinessOnboardingOpen, setIsBusinessOnboardingOpen] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [initialEditProduct, setInitialEditProduct] = useState<Product | null>(null);
+  const [forceOpenAddModal, setForceOpenAddModal] = useState(false);
 
   // Toast Notification
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'info' } | null>(null);
@@ -350,6 +352,24 @@ export function App() {
           showToast('Signed out of Nexora Luxe account', 'info');
         }}
         onOpenOnboarding={() => setIsBusinessOnboardingOpen(true)}
+        onOpenBusinessProfile={() => {
+          const supplier = allPartners.find(p => p.id === currentUser?.id);
+          if (supplier) {
+            setSelectedSupplier(supplier);
+          } else if (currentUser?.role === 'Supplier') {
+            // Fallback for demo: create a temporary supplier object if not found in list
+            setSelectedSupplier({
+              id: currentUser.id,
+              name: currentUser.companyName || currentUser.name,
+              logo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=80&w=200',
+              location: currentUser.city || selectedCity,
+              rating: 4.8,
+              verified: true,
+              specialties: ['Professional Distribution'],
+              isPremium: true
+            } as any);
+          }
+        }}
       />
 
       {/* Main Page Content */}
@@ -427,6 +447,12 @@ export function App() {
             onSelectCategory={(cat) => setSelectedCategory(cat)}
             currentUser={currentUser}
             onOpenOnboarding={() => setIsBusinessOnboardingOpen(true)}
+            initialEditProduct={initialEditProduct}
+            forceOpenAddModal={forceOpenAddModal}
+            onClearInitialStates={() => {
+              setInitialEditProduct(null);
+              setForceOpenAddModal(false);
+            }}
           />
         )}
 
@@ -549,6 +575,16 @@ export function App() {
         onUpdatePartners={handleUpdatePartners}
         allPartners={allPartners}
         currentUser={currentUser}
+        onEditProduct={(product) => {
+          setSelectedSupplier(null);
+          setCurrentTab('products');
+          setInitialEditProduct(product);
+        }}
+        onAddProduct={() => {
+          setSelectedSupplier(null);
+          setCurrentTab('products');
+          setForceOpenAddModal(true);
+        }}
       />
 
       <SupplierChatModal

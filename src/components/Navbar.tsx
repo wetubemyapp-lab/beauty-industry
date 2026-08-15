@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, User, FileText, Sparkles, Menu, X, LogOut, Check, Bell, Settings } from 'lucide-react';
+import { MapPin, User, FileText, Sparkles, Menu, X, LogOut, Check, Bell, Settings, Building2 } from 'lucide-react';
 import { UserProfile } from '../types';
 
 export type NavTab = 'home' | 'discover' | 'products' | 'brands' | 'distributors' | 'business' | 'offers' | 'gallery' | 'gallery-moderation';
@@ -21,6 +21,7 @@ interface NavbarProps {
   user: UserProfile | null;
   onLogout?: () => void;
   onOpenOnboarding?: () => void;
+  onOpenBusinessProfile?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -39,7 +40,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   priceAlertsCount = 0,
   user,
   onLogout,
-  onOpenOnboarding
+  onOpenOnboarding,
+  onOpenBusinessProfile
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -242,6 +244,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <Settings className="w-3.5 h-3.5 text-[#B8005A]" /> Edit Profile & Photo
                 </button>
+
+                {user.role === 'Supplier' && (
+                  <button
+                    onClick={() => {
+                      setUserMenuOpen(false);
+                      onOpenBusinessProfile?.();
+                    }}
+                    className="w-full text-left px-2 py-2 text-xs font-semibold text-[#1E1E1E] hover:text-[#B8005A] hover:bg-[#FFF0F5] rounded-xl transition-colors flex items-center gap-2 cursor-pointer"
+                  >
+                    <Building2 className="w-3.5 h-3.5 text-[#B8005A]" /> View Business Profile
+                  </button>
+                )}
 
                 {onOpenOnboarding && (
                   <button
