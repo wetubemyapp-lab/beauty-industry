@@ -8,7 +8,9 @@ export type CategoryId =
   | 'massage'
   | 'tattoo'
   | 'furniture'
-  | 'tools';
+  | 'tools'
+  | 'backbar'
+  | 'aesthetic';
 
 export interface Category {
   id: CategoryId;
@@ -36,7 +38,8 @@ export interface Product {
   price: number;
   unit: string;
   moq: number;
-  stockStatus: 'In Stock' | 'Low Stock' | 'Made to Order';
+  stockStatus: 'In Stock' | 'Low Stock' | 'Made to Order' | 'Out of Stock' | 'Available on Request';
+  status?: 'Draft' | 'Published' | 'Out of Stock' | 'Available on Request' | 'Archived';
   image: string;
   gallery?: string[];
   description: string;
@@ -88,9 +91,10 @@ export interface UserProfile {
   name: string;
   email: string;
   companyName: string;
-  role: 'buyer' | 'supplier';
+  role: string;
   city: string;
   isVerified: boolean;
+  avatarUrl?: string;
 }
 
 export interface InquiryForm {

@@ -54,6 +54,31 @@ const PRESET_POPULAR_QUERIES = [
   'Global Glamour Cosmetics Supply'
 ];
 
+const TRENDING_INDIA_SEARCHES = [
+  { term: 'Peptide Rich Anti-Aging Cream', volume: '24.5k searches', growth: '+34%' },
+  { term: 'Ionic Salon Hair Dryer X2', volume: '18.2k searches', growth: '+28%' },
+  { term: 'Hydraulic Treatment Spa Bed', volume: '15.9k searches', growth: '+41%' },
+  { term: 'DermaGlow Clinical Serum', volume: '14.1k searches', growth: '+19%' },
+  { term: 'Wholesale Botanical Shampoo', volume: '12.8k searches', growth: '+22%' },
+  { term: 'Bridal HD Makeup Pro Palette', volume: '11.4k searches', growth: '+37%' },
+  { term: 'Professional UV Gel Polish Set', volume: '9.6k searches', growth: '+15%' },
+  { term: 'Mumbai Beauty Distributor Hub', volume: '8.3k searches', growth: '+18%' }
+];
+
+const CATEGORY_IMAGES: Record<string, string> = {
+  all: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=300&q=80',
+  skincare: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=300&q=80',
+  haircare: 'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=300&q=80',
+  haircolor: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=300&q=80',
+  makeup: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=300&q=80',
+  nails: 'https://images.unsplash.com/photo-1632345031435-8727f6c97d34?auto=format&fit=crop&w=300&q=80',
+  spa: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=300&q=80',
+  massage: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=300&q=80',
+  tattoo: 'https://images.unsplash.com/photo-1598371839606-f1c42f039d52?auto=format&fit=crop&w=300&q=80',
+  furniture: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=300&q=80',
+  tools: 'https://images.unsplash.com/photo-1563178406-4cdc2923acbc?auto=format&fit=crop&w=300&q=80'
+};
+
 const CATEGORY_ICON_MAP: Record<string, React.ReactNode> = {
   skincare: <Sparkles className="w-3.5 h-3.5" />,
   haircare: <Scissors className="w-3.5 h-3.5" />,
@@ -151,68 +176,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Filter products according to category tag and query
-  const matchingProducts = useMemo(() => {
-    let list = MOCK_PRODUCTS;
-    if (activeCategoryTag !== 'all') {
-      list = list.filter(p => p.category === activeCategoryTag);
-    }
-    if (activeQuickFilter === 'moq') {
-      list = list.filter(p => p.moq <= 20);
-    } else if (activeQuickFilter === 'stock') {
-      list = list.filter(p => p.stockStatus === 'In Stock');
-    } else if (activeQuickFilter === 'verified') {
-      list = list.filter(p => p.isVerified);
-    }
-
+  // Filter categories according to query
+  const matchingCategories = useMemo(() => {
     if (!searchQuery.trim()) {
-      return list.slice(0, 3);
+      return CATEGORIES.slice(0, 8);
     }
     const q = searchQuery.toLowerCase().trim();
-    return list.filter(p => 
-      p.name.toLowerCase().includes(q) || 
-      p.brand.toLowerCase().includes(q) ||
-      p.tag.toLowerCase().includes(q)
-    ).slice(0, 4);
-  }, [searchQuery, activeCategoryTag, activeQuickFilter]);
+    return CATEGORIES.filter(c => 
+      c.name.toLowerCase().includes(q) || 
+      (c.subtext && c.subtext.toLowerCase().includes(q))
+    ).slice(0, 8);
+  }, [searchQuery]);
 
-  // Filter partners
-  const matchingPartners = useMemo(() => {
-    let list = MOCK_PARTNERS;
-    if (activeQuickFilter === 'verified') {
-      list = list.filter(p => p.verified);
-    }
-    if (!searchQuery.trim()) {
-      return list.slice(0, 2);
-    }
-    const q = searchQuery.toLowerCase().trim();
-    return list.filter(p => 
-      p.name.toLowerCase().includes(q) ||
-      (p.tags && p.tags.some(t => t.toLowerCase().includes(q))) ||
-      p.location.toLowerCase().includes(q)
-    ).slice(0, 3);
-  }, [searchQuery, activeQuickFilter]);
-
-  // Candidate terms for predictive typeahead autocompletion
+  // Candidate terms for predictive typeahead autocompletion (Categories only)
   const allCandidateTerms = useMemo(() => {
-    const pool = new Set<string>();
-    (PRESET_POPULAR_QUERIES || []).forEach(q => pool.add(q));
-    (MOCK_PRODUCTS || []).forEach(p => {
-      if (p.name) pool.add(p.name);
-      if (p.brand && p.categoryLabel) pool.add(`${p.brand} ${p.categoryLabel}`);
-      if (p.brand) pool.add(p.brand);
-    });
-    (MOCK_PARTNERS || []).forEach(p => {
-      if (p.name) pool.add(p.name);
-      p.tags?.forEach(t => pool.add(`${t} Wholesale`));
-    });
-    (CATEGORIES || []).forEach(c => {
-      if (c.name) {
-        pool.add(`${c.name} Formulations`);
-        pool.add(`${c.name} Wholesale`);
-      }
-    });
-    return Array.from(pool);
+    return CATEGORIES.map(c => c.name);
   }, []);
 
   // Predictive candidate calculation (Ghost Text)
@@ -231,22 +209,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     return null;
   }, [searchQuery, allCandidateTerms]);
 
-  // Query suggestions list
-  const querySuggestions = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return PRESET_POPULAR_QUERIES.slice(0, 4);
-    }
-    const q = searchQuery.toLowerCase();
-    const matches = allCandidateTerms
-      .filter(t => t.toLowerCase().includes(q))
-      .slice(0, 4);
-    return matches.length > 0 ? matches : [`${searchQuery} Wholesale`, `${searchQuery} Bulk Orders`];
-  }, [searchQuery, allCandidateTerms]);
-
   // Total selectable items in dropdown for keyboard navigation
   const selectableCount = useMemo(() => {
-    return querySuggestions.length + matchingProducts.length + matchingPartners.length;
-  }, [querySuggestions, matchingProducts, matchingPartners]);
+    return matchingCategories.length;
+  }, [matchingCategories]);
 
   // Handle Form Submit
   const handleSubmit = (e?: React.FormEvent, customQuery?: string) => {
@@ -299,25 +265,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     } else if (e.key === 'Enter') {
       if (selectedIndex >= 0 && isSuggestionsOpen) {
         e.preventDefault();
-        // Execute highlighted selection
-        let currentIndex = 0;
-        // 1. Check queries
-        if (selectedIndex < querySuggestions.length) {
-          handleSelectSuggestion(querySuggestions[selectedIndex], searchScope);
-          return;
-        }
-        currentIndex += querySuggestions.length;
-        // 2. Check products
-        const productIndex = selectedIndex - currentIndex;
-        if (productIndex < matchingProducts.length) {
-          handleSelectSuggestion(matchingProducts[productIndex].name, 'products');
-          return;
-        }
-        currentIndex += matchingProducts.length;
-        // 3. Check partners
-        const partnerIndex = selectedIndex - currentIndex;
-        if (partnerIndex < matchingPartners.length) {
-          handleSelectSuggestion(matchingPartners[partnerIndex].name, 'suppliers');
+        // Execute highlighted category selection
+        if (selectedIndex < matchingCategories.length) {
+          handleSelectSuggestion(matchingCategories[selectedIndex].name, 'all');
           return;
         }
       }
@@ -385,50 +335,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           Discover manufacturers, wholesalers, distributors, and professional products.
         </p>
 
-        {/* CATEGORY FILTERING TAGS BAR (Directly above search bar for rapid filtering) */}
-        <div className="mt-7 w-full max-w-4xl flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none px-2 justify-start sm:justify-center">
-          <button
-            type="button"
-            onClick={() => handleCategoryTagClick('all')}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer backdrop-blur-md shadow-xs ${
-              activeCategoryTag === 'all'
-                ? 'bg-[#B8005A] text-white border border-[#B8005A] scale-105 shadow-md'
-                : 'bg-white/20 hover:bg-white/30 text-white/95 border border-white/30 hover:border-white/50'
-            }`}
-          >
-            <Filter className="w-3 h-3" />
-            <span>All Categories</span>
-          </button>
-
-          {CATEGORIES.map((cat) => {
-            const isActive = activeCategoryTag === cat.id;
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => handleCategoryTagClick(cat.id)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer backdrop-blur-md shadow-xs ${
-                  isActive
-                    ? 'bg-[#B8005A] text-white border border-[#B8005A] font-bold scale-105 shadow-md'
-                    : 'bg-white/20 hover:bg-white/30 text-white/95 border border-white/30 hover:border-white/50'
-                }`}
-              >
-                {CATEGORY_ICON_MAP[cat.id] || <Sparkles className="w-3 h-3" />}
-                <span>{cat.name}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                  isActive ? 'bg-white/25 text-white' : 'bg-black/20 text-white/80'
-                }`}>
-                  {cat.itemCount}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
         {/* MOST PROMINENT SEARCH BAR CONTAINER WITH PREDICTIVE TYPEAHEAD */}
         <div 
           ref={searchContainerRef}
-          className="mt-3 w-full max-w-4xl relative z-30"
+          className="mt-8 w-full max-w-4xl relative z-30"
         >
           <form 
             onSubmit={handleSubmit}
@@ -615,250 +525,66 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           {/* ADVANCED PREDICTIVE SUGGESTIONS & INSTANT RESULTS DROPDOWN */}
           {isSuggestionsOpen && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-[#EAE5DE] p-4 sm:p-5 text-left z-40 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[80vh] overflow-y-auto">
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-[#EAE5DE] p-2 sm:p-3 text-left z-40 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[60vh] overflow-y-auto custom-scrollbar">
               
-              {/* Filter Quick Pills inside dropdown */}
-              <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-[#F0F0F0]">
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider mr-1">
-                    Quick Filter:
+              <div className="px-3 py-2">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider flex items-center gap-1.5">
+                    <Flame className="w-3.5 h-3.5 text-[#B8005A]" />
+                    {searchQuery ? 'Matching Categories' : 'Browse Categories'}
                   </span>
-                  {[
-                    { id: 'all', label: 'All' },
-                    { id: 'moq', label: '⚡ Low MOQ (<20)' },
-                    { id: 'stock', label: '📦 In Stock' },
-                    { id: 'verified', label: '✨ Verified Only' }
-                  ].map(f => (
-                    <button
-                      key={f.id}
-                      type="button"
-                      onClick={() => setActiveQuickFilter(activeQuickFilter === f.id ? null : (f.id === 'all' ? null : f.id))}
-                      className={`text-[11px] px-2.5 py-1 rounded-full font-bold transition-colors cursor-pointer ${
-                        (activeQuickFilter === f.id || (!activeQuickFilter && f.id === 'all'))
-                          ? 'bg-[#B8005A] text-white'
-                          : 'bg-[#F4F4F6] text-[#555] hover:bg-[#EBEBEF]'
-                      }`}
-                    >
-                      {f.label}
-                    </button>
-                  ))}
+                  <span className="text-[10px] text-[#8E8E93]">
+                    {matchingCategories.length} categories
+                  </span>
                 </div>
-
-                {activeCategoryTag !== 'all' && (
-                  <div className="flex items-center gap-1 text-[11px] text-[#B8005A] bg-[#FFF0F5] px-2.5 py-1 rounded-full font-bold border border-[#FFD1E3]">
-                    <span>Category: <strong className="capitalize">{activeCategoryTag}</strong></span>
-                    <button
-                      type="button"
-                      onClick={() => setActiveCategoryTag('all')}
-                      className="hover:text-black ml-1 cursor-pointer"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
+                
+                {matchingCategories.length === 0 ? (
+                  <div className="p-4 text-center text-xs text-[#8E8E93] bg-[#F9F9FB] rounded-xl">
+                    No categories match your search
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    {matchingCategories.map((c, idx) => {
+                      const isSelected = selectedIndex === idx;
+                      return (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={() => handleSelectSuggestion(c.name, 'all')}
+                          className={`w-full flex items-center justify-between p-2 sm:p-3 rounded-xl transition-colors group cursor-pointer text-left border ${
+                            isSelected ? 'bg-[#FFF0F5] border-[#FFD1E3]' : 'hover:bg-[#FFF0F5] border-transparent hover:border-[#FFD1E3]'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FFF0F5] to-white border border-[#FFD1E3] flex items-center justify-center text-[#B8005A] shadow-sm shrink-0">
+                              {CATEGORY_ICON_MAP[c.id] || <Sparkles className="w-5 h-5" />}
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-[#1E1E1E] group-hover:text-[#B8005A] transition-colors">
+                                {highlightMatch(c.name, searchQuery)}
+                              </p>
+                              {c.subtext && (
+                                <p className="text-[11px] text-[#737373] mt-0.5">
+                                  {c.subtext}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="text-[11px] font-semibold text-[#8E8E93] bg-[#F4F4F6] px-2 py-1 rounded-md">
+                              {c.itemCount}+ items
+                            </span>
+                            <ArrowRight className="w-4 h-4 text-[#B8005A] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
               </div>
 
-              {/* Main Content Grid: Predictive Queries, Products, Suppliers */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                
-                {/* Left Column: Predictive Queries & Recent Searches (4 cols) */}
-                <div className="lg:col-span-4 space-y-4 border-b lg:border-b-0 lg:border-r border-[#F0F0F0] pb-4 lg:pb-0 lg:pr-4">
-                  {/* Predictive Query Autocomplete Suggestions */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2 px-1">
-                      <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider flex items-center gap-1.5">
-                        <Flame className="w-3.5 h-3.5 text-[#B8005A]" />
-                        {searchQuery ? 'Predictive Suggestions' : 'Trending Queries'}
-                      </span>
-                    </div>
-                    <div className="space-y-1">
-                      {querySuggestions.map((queryText, idx) => {
-                        const isSelected = selectedIndex === idx;
-                        return (
-                          <button
-                            key={queryText}
-                            type="button"
-                            onClick={() => handleSelectSuggestion(queryText, searchScope)}
-                            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-colors group cursor-pointer text-xs font-medium ${
-                              isSelected ? 'bg-[#FFF0F5] text-[#B8005A] font-bold' : 'hover:bg-[#F9F9FB] text-[#2C2C2E]'
-                            }`}
-                          >
-                            <div className="flex items-center gap-2 truncate">
-                              <Search className="w-3.5 h-3.5 text-[#8E8E93] group-hover:text-[#B8005A] shrink-0" />
-                              <span className="truncate">
-                                {highlightMatch(queryText, searchQuery)}
-                              </span>
-                            </div>
-                            <ArrowRight className="w-3.5 h-3.5 text-[#B8005A] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Recent Searches (if available) */}
-                  {recentSearches.length > 0 && (
-                    <div className="pt-2 border-t border-[#F0F0F0]">
-                      <div className="flex items-center justify-between mb-2 px-1">
-                        <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-[#737373]" />
-                          Recent Searches
-                        </span>
-                        <button
-                          type="button"
-                          onClick={clearAllRecent}
-                          className="text-[10px] text-[#8E8E93] hover:text-[#B8005A] transition-colors"
-                        >
-                          Clear
-                        </button>
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {recentSearches.map((rec) => (
-                          <div
-                            key={rec}
-                            onClick={() => handleSelectSuggestion(rec, searchScope)}
-                            className="inline-flex items-center gap-1.5 bg-[#F4F4F6] hover:bg-[#FFF0F5] text-[#333] hover:text-[#B8005A] px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer border border-[#E8E8EE]"
-                          >
-                            <span>{rec}</span>
-                            <button
-                              type="button"
-                              onClick={(e) => removeRecentSearch(rec, e)}
-                              className="hover:text-red-500 text-gray-400"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Right Column: Live Matching Products & Suppliers (8 cols) */}
-                <div className="lg:col-span-8 space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Matching Products */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2 px-1">
-                        <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider flex items-center gap-1.5">
-                          <Package className="w-3.5 h-3.5 text-[#B8005A]" />
-                          {searchQuery ? 'Matching Products' : 'Featured Products'}
-                        </span>
-                        <span className="text-[10px] text-[#8E8E93]">
-                          {matchingProducts.length} items
-                        </span>
-                      </div>
-                      <div className="space-y-1.5">
-                        {matchingProducts.length === 0 ? (
-                          <div className="p-4 text-center text-xs text-[#8E8E93] bg-[#F9F9FB] rounded-xl">
-                            No products match filter
-                          </div>
-                        ) : (
-                          matchingProducts.map((p, pIdx) => {
-                            const itemSelectIndex = querySuggestions.length + pIdx;
-                            const isSelected = selectedIndex === itemSelectIndex;
-                            return (
-                              <button
-                                key={p.id}
-                                type="button"
-                                onClick={() => handleSelectSuggestion(p.name, 'products')}
-                                className={`w-full flex items-center justify-between p-2 rounded-xl transition-colors group cursor-pointer text-left border ${
-                                  isSelected ? 'bg-[#FFF0F5] border-[#FFD1E3]' : 'hover:bg-[#FFF0F5] border-transparent hover:border-[#FFD1E3]'
-                                }`}
-                              >
-                                <div className="flex items-center gap-2.5 min-w-0">
-                                  <img 
-                                    src={p.image || undefined} 
-                                    alt={p.name} 
-                                    className="w-10 h-10 rounded-lg object-cover border border-[#EDEDED] shrink-0" 
-                                  />
-                                  <div className="min-w-0">
-                                    <p className="text-xs font-bold text-[#1E1E1E] group-hover:text-[#B8005A] transition-colors truncate">
-                                      {highlightMatch(p.name, searchQuery)}
-                                    </p>
-                                    <div className="flex items-center gap-2 text-[10px] text-[#737373] mt-0.5">
-                                      <span className="font-semibold text-[#1A1A1A]">${p.price.toFixed(2)}/{p.unit}</span>
-                                      <span>•</span>
-                                      <span>MOQ: {p.moq}</span>
-                                      {p.stockStatus === 'In Stock' && (
-                                        <span className="text-green-600 font-bold">In Stock</span>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                                <ArrowRight className="w-3.5 h-3.5 text-[#B8005A] opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2" />
-                              </button>
-                            );
-                          })
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Verified Distributors & Brands */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2 px-1">
-                        <span className="text-[11px] font-bold text-[#8E8E93] uppercase tracking-wider flex items-center gap-1.5">
-                          <Building2 className="w-3.5 h-3.5 text-[#B8005A]" />
-                          {searchQuery ? 'Matching Suppliers' : 'Verified Distributors'}
-                        </span>
-                        <span className="text-[10px] text-[#8E8E93]">
-                          {matchingPartners.length} partners
-                        </span>
-                      </div>
-                      <div className="space-y-1.5">
-                        {matchingPartners.length === 0 ? (
-                          <div className="p-4 text-center text-xs text-[#8E8E93] bg-[#F9F9FB] rounded-xl">
-                            No suppliers match query
-                          </div>
-                        ) : (
-                          matchingPartners.map((p, sIdx) => {
-                            const itemSelectIndex = querySuggestions.length + matchingProducts.length + sIdx;
-                            const isSelected = selectedIndex === itemSelectIndex;
-                            return (
-                              <button
-                                key={p.id}
-                                type="button"
-                                onClick={() => handleSelectSuggestion(p.name, 'suppliers')}
-                                className={`w-full flex items-center justify-between p-2 rounded-xl transition-colors group cursor-pointer text-left border ${
-                                  isSelected ? 'bg-[#FFF0F5] border-[#FFD1E3]' : 'hover:bg-[#FFF0F5] border-transparent hover:border-[#FFD1E3]'
-                                }`}
-                              >
-                                <div className="flex items-center gap-2.5 min-w-0">
-                                  <div className="w-10 h-10 rounded-lg bg-[#FFF0F5] border border-[#FFD6E5] text-[#B8005A] font-bold text-xs flex items-center justify-center shrink-0">
-                                    {p.initials}
-                                  </div>
-                                  <div className="min-w-0">
-                                    <p className="text-xs font-bold text-[#1E1E1E] group-hover:text-[#B8005A] transition-colors truncate">
-                                      {highlightMatch(p.name, searchQuery)}
-                                    </p>
-                                    <p className="text-[10px] text-[#737373] truncate">
-                                      {p.type} • {p.location}
-                                    </p>
-                                  </div>
-                                </div>
-                                {p.verified ? (
-                                  <span className="inline-flex items-center gap-1 text-[9px] font-extrabold text-white bg-gradient-to-r from-[#B8005A] via-[#931248] to-[#1E1E1E] px-2 py-0.5 rounded-full shrink-0 ml-2 border border-[#FFD1E3]/40 shadow-xs" title="Nexora Luxe Verified Partner Status">
-                                    <ShieldCheck className="w-2.5 h-2.5 text-[#FFD700]" />
-                                    VERIFIED PARTNER
-                                  </span>
-                                ) : (
-                                  <span className="text-[9px] font-bold text-[#737373] bg-[#FAFAFA] border border-[#E5E5E5] px-2 py-0.5 rounded-md shrink-0 ml-2">
-                                    SUPPLIER
-                                  </span>
-                                )}
-                              </button>
-                            );
-                          })
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
               {/* Bottom Quick Search Actions */}
-              <div className="mt-4 pt-3 border-t border-[#F0F0F0] flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div className="mt-2 pt-2 border-t border-[#F0F0F0] px-3 pb-1 flex flex-wrap items-center justify-between gap-2 text-xs">
                 <div className="flex items-center gap-2 text-[#8E8E93] text-[11px]">
                   <span>Navigate with <kbd className="bg-gray-100 px-1 py-0.5 rounded border text-[10px]">↑</kbd> <kbd className="bg-gray-100 px-1 py-0.5 rounded border text-[10px]">↓</kbd></span>
                   <span>•</span>
@@ -870,14 +596,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     </>
                   )}
                 </div>
-                <button
-                  type="button"
-                  onClick={() => handleSubmit()}
-                  className="text-[#B8005A] font-bold text-xs hover:underline flex items-center gap-1 cursor-pointer ml-auto"
-                >
-                  <span>Explore all {matchingProducts.length + matchingPartners.length} results</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
               </div>
             </div>
           )}

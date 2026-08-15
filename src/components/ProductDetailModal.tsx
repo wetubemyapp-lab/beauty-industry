@@ -275,8 +275,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       / {product.unit}
                     </span>
                   </div>
-                  <span className="text-xs text-[#10B981] font-semibold mt-0.5 block">
-                    ● {product.stockStatus} • Lead Time: {product.leadTimeDays} days
+                  <span className={`text-xs font-bold mt-0.5 block ${
+                    product.stockStatus === 'In Stock'
+                      ? 'text-emerald-600'
+                      : product.stockStatus === 'Out of Stock'
+                      ? 'text-rose-600 animate-pulse font-extrabold'
+                      : 'text-amber-600'
+                  }`}>
+                    ● {product.stockStatus}
+                    {product.availabilityNote ? ` (${product.availabilityNote})` : ''}
+                    • Lead Time: {product.leadTimeDays} days
                   </span>
                 </div>
 

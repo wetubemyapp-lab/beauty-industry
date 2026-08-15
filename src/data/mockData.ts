@@ -55,13 +55,29 @@ export const CATEGORIES: Category[] = [
     id: 'furniture',
     name: 'Salon Furniture',
     iconName: 'Armchair',
-    itemCount: 110
+    itemCount: 110,
+    featuredImg: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: 'tools',
     name: 'Salon Tools & Eq.',
     iconName: 'Wrench',
-    itemCount: 340
+    itemCount: 340,
+    featuredImg: 'https://images.unsplash.com/photo-1582095133179-bfd08e2fc6b3?auto=format&fit=crop&q=80&w=800'
+  },
+  {
+    id: 'backbar',
+    name: 'Backbar Essentials',
+    iconName: 'Package',
+    itemCount: 190,
+    featuredImg: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&q=80&w=800'
+  },
+  {
+    id: 'aesthetic',
+    name: 'Aesthetic Clinic Tools',
+    iconName: 'Sparkles',
+    itemCount: 125,
+    featuredImg: 'https://images.unsplash.com/photo-1512290900672-8a25e2d6f28e?auto=format&fit=crop&q=80&w=800'
   }
 ];
 

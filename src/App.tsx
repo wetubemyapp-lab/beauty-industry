@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Navbar, NavTab } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
-import { ExploreCategories } from './components/ExploreCategories';
+
 import { PremiumPartners } from './components/PremiumPartners';
 import { TrendingCatalog } from './components/TrendingCatalog';
 import { ListBusinessBanner } from './components/ListBusinessBanner';
@@ -20,6 +20,8 @@ import { CompareFloatingBar } from './components/CompareFloatingBar';
 import { VideoPlayerModal } from './components/VideoPlayerModal';
 import { SubmitVideoModal } from './components/SubmitVideoModal';
 import { UploadGalleryModal } from './components/UploadGalleryModal';
+import { BusinessOnboardingModal } from './components/BusinessOnboardingModal';
+import { EditProfileModal } from './components/EditProfileModal';
 
 // Views
 import { CatalogView } from './views/CatalogView';
@@ -27,6 +29,7 @@ import { BrandsView } from './views/BrandsView';
 import { DistributorsView } from './views/DistributorsView';
 import { BusinessView } from './views/BusinessView';
 import { OffersView } from './views/OffersView';
+import { DiscoverView } from './views/DiscoverView';
 import { GalleryView } from './components/GalleryView';
 import { OwnerGalleryModeration } from './components/OwnerGalleryModeration';
 
@@ -62,8 +65,23 @@ export function App() {
     }
   ]);
 
+  // Handler to update global products (Publishing, Editing, Archiving)
+  const handleUpdateProducts = (updatedProducts: Product[]) => {
+    setAllProducts(updatedProducts);
+  };
+
+  // Handler to update global partners (Profile connection, Product counts)
+  const handleUpdatePartners = (updatedPartners: SupplierPartner[]) => {
+    setAllPartners(updatedPartners);
+  };
+
   // Video Testimonials State
   const [videoTestimonials, setVideoTestimonials] = useState<VideoTestimonial[]>(MOCK_VIDEO_TESTIMONIALS);
+  
+  // Global Products & Partners State for Discovery & Publishing
+  const [allProducts, setAllProducts] = useState<Product[]>(MOCK_PRODUCTS);
+  const [allPartners, setAllPartners] = useState<SupplierPartner[]>(MOCK_PARTNERS);
+
   const [selectedVideo, setSelectedVideo] = useState<VideoTestimonial | null>(null);
   const [isSubmitVideoOpen, setIsSubmitVideoOpen] = useState(false);
   const [likedVideoIds, setLikedVideoIds] = useState<string[]>(['vid-1']);
@@ -82,6 +100,8 @@ export function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isCityModalOpen, setIsCityModalOpen] = useState(false);
   const [isQuoteDrawerOpen, setIsQuoteDrawerOpen] = useState(false);
+  const [isBusinessOnboardingOpen, setIsBusinessOnboardingOpen] = useState(false);
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
   // Toast Notification
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'info' } | null>(null);
@@ -128,7 +148,7 @@ export function App() {
     showToast('Comparison list cleared', 'info');
   };
 
-  const comparedProducts = MOCK_PRODUCTS.filter((p) => compareProductIds.includes(p.id));
+  const comparedProducts = allProducts.filter((p) => compareProductIds.includes(p.id));
 
   const handleTogglePriceAlert = (product: Product, enabled: boolean) => {
     setPriceAlerts((prev) => {
@@ -169,7 +189,7 @@ export function App() {
   const handleOpenChat = (supplierOrId: SupplierPartner | string, product?: Product) => {
     let sup: SupplierPartner | undefined;
     if (typeof supplierOrId === 'string') {
-      sup = MOCK_PARTNERS.find((p) => p.id === supplierOrId);
+      sup = allPartners.find((p) => p.id === supplierOrId);
     } else {
       sup = supplierOrId;
     }
@@ -322,16 +342,33 @@ export function App() {
         priceAlertsCount={Object.values(priceAlerts).filter(Boolean).length}
         onOpenQuote={() => setIsQuoteDrawerOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenEditProfile={() => setIsEditProfileOpen(true)}
         onOpenRegister={() => setIsRegisterOpen(true)}
         user={currentUser}
         onLogout={() => {
           setCurrentUser(null);
           showToast('Signed out of Nexora Luxe account', 'info');
         }}
+        onOpenOnboarding={() => setIsBusinessOnboardingOpen(true)}
       />
 
       {/* Main Page Content */}
       <main className="flex-1">
+        {currentTab === 'discover' && (
+          <DiscoverView
+            products={MOCK_PRODUCTS}
+            selectedCategory={selectedCategory}
+            selectedCity={selectedCity}
+            onSelectCategory={(cat) => {
+              setSelectedCategory(cat);
+              setCurrentTab('products');
+            }}
+            onSelectProduct={(product) => setSelectedProduct(product)}
+            onAddToQuote={handleAddToQuote}
+            onOpenCitySelector={() => setIsCityModalOpen(true)}
+          />
+        )}
+
         {currentTab === 'home' && (
           <>
             {/* 1. Hero Section matching screenshot */}
@@ -342,15 +379,7 @@ export function App() {
               onSelectCategory={handleSelectCategory}
             />
 
-            {/* 2. Explore Categories grid matching screenshot */}
-            <ExploreCategories
-              onSelectCategory={handleSelectCategory}
-              onOpenRegister={() => setIsRegisterOpen(true)}
-              onViewAllCategories={() => {
-                setSelectedCategory('all');
-                setCurrentTab('products');
-              }}
-            />
+
 
             {/* 3. Premium Partners matching screenshot */}
             <PremiumPartners
@@ -384,7 +413,11 @@ export function App() {
 
         {currentTab === 'products' && (
           <CatalogView
-            products={MOCK_PRODUCTS}
+            products={allProducts}
+            onUpdateProducts={handleUpdateProducts}
+            onUpdatePartners={handleUpdatePartners}
+            partners={allPartners}
+            onSelectPartner={(partner) => setSelectedSupplier(partner)}
             selectedCategory={selectedCategory}
             searchQuery={searchQuery}
             compareProductIds={compareProductIds}
@@ -392,13 +425,15 @@ export function App() {
             onOpenCompareModal={() => setIsCompareModalOpen(true)}
             onSelectProduct={(product) => setSelectedProduct(product)}
             onSelectCategory={(cat) => setSelectedCategory(cat)}
+            currentUser={currentUser}
+            onOpenOnboarding={() => setIsBusinessOnboardingOpen(true)}
           />
         )}
 
         {currentTab === 'brands' && (
           <BrandsView
-            partners={MOCK_PARTNERS}
-            products={MOCK_PRODUCTS}
+            partners={allPartners}
+            products={allProducts}
             onSelectPartner={(partner) => setSelectedSupplier(partner)}
             onSelectProduct={(product) => setSelectedProduct(product)}
           />
@@ -406,9 +441,9 @@ export function App() {
 
         {currentTab === 'distributors' && (
           <DistributorsView
-            partners={MOCK_PARTNERS}
+            partners={allPartners}
             videoTestimonials={videoTestimonials}
-            products={MOCK_PRODUCTS}
+            products={allProducts}
             onSelectPartner={(partner) => setSelectedSupplier(partner)}
             onOpenRegister={() => setIsRegisterOpen(true)}
             onSelectVideo={(video) => setSelectedVideo(video)}
@@ -481,10 +516,10 @@ export function App() {
         product={selectedProduct}
         supplier={
           selectedProduct
-            ? MOCK_PARTNERS.find((p) => p.id === selectedProduct.supplierId)
+            ? allPartners.find((p) => p.id === selectedProduct.supplierId)
             : undefined
         }
-        allProducts={MOCK_PRODUCTS}
+        allProducts={allProducts}
         isPriceAlertEnabled={selectedProduct ? !!priceAlerts[selectedProduct.id] : false}
         onClose={() => setSelectedProduct(null)}
         onAddToQuote={handleAddToQuote}
@@ -501,7 +536,7 @@ export function App() {
 
       <SupplierModal
         supplier={selectedSupplier}
-        products={MOCK_PRODUCTS}
+        products={allProducts}
         onClose={() => setSelectedSupplier(null)}
         onSelectProduct={(product) => {
           setSelectedSupplier(null);
@@ -510,6 +545,10 @@ export function App() {
         onMessageSupplier={(sup) => {
           handleOpenChat(sup);
         }}
+        onUpdateProducts={handleUpdateProducts}
+        onUpdatePartners={handleUpdatePartners}
+        allPartners={allPartners}
+        currentUser={currentUser}
       />
 
       <SupplierChatModal
@@ -601,7 +640,7 @@ export function App() {
         isOpen={!!selectedVideo}
         video={selectedVideo}
         allVideos={videoTestimonials}
-        products={MOCK_PRODUCTS}
+        products={allProducts}
         onClose={() => setSelectedVideo(null)}
         onSelectVideo={(video) => setSelectedVideo(video)}
         onSelectProduct={(product) => {
@@ -610,7 +649,7 @@ export function App() {
         }}
         onSelectSupplier={(supplierId) => {
           setSelectedVideo(null);
-          const sup = MOCK_PARTNERS.find((p) => p.id === supplierId);
+          const sup = allPartners.find((p) => p.id === supplierId);
           if (sup) setSelectedSupplier(sup);
         }}
         onAddToQuote={handleAddToQuote}
@@ -624,8 +663,8 @@ export function App() {
       {/* Submit Video Highlight Modal */}
       <SubmitVideoModal
         isOpen={isSubmitVideoOpen}
-        distributors={MOCK_PARTNERS}
-        products={MOCK_PRODUCTS}
+        distributors={allPartners}
+        products={allProducts}
         onClose={() => setIsSubmitVideoOpen(false)}
         onSubmit={handleSubmitVideo}
       />
@@ -638,6 +677,42 @@ export function App() {
         activeTheme="barber"
         salonId="salon-101"
         salonName="Maison de Luxe Salon Group"
+      />
+
+      {/* Business Onboarding Modal */}
+      <BusinessOnboardingModal
+        isOpen={isBusinessOnboardingOpen}
+        onClose={() => setIsBusinessOnboardingOpen(false)}
+        initialCity={selectedCity}
+        onComplete={(data) => {
+          showToast(`Dashboard personalized for ${data.companyType} in ${data.city}!`);
+          if (currentUser) {
+            setCurrentUser({
+              ...currentUser,
+              companyName: data.companyType,
+              city: data.city
+            });
+          }
+        }}
+      />
+
+      {/* Edit Profile Modal */}
+      <EditProfileModal
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+        currentUser={currentUser}
+        onSaveProfile={(updatedUser) => {
+          setCurrentUser(updatedUser);
+          showToast('Profile details & photo updated successfully!');
+        }}
+        onOpenOnboarding={() => {
+          setIsEditProfileOpen(false);
+          setIsBusinessOnboardingOpen(true);
+        }}
+        onOpenRegister={() => {
+          setIsEditProfileOpen(false);
+          setIsBusinessOnboardingOpen(true);
+        }}
       />
     </div>
   );

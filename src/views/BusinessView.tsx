@@ -3,7 +3,7 @@ import {
   Sparkles, Check, Building2, Store, ShieldCheck, ArrowRight, FileCheck, Layers,
   Search, Filter, Plus, Bell, Package, Mail, PieChart, Eye,
   TrendingUp, AlertTriangle, MoreVertical, MapPin, MessageSquare, Mail as MailIcon,
-  X, CheckCircle2, AlertCircle, Edit, Trash2, Send, ExternalLink, ShieldAlert
+  X, CheckCircle2, AlertCircle, Edit, Trash2, Send, ExternalLink, ShieldAlert, Upload, Camera
 } from 'lucide-react';
 
 interface BusinessViewProps {
@@ -99,6 +99,52 @@ export const BusinessView: React.FC<BusinessViewProps> = ({ onOpenRegister }) =>
     status: 'Active' as 'Active' | 'Pending Review' | 'Draft',
     imageUrl: ''
   });
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size exceeds 5MB limit. Please upload a photo under 5MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_DIM = 1200;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_DIM) {
+            height *= MAX_DIM / width;
+            width = MAX_DIM;
+          }
+        } else {
+          if (height > MAX_DIM) {
+            width *= MAX_DIM / height;
+            height = MAX_DIM;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const hdDataUrl = canvas.toDataURL('image/jpeg', 0.92);
+          setNewProduct({ ...newProduct, imageUrl: hdDataUrl });
+          setActionNotice('Photo auto-resized, converted to HD, and fitted into frame!');
+          setTimeout(() => setActionNotice(null), 4000);
+        }
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Recent Enquiries Data
   const enquiries: EnquiryItem[] = [
@@ -241,14 +287,6 @@ export const BusinessView: React.FC<BusinessViewProps> = ({ onOpenRegister }) =>
                 Supplier Program Overview
               </button>
             </div>
-
-            <button
-              onClick={() => setIsAddProductOpen(true)}
-              className="bg-[#B90064] hover:bg-[#8E004B] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-xs transition-all flex items-center gap-1.5"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add Product</span>
-            </button>
           </div>
         </div>
       </div>
@@ -715,12 +753,18 @@ export const BusinessView: React.FC<BusinessViewProps> = ({ onOpenRegister }) =>
                     onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
                     className="w-full p-3 border border-[#E8E8E8] rounded-xl focus:outline-none focus:border-[#B90064] bg-[#FCF9F8] font-semibold"
                   >
+                    <option value="Skincare">Skincare</option>
+                    <option value="Haircare">Haircare</option>
+                    <option value="Hair Color">Hair Color</option>
+                    <option value="Makeup">Makeup</option>
+                    <option value="Nails">Nails</option>
+                    <option value="Spa">Spa</option>
+                    <option value="Massage">Massage</option>
+                    <option value="Tattoo Studio">Tattoo Studio</option>
+                    <option value="Salon Furniture">Salon Furniture</option>
+                    <option value="Salon Tools & Eq.">Salon Tools & Eq.</option>
                     <option value="Serums">Serums</option>
                     <option value="Cosmetics">Cosmetics</option>
-                    <option value="Cleansers">Cleansers</option>
-                    <option value="Toners">Toners</option>
-                    <option value="Masks">Masks</option>
-                    <option value="Hair Care">Hair Care</option>
                   </select>
                 </div>
               </div>
@@ -752,14 +796,46 @@ export const BusinessView: React.FC<BusinessViewProps> = ({ onOpenRegister }) =>
               </div>
 
               <div>
-                <label className="block font-bold text-[#1C1B1B] mb-1">Image URL (Optional)</label>
-                <input
-                  type="url"
-                  value={newProduct.imageUrl}
-                  onChange={(e) => setNewProduct({ ...newProduct, imageUrl: e.target.value })}
-                  placeholder="https://..."
-                  className="w-full p-3 border border-[#E8E8E8] rounded-xl focus:outline-none focus:border-[#B90064] bg-[#FCF9F8]"
-                />
+                <label className="block font-bold text-[#1C1B1B] mb-1">Product Photo / Image Upload (Max 5MB, Auto HD Resize & Frame Fit)</label>
+                {actionNotice && (
+                  <div className="mb-2 p-2 bg-emerald-50 text-emerald-700 text-[11px] font-semibold rounded-lg border border-emerald-200 flex items-center gap-1.5 animate-in fade-in">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>{actionNotice}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-3">
+                  <div className="relative flex-1">
+                    <input
+                      type="url"
+                      value={newProduct.imageUrl}
+                      onChange={(e) => setNewProduct({ ...newProduct, imageUrl: e.target.value })}
+                      placeholder="Paste image URL or upload photo ->"
+                      className="w-full p-3 border border-[#E8E8E8] rounded-xl focus:outline-none focus:border-[#B90064] bg-[#FCF9F8]"
+                    />
+                  </div>
+                  <label className="cursor-pointer px-4 py-3 bg-[#FFF0F5] hover:bg-[#FFE0EC] text-[#B90064] font-bold rounded-xl border border-[#FFD1E3] flex items-center gap-2 shrink-0 transition-colors shadow-2xs">
+                    <Upload className="w-4 h-4" />
+                    <span>Upload</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleImageUpload} 
+                      className="hidden" 
+                    />
+                  </label>
+                </div>
+                {newProduct.imageUrl && (
+                  <div className="mt-3 relative w-full h-32 bg-[#F6F3F2] rounded-xl overflow-hidden border border-[#E8E8E8] flex items-center justify-center group">
+                    <img 
+                      src={newProduct.imageUrl} 
+                      alt="Preview Frame" 
+                      className="w-full h-full object-cover rounded-xl"
+                    />
+                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1">
+                      <Camera className="w-4 h-4" /> HD Fitted in Frame
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t border-[#E8E8E8]">
