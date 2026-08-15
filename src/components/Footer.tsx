@@ -1,8 +1,7 @@
 import React from 'react';
-import { NavTab } from './Navbar';
 
 interface FooterProps {
-  onNavigate: (tab: NavTab) => void;
+  onNavigate: (tab: 'home' | 'products' | 'brands' | 'distributors' | 'business') => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
@@ -40,16 +39,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <ul className="space-y-3.5 text-sm font-medium text-[#4A4A4A]">
               <li>
                 <button
-                  onClick={() => onNavigate('discover')}
-                  className="hover:text-[#B8005A] transition-colors cursor-pointer"
-                >
-                  Explore Marketplace
-                </button>
-              </li>
-              <li>
-                <button
                   onClick={() => onNavigate('products')}
-                  className="hover:text-[#B8005A] transition-colors cursor-pointer"
+                  className="hover:text-[#B8005A] transition-colors"
                 >
                   Product Discovery
                 </button>
@@ -57,7 +48,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   onClick={() => onNavigate('brands')}
-                  className="hover:text-[#B8005A] transition-colors cursor-pointer"
+                  className="hover:text-[#B8005A] transition-colors"
                 >
                   Brand Directory
                 </button>
@@ -65,7 +56,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   onClick={() => onNavigate('distributors')}
-                  className="hover:text-[#B8005A] transition-colors cursor-pointer"
+                  className="hover:text-[#B8005A] transition-colors"
                 >
                   Distributor Network
                 </button>
@@ -79,25 +70,25 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   onClick={() => onNavigate('business')}
-                  className="hover:text-[#B8005A] transition-colors cursor-pointer"
+                  className="hover:text-[#B8005A] transition-colors"
                 >
-                  Business Solutions &amp; Hub
+                  Business Solutions
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => onNavigate('offers')}
-                  className="hover:text-[#B8005A] transition-colors cursor-pointer"
+                  onClick={() => onNavigate('business')}
+                  className="hover:text-[#B8005A] transition-colors"
                 >
-                  Offers &amp; Wholesale Deals
+                  About Nexora
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => onNavigate('gallery')}
-                  className="hover:text-[#B8005A] transition-colors cursor-pointer"
+                  onClick={() => onNavigate('business')}
+                  className="hover:text-[#B8005A] transition-colors"
                 >
-                  Transformation Gallery
+                  Privacy Policy
                 </button>
               </li>
             </ul>

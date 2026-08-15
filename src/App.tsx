@@ -306,7 +306,11 @@ export function App() {
               status: newStatus,
               rejectionReason: rejectionReason || item.rejectionReason,
               reviewedAt: new Date().toISOString(),
-              reviewedBy: 'Owner #salon-101'
+              reviewedBy: {
+                id: 'salon-101',
+                name: 'Owner #salon-101',
+                role: 'owner' as const
+              }
             }
           : item
       )
@@ -497,7 +501,7 @@ export function App() {
           <GalleryView
             items={galleryItems}
             onOpenUploadModal={() => setIsUploadGalleryOpen(true)}
-            onNavigateToModeration={() => setCurrentTab('gallery-moderation')}
+            onOpenModerationPanel={() => setCurrentTab('gallery-moderation')}
           />
         )}
 
@@ -572,8 +576,6 @@ export function App() {
           handleOpenChat(sup);
         }}
         onUpdateProducts={handleUpdateProducts}
-        onUpdatePartners={handleUpdatePartners}
-        allPartners={allPartners}
         currentUser={currentUser}
         onEditProduct={(product) => {
           setSelectedSupplier(null);
@@ -655,9 +657,11 @@ export function App() {
       {/* Side-by-Side Product Comparison Modal */}
       <CompareModal
         isOpen={isCompareModalOpen}
-        products={comparedProducts}
+        selectedProducts={comparedProducts}
+        allProducts={allProducts}
         onClose={() => setIsCompareModalOpen(false)}
         onRemoveProduct={handleRemoveCompareProduct}
+        onAddProduct={handleToggleCompare}
         onSelectProduct={(product) => {
           setIsCompareModalOpen(false);
           setSelectedProduct(product);
@@ -709,10 +713,8 @@ export function App() {
       <UploadGalleryModal
         isOpen={isUploadGalleryOpen}
         onClose={() => setIsUploadGalleryOpen(false)}
-        onSubmit={handleUploadGallerySubmit}
-        activeTheme="barber"
-        salonId="salon-101"
-        salonName="Maison de Luxe Salon Group"
+        onUploadSubmit={handleUploadGallerySubmit}
+        defaultTheme="barber"
       />
 
       {/* Business Onboarding Modal */}

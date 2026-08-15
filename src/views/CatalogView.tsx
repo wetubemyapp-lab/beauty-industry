@@ -44,7 +44,14 @@ import {
   Globe,
   Store,
   PlusCircle,
-  ExternalLink
+  ExternalLink,
+  FileText,
+  LayoutGrid,
+  Shield,
+  XCircle,
+  Clock,
+  Layout,
+  Image as ImageIcon
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -224,6 +231,8 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   // Phase 5 Stock Status & Product Availability states
   const [availabilityStatus, setAvailabilityStatus] = useState<'In Stock' | 'Out of Stock' | 'Available on Request'>('In Stock');
   const [availabilityNote, setAvailabilityNote] = useState('');
+  const [dispatchDetails, setDispatchDetails] = useState('');
+  const [handlingTime, setHandlingTime] = useState('2-3 Days');
   const [variantAvailability, setVariantAvailability] = useState<Record<number, 'In Stock' | 'Out of Stock' | 'Available on Request'>>({});
 
   // Phase 6 Product Review states
@@ -273,6 +282,8 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
     setVariantPricing({});
     setAvailabilityStatus('In Stock');
     setAvailabilityNote('');
+    setDispatchDetails('');
+    setHandlingTime('2-3 Days');
     setVariantAvailability({});
     setPublishSuccess(false);
     setNewlyCreatedProduct(null);
@@ -427,7 +438,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
             ...p,
             stats: {
               ...p.stats,
-              listings: (p.stats?.listings || 0) + 1
+              listings: (Number(p.stats?.listings) || 0) + 1
             }
           };
         }
@@ -1471,150 +1482,154 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
               </div>
             ) : (
               <>
-                <div className="flex items-center justify-between pb-4 border-b border-[#E8E8E8] mb-4">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-[#FFF0F5] text-[#B8005A] flex items-center justify-center font-bold">
-                      {modalStep}
+                <div className="flex items-center justify-between pb-5 border-b border-[#F2F0ED] mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div className="w-12 h-12 rounded-2xl bg-[#B8005A] text-white flex items-center justify-center shadow-lg shadow-[#B8005A]/20">
+                        <PlusCircle className="w-6 h-6" />
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 text-white rounded-full flex items-center justify-center text-[9px] font-black border-2 border-white">
+                        {modalStep}
+                      </div>
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-[#1C1B1B]">Add New Product Listing</h3>
-                      <p className="text-[10px] text-gray-500 font-semibold tracking-wider uppercase">Step {modalStep} of 6</p>
+                      <h3 className="text-xl font-black text-[#1C1B1B] leading-tight">Create Listing</h3>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-[10px] text-[#B8005A] font-black tracking-widest uppercase">Nexora Professional</span>
+                        <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Step {modalStep} of 6</span>
+                      </div>
                     </div>
                   </div>
-                  <button onClick={() => setIsAddProductOpen(false)} className="text-gray-400 hover:text-gray-600 p-1.5 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
-                    <X className="w-5 h-5" />
+                  <button onClick={() => setIsAddProductOpen(false)} className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-[#B8005A] hover:bg-[#FFF0F5] rounded-xl transition-all cursor-pointer group">
+                    <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
                   </button>
                 </div>
 
-                {/* Step Progress Tracker */}
-                <div className="flex flex-wrap items-center gap-2 mb-6 text-[10px] font-extrabold uppercase tracking-wider text-gray-400">
-                  <span className={modalStep === 1 ? 'text-[#B8005A]' : 'text-emerald-600'}>1. Business</span>
-                  <span className="text-gray-300">/</span>
-                  <span className={modalStep === 2 ? 'text-[#B8005A]' : modalStep > 2 ? 'text-emerald-600' : ''}>2. Product Info</span>
-                  <span className="text-gray-300">/</span>
-                  <span className={modalStep === 3 ? 'text-[#B8005A]' : modalStep > 3 ? 'text-emerald-600' : ''}>3. Media Upload</span>
-                  <span className="text-gray-300">/</span>
-                  <span className={modalStep === 4 ? 'text-[#B8005A]' : modalStep > 4 ? 'text-emerald-600' : ''}>4. Pricing & MOQ</span>
-                  <span className="text-gray-300">/</span>
-                  <span className={modalStep === 5 ? 'text-[#B8005A]' : modalStep > 5 ? 'text-emerald-600' : ''}>5. Stock & Availability</span>
-                  <span className="text-gray-300">/</span>
-                  <span className={modalStep === 6 ? 'text-[#B8005A]' : ''}>6. Product Review</span>
+                {/* Refined Step Progress Tracker */}
+                <div className="relative mb-8 px-2">
+                  <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-[#F2F0ED] -translate-y-1/2 z-0"></div>
+                  <div className="relative z-10 flex justify-between">
+                    {[1, 2, 3, 4, 5, 6].map((step) => {
+                      const isActive = modalStep === step;
+                      const isCompleted = modalStep > step;
+                      const stepNames = ['Identity', 'Details', 'Media', 'Pricing', 'Stock', 'Review'];
+                      
+                      return (
+                        <div key={step} className="flex flex-col items-center gap-2">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all duration-300 border-2 ${
+                            isActive 
+                              ? 'bg-[#B8005A] border-[#B8005A] text-white scale-110 shadow-md shadow-[#B8005A]/20' 
+                              : isCompleted 
+                                ? 'bg-emerald-500 border-emerald-500 text-white' 
+                                : 'bg-white border-[#F2F0ED] text-gray-400'
+                          }`}>
+                            {isCompleted ? <Check className="w-4 h-4" /> : step}
+                          </div>
+                          <span className={`text-[9px] font-black uppercase tracking-tighter transition-colors ${
+                            isActive ? 'text-[#B8005A]' : isCompleted ? 'text-emerald-600' : 'text-gray-400'
+                          }`}>
+                            {stepNames[step - 1]}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
 
             {modalStep === 1 && (
               <div className="space-y-5 py-2 animate-in fade-in duration-200 text-xs">
-                {/* Heading & Supporting Text */}
-                <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#EAE5DE]">
-                  <h4 className="text-sm font-bold text-[#1C1B1B] flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-[#B8005A]" />
-                    Business Identity
-                  </h4>
-                  <p className="text-xs text-[#737373] mt-1">
-                    Connect this listing to your verified salon/beauty supply profile on Nexora.
-                  </p>
+                {/* Business Identity Certificate Card */}
+                <div className="relative overflow-hidden bg-[#FAF8F5] p-5 rounded-3xl border border-[#EAE5DE] shadow-sm">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#B8005A]/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-12 h-12 rounded-2xl bg-white border border-[#EAE5DE] flex items-center justify-center shadow-sm">
+                        <Building2 className="w-6 h-6 text-[#B8005A]" />
+                      </div>
+                      <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full text-[10px] font-black uppercase tracking-wider">
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                        Verified Business
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Connected Profile</p>
+                      <h4 className="text-xl font-black text-[#1C1B1B]">{currentUser?.companyName || 'Jaipur Luxury Beauty Hub'}</h4>
+                      <p className="text-xs text-[#737373] font-medium flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-[#B8005A]" />
+                        {currentUser?.city ? `${currentUser.city}, Rajasthan, India` : 'Jaipur, Rajasthan, India'}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 mt-5 pt-5 border-t border-[#EAE5DE]/60">
+                      <div>
+                        <p className="text-[9px] text-gray-400 font-black uppercase tracking-widest mb-1">Business Type</p>
+                        <p className="text-[11px] font-bold text-[#1C1B1B]">
+                          {currentUser?.role === 'buyer' ? 'Wholesaler / Stockist' : currentUser?.role === 'supplier' ? 'Manufacturer / OEM' : 'Professional Distributor'}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[9px] text-gray-400 font-black uppercase tracking-widest mb-1">Contact Person</p>
+                        <p className="text-[11px] font-bold text-[#1C1B1B]">{currentUser?.name || 'Ananya Sharma'}</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Business Onboarding Check & Warning */}
+                {/* Warning / Verification Info */}
                 {!currentUser?.companyName || currentUser?.companyName === 'Jaipur Luxury Beauty Hub' ? (
-                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col gap-3">
-                    <div className="flex items-start gap-2.5">
-                      <AlertCircle className="w-4.5 h-4.5 text-amber-600 mt-0.5 shrink-0" />
+                  <div className="p-4 bg-amber-50/50 border border-amber-100 rounded-2xl flex flex-col gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                        <AlertCircle className="w-4.5 h-4.5" />
+                      </div>
                       <div>
-                        <h5 className="font-bold text-amber-800 text-xs">Profile Verification Pending</h5>
-                        <p className="text-amber-700 text-[11px] leading-relaxed mt-0.5">
-                          You are listing using demo supplier credentials. Complete your official supplier onboarding to publish verified listings and respond to RFQs.
+                        <h5 className="font-black text-amber-900 text-xs uppercase tracking-tight">Onboarding Required</h5>
+                        <p className="text-amber-800 text-[11px] leading-relaxed mt-0.5 font-medium">
+                          Listing with a generic profile limits your visibility. Complete verification to unlock premium features.
                         </p>
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => onOpenOnboarding?.()}
-                      className="w-full text-center py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition-colors cursor-pointer text-[11px]"
+                      className="w-full text-center py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-black rounded-xl transition-all cursor-pointer text-[10px] uppercase tracking-widest shadow-sm"
                     >
-                      Complete Business Profile
+                      Complete Verification
                     </button>
                   </div>
                 ) : (
-                  <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-[#10B981]" />
-                      <span className="font-bold text-emerald-800 text-[11px]">Supplier Account Verified</span>
+                  <div className="p-4 bg-[#F1F9F5] border border-[#D1EEDD] rounded-2xl flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-white border border-[#D1EEDD] flex items-center justify-center text-emerald-600">
+                        <CheckCircle2 className="w-4.5 h-4.5" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-[#737373] font-black uppercase tracking-widest">Security Level</p>
+                        <p className="font-black text-emerald-900 text-[11px]">Full Account Protection</p>
+                      </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => onOpenOnboarding?.()}
-                      className="text-[11px] font-bold text-[#B8005A] underline hover:text-[#8E004B] cursor-pointer bg-none border-none"
+                      className="text-[10px] font-black text-[#B8005A] uppercase tracking-widest hover:underline cursor-pointer"
                     >
-                      Update Profile
+                      Update
                     </button>
                   </div>
                 )}
 
-                {/* Business Information Section */}
-                <div className="space-y-4">
-                  {/* Business Name */}
-                  <div>
-                    <label className="block font-bold text-[#1C1B1B] mb-1.5">Business / Brand Name *</label>
-                    <div className="flex items-center justify-between p-3.5 bg-[#FAF8F5] border border-[#B8005A]/30 rounded-xl">
-                      <span className="font-semibold text-sm text-[#1C1B1B]">
-                        {currentUser?.companyName || 'Jaipur Luxury Beauty Hub'}
-                      </span>
-                      <span className="text-[10px] bg-[#B8005A]/10 text-[#B8005A] px-2.5 py-1 rounded-full font-bold">
-                        Connected
-                      </span>
+                <div className="bg-[#FAFAFA] border border-[#EAE5DE] rounded-2xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-6 h-6 rounded-lg bg-[#FFF0F5] text-[#B8005A] flex items-center justify-center">
+                      <FileText className="w-3.5 h-3.5" />
                     </div>
+                    <h5 className="text-[11px] font-black text-[#1C1B1B] uppercase tracking-wider">Listing Policy</h5>
                   </div>
-
-                  {/* Business Type & Contact Person */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-[#FAFAFA] border border-[#EAE5DE] rounded-2xl p-3.5 space-y-1">
-                      <span className="text-[10px] font-bold text-[#737373] uppercase tracking-wider block">Business Type</span>
-                      <span className="text-xs font-bold text-[#1C1B1B]">
-                        {currentUser?.role === 'buyer' ? 'Wholesaler / Stockist' : currentUser?.role === 'supplier' ? 'Manufacturer / OEM' : 'Company / Brand Owner'}
-                      </span>
-                    </div>
-                    <div className="bg-[#FAFAFA] border border-[#EAE5DE] rounded-2xl p-3.5 space-y-1">
-                      <span className="text-[10px] font-bold text-[#737373] uppercase tracking-wider block">Contact Person</span>
-                      <div className="text-xs">
-                        <p className="font-bold text-[#1C1B1B]">{currentUser?.name || 'Ananya Sharma'}</p>
-                        <p className="text-[10px] text-[#737373] font-medium">Wholesale Representative</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Business Location */}
-                  <div>
-                    <label className="block font-bold text-[#1C1B1B] mb-1.5">Business Location</label>
-                    <div className="flex items-center gap-2 text-xs font-semibold text-[#1C1B1B] bg-[#FAFAFA] p-3.5 border border-[#EAE5DE] rounded-xl">
-                      <MapPin className="w-4 h-4 text-[#B8005A]" />
-                      <span>{currentUser?.city ? `${currentUser.city}, Rajasthan, India` : 'Jaipur, Rajasthan, India'}</span>
-                    </div>
-                  </div>
-
-                  {/* Business Listing Status Card */}
-                  <div className="bg-[#FAFAFA] border border-[#EAE5DE] rounded-2xl p-4 space-y-3">
-                    <div className="flex items-center justify-between border-b border-[#EAE5DE] pb-2">
-                      <span className="text-[10px] font-bold text-[#737373] uppercase tracking-wider">Business Listing Status</span>
-                      <span className="text-[#10B981] font-bold text-xs flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
-                        Verified
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3 text-center">
-                      <div className="bg-white p-3 rounded-xl border border-[#EAE5DE]/60 flex flex-col justify-center items-center">
-                        <span className="text-[10px] text-[#737373] uppercase font-semibold">Verification</span>
-                        <span className="text-xs font-bold text-[#10B981] mt-1 flex items-center gap-1">
-                          <Check className="w-3.5 h-3.5" /> Verified Profile
-                        </span>
-                      </div>
-                      <div className="bg-white p-3 rounded-xl border border-[#EAE5DE]/60 flex flex-col justify-center items-center">
-                        <span className="text-[10px] text-[#737373] uppercase font-semibold">Listing Status</span>
-                        <span className="text-xs font-bold text-[#B8005A] mt-1">
-                          Ready to List
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <p className="text-[10px] text-[#737373] leading-relaxed font-medium">
+                    By continuing, you agree that this product adheres to Nexora's quality standards for professional beauty supplies. Verified listings receive 3x more buyer enquiries.
+                  </p>
                 </div>
 
                 {/* Actions */}
@@ -1644,24 +1659,32 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
             {modalStep === 2 && (
               <div className="grid grid-cols-1 md:grid-cols-12 gap-6 py-2 animate-in fade-in duration-200">
                 {/* Form Fields Column */}
-                <div className="md:col-span-7 space-y-4 text-xs">
+                <div className="md:col-span-7 space-y-5 text-xs">
+                  {/* Section Title */}
+                  <div className="pb-2 border-b border-[#F2F0ED]">
+                    <h4 className="text-sm font-black text-[#1C1B1B] uppercase tracking-tight">Core Product Details</h4>
+                  </div>
+
                   {/* Product Title */}
                   <div>
-                    <label className="block font-bold text-[#1C1B1B] mb-1.5">Product Name *</label>
+                    <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px] mb-2">Full Product Title *</label>
                     <input
                       type="text"
                       required
                       value={newProduct.name}
                       onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                      placeholder="Enter product name (e.g. Professional Keratin Hair Treatment)"
-                      className="w-full p-3 border border-[#EAE5DE] rounded-xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] text-xs font-semibold"
+                      placeholder="e.g. Professional Keratin Hair Treatment"
+                      className="w-full p-4 border border-[#EAE5DE] rounded-2xl focus:outline-none focus:border-[#B8005A] focus:ring-2 focus:ring-[#B8005A]/5 bg-[#FAFAFA] text-[11px] font-bold transition-all placeholder:text-gray-300"
                     />
                   </div>
 
                   {/* Brand Selection with Autocomplete */}
                   <div className="relative">
-                    <label className="block font-bold text-[#1C1B1B] mb-1.5">Brand Name *</label>
+                    <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px] mb-2">Brand Identity *</label>
                     <div className="relative">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#B8005A]">
+                        <Building2 className="w-4 h-4" />
+                      </div>
                       <input
                         type="text"
                         required
@@ -1672,22 +1695,22 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                           setBrand(e.target.value);
                           setBrandDropdownOpen(true);
                         }}
-                        placeholder="Search brand or type to create a new one"
-                        className="w-full p-3 border border-[#EAE5DE] rounded-xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] text-xs font-semibold"
+                        placeholder="Search or enter brand name"
+                        className="w-full pl-11 pr-4 py-4 border border-[#EAE5DE] rounded-2xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] text-[11px] font-bold transition-all"
                       />
                       {searchBrand && (
                         <button
                           type="button"
                           onClick={() => { setSearchBrand(''); setBrand(''); }}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                         >
-                          <X className="w-3.5 h-3.5" />
+                          <X className="w-4 h-4" />
                         </button>
                       )}
                     </div>
 
                     {brandDropdownOpen && (
-                      <div className="absolute z-40 left-0 right-0 mt-1 bg-white border border-[#EAE5DE] rounded-xl shadow-lg max-h-48 overflow-y-auto">
+                      <div className="absolute z-40 left-0 right-0 mt-2 bg-white border border-[#EAE5DE] rounded-2xl shadow-xl max-h-56 overflow-y-auto animate-in slide-in-from-top-2 duration-200">
                         {['Aura Beauty', 'Jaipur Luxury Gold', 'Kalyan Cosmetics', 'Ornate Herbal', 'Saffron Radiance', 'Vedic Glow', 'L\'Oreal Professionnel', 'O.P.I', 'Wella', 'Schwarzkopf', 'MAC Cosmetics', 'Dyson Professional']
                           .filter(b => b.toLowerCase().includes(searchBrand.toLowerCase()))
                           .map((b) => (
@@ -1699,7 +1722,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                                 setSearchBrand(b);
                                 setBrandDropdownOpen(false);
                               }}
-                              className="w-full text-left px-4 py-2 hover:bg-[#FFF0F5] hover:text-[#B8005A] font-bold text-xs border-b border-gray-50 last:border-none transition-colors"
+                              className="w-full text-left px-5 py-3 hover:bg-[#FFF0F5] hover:text-[#B8005A] font-black text-[11px] border-b border-[#F2F0ED] last:border-none transition-colors"
                             >
                               {b}
                             </button>
@@ -1712,120 +1735,132 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                               setBrand(searchBrand);
                               setBrandDropdownOpen(false);
                             }}
-                            className="w-full text-left px-4 py-2 bg-[#FFF0F5] text-[#B8005A] font-bold text-xs"
+                            className="w-full text-left px-5 py-3 bg-[#FFF0F5] text-[#B8005A] font-black text-[11px] flex items-center gap-2"
                           >
-                            + Use "{searchBrand}" as custom brand name
+                            <PlusCircle className="w-4 h-4" /> Use "{searchBrand}" as custom brand
                           </button>
                         )}
                       </div>
                     )}
                   </div>
 
-                  {/* Category & Subcategory Dynamic Selection */}
-                  <div className="grid grid-cols-2 gap-3">
+                  {/* Category Selection Grid */}
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block font-bold text-[#1C1B1B] mb-1.5">Category *</label>
-                      <select
-                        value={newProduct.category}
-                        onChange={(e) => {
-                          setNewProduct({ ...newProduct, category: e.target.value });
-                        }}
-                        className="w-full p-3 border border-[#EAE5DE] rounded-xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] font-bold text-xs"
-                      >
-                        <option value="Skincare">Skincare</option>
-                        <option value="Haircare">Haircare</option>
-                        <option value="Hair Color">Hair Color</option>
-                        <option value="Makeup">Makeup</option>
-                        <option value="Nails">Nails</option>
-                        <option value="Spa & Massage">Spa & Massage</option>
-                        <option value="Tattoo Studio">Tattoo Studio</option>
-                        <option value="Salon Furniture">Salon Furniture</option>
-                        <option value="Salon Tools & Equipment">Salon Tools & Equipment</option>
-                        <option value="Professional Beauty Products">Professional Beauty Products</option>
-                      </select>
+                      <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px] mb-2">Main Category *</label>
+                      <div className="relative">
+                        <select
+                          value={newProduct.category}
+                          onChange={(e) => {
+                            setNewProduct({ ...newProduct, category: e.target.value });
+                          }}
+                          className="w-full p-4 border border-[#EAE5DE] rounded-2xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] font-black text-[11px] appearance-none cursor-pointer"
+                        >
+                          <option value="Skincare">Skincare</option>
+                          <option value="Haircare">Haircare</option>
+                          <option value="Hair Color">Hair Color</option>
+                          <option value="Makeup">Makeup</option>
+                          <option value="Nails">Nails</option>
+                          <option value="Spa & Massage">Spa & Massage</option>
+                          <option value="Tattoo Studio">Tattoo Studio</option>
+                          <option value="Salon Furniture">Salon Furniture</option>
+                          <option value="Salon Tools & Equipment">Salon Tools & Equipment</option>
+                          <option value="Professional Beauty Products">Professional Beauty Products</option>
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                          <Tag className="w-4 h-4" />
+                        </div>
+                      </div>
                     </div>
 
                     <div>
-                      <label className="block font-bold text-[#1C1B1B] mb-1.5">Subcategory *</label>
-                      <select
-                        value={subcategory}
-                        onChange={(e) => setSubcategory(e.target.value)}
-                        className="w-full p-3 border border-[#EAE5DE] rounded-xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] font-bold text-xs"
-                      >
-                        {(
-                          {
-                            'Skincare': ['Serums & Ampoules', 'Cleansers', 'Moisturizers', 'Sun Protection', 'Chemical Peels', 'Facial Kits'],
-                            'Haircare': ['Shampoo', 'Conditioner', 'Hair Treatment', 'Hair Mask', 'Hair Serum'],
-                            'Hair Color': ['Permanent Hair Color', 'Demi-Permanent', 'Bleach & Lightener', 'Color Developers'],
-                            'Makeup': ['Primers', 'Foundations & Concealers', 'Setting Sprays & Powders', 'Eye Makeup', 'Lip Products'],
-                            'Nails': ['Gel Polishes', 'Acrylic Systems', 'Nail Art Accessories', 'Nail Primers & Dehydrators', 'Nail Tools'],
-                            'Spa & Massage': ['Massage Oils & Lotions', 'Essential Oils', 'Body Scrubs', 'Detox Wraps', 'Steam & Sauna Supplies'],
-                            'Tattoo Studio': ['Tattoo Inks', 'Needles & Cartridges', 'Tattoo Machines', 'Aftercare Creams', 'Stencil Transfer Solutions'],
-                            'Salon Furniture': ['Styling Chairs', 'Shampoo Stations', 'Massage Tables', 'Manicure Tables', 'Reception Desks'],
-                            'Salon Tools & Equipment': ['Hair Dryers', 'Straighteners & Curlers', 'Clippers & Trimmers', 'Sterilizers', 'Facial Steamers'],
-                            'Professional Beauty Products': ['Professional Kits', 'Wholesale Bundles', 'Cabin-use Refills', 'Disposables']
-                          }[newProduct.category] || ['Standard Formulation']
-                        ).map((sub) => (
-                          <option key={sub} value={sub}>{sub}</option>
-                        ))}
-                      </select>
+                      <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px] mb-2">Subcategory *</label>
+                      <div className="relative">
+                        <select
+                          value={subcategory}
+                          onChange={(e) => setSubcategory(e.target.value)}
+                          className="w-full p-4 border border-[#EAE5DE] rounded-2xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] font-black text-[11px] appearance-none cursor-pointer"
+                        >
+                          {(
+                            {
+                              'Skincare': ['Serums & Ampoules', 'Cleansers', 'Moisturizers', 'Sun Protection', 'Chemical Peels', 'Facial Kits'],
+                              'Haircare': ['Shampoo', 'Conditioner', 'Hair Treatment', 'Hair Mask', 'Hair Serum'],
+                              'Hair Color': ['Permanent Hair Color', 'Demi-Permanent', 'Bleach & Lightener', 'Color Developers'],
+                              'Makeup': ['Primers', 'Foundations & Concealers', 'Setting Sprays & Powders', 'Eye Makeup', 'Lip Products'],
+                              'Nails': ['Gel Polishes', 'Acrylic Systems', 'Nail Art Accessories', 'Nail Primers & Dehydrators', 'Nail Tools'],
+                              'Spa & Massage': ['Massage Oils & Lotions', 'Essential Oils', 'Body Scrubs', 'Detox Wraps', 'Steam & Sauna Supplies'],
+                              'Tattoo Studio': ['Tattoo Inks', 'Needles & Cartridges', 'Tattoo Machines', 'Aftercare Creams', 'Stencil Transfer Solutions'],
+                              'Salon Furniture': ['Styling Chairs', 'Shampoo Stations', 'Massage Tables', 'Manicure Tables', 'Reception Desks'],
+                              'Salon Tools & Equipment': ['Hair Dryers', 'Straighteners & Curlers', 'Clippers & Trimmers', 'Sterilizers', 'Facial Steamers'],
+                              'Professional Beauty Products': ['Professional Kits', 'Wholesale Bundles', 'Cabin-use Refills', 'Disposables']
+                            }[newProduct.category] || ['Standard Formulation']
+                          ).map((sub) => (
+                            <option key={sub} value={sub}>{sub}</option>
+                          ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                          <LayoutGrid className="w-4 h-4" />
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Product Type Options */}
+                  {/* Product Type Selection Cards */}
                   <div>
-                    <label className="block font-bold text-[#1C1B1B] mb-1.5">Product Type *</label>
-                    <div className="grid grid-cols-2 gap-2">
+                    <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px] mb-3">Product Archetype *</label>
+                    <div className="grid grid-cols-2 gap-3">
                       {['Professional Use', 'Retail Pack', 'Salon Cabin Size', 'Consumable/Disposable'].map((type) => (
                         <button
                           key={type}
                           type="button"
                           onClick={() => setProductType(type)}
-                          className={`p-2.5 rounded-xl border text-left font-bold transition-all ${
+                          className={`p-4 rounded-2xl border-2 text-left transition-all duration-200 group ${
                             productType === type 
-                              ? 'border-[#B8005A] bg-[#FFF0F5] text-[#B8005A]' 
-                              : 'border-[#EAE5DE] bg-[#FAFAFA] text-[#594047] hover:bg-[#FDFBF9]'
+                              ? 'border-[#B8005A] bg-[#FFF0F5] shadow-sm' 
+                              : 'border-[#F2F0ED] bg-white hover:border-[#EAE5DE]'
                           }`}
                         >
-                          {type}
+                          <div className={`w-2 h-2 rounded-full mb-2 transition-all ${productType === type ? 'bg-[#B8005A] scale-125' : 'bg-gray-200'}`}></div>
+                          <p className={`text-[10px] font-black uppercase tracking-tight ${productType === type ? 'text-[#B8005A]' : 'text-[#737373]'}`}>
+                            {type}
+                          </p>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  {/* SKU Code Code */}
-                  <div>
-                    <label className="block font-bold text-[#1C1B1B] mb-1.5">SKU Code (Optional)</label>
-                    <input
-                      type="text"
-                      value={newProduct.sku}
-                      onChange={(e) => setNewProduct({ ...newProduct, sku: e.target.value })}
-                      placeholder="e.g. SLN-KER-500"
-                      className="w-full p-3 border border-[#EAE5DE] rounded-xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] text-xs font-mono font-semibold"
-                    />
-                  </div>
-
-                  {/* Variants Toggles & Form list */}
-                  <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <label className="block font-bold text-[#1C1B1B]">Does this listing have size/volume variants?</label>
-                      <div className="flex gap-2">
+                  {/* SKU & Variants Section */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px] mb-2">Global SKU (Opt)</label>
+                      <input
+                        type="text"
+                        value={newProduct.sku}
+                        onChange={(e) => setNewProduct({ ...newProduct, sku: e.target.value })}
+                        placeholder="e.g. SLN-KER-500"
+                        className="w-full p-4 border border-[#EAE5DE] rounded-2xl focus:outline-none bg-[#FAFAFA] text-[11px] font-mono font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px] mb-2">Multi-Volume Variants</label>
+                      <div className="flex bg-[#F2F0ED] p-1 rounded-xl">
                         <button
                           type="button"
                           onClick={() => setHasVariants(true)}
-                          className={`px-3 py-1 rounded-lg text-[10px] font-bold ${hasVariants ? 'bg-[#B8005A] text-white' : 'bg-gray-100 text-gray-600'}`}
+                          className={`flex-1 py-3 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${hasVariants ? 'bg-white text-[#B8005A] shadow-sm' : 'text-gray-500'}`}
                         >
-                          Yes
+                          Enable
                         </button>
                         <button
                           type="button"
                           onClick={() => { setHasVariants(false); setVariants([]); }}
-                          className={`px-3 py-1 rounded-lg text-[10px] font-bold ${!hasVariants ? 'bg-[#B8005A] text-white' : 'bg-gray-100 text-gray-600'}`}
+                          className={`flex-1 py-3 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${!hasVariants ? 'bg-white text-[#B8005A] shadow-sm' : 'text-gray-500'}`}
                         >
-                          No
+                          Disable
                         </button>
                       </div>
                     </div>
+                  </div>
 
                     {hasVariants && (
                       <div className="space-y-3 bg-[#FAF8F5] p-3.5 rounded-2xl border border-[#EAE5DE]">
@@ -1902,7 +1937,6 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                         )}
                       </div>
                     )}
-                  </div>
 
                   {/* Description with characters limit */}
                   <div>
@@ -2257,87 +2291,117 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
             )}
 
             {modalStep === 3 && (
-              <div className="mt-5 space-y-4 text-xs animate-in fade-in duration-200">
-                <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#EAE5DE] mb-4">
-                  <h4 className="text-xs font-extrabold text-[#1C1B1B] flex items-center gap-1.5 uppercase tracking-wider">
-                    <Camera className="w-4 h-4 text-[#B8005A]" />
-                    Product Media & Catalog Photos
-                  </h4>
-                  <p className="text-[11px] text-[#737373] mt-1">
-                    Upload official product catalog photographs or paste a web-hosted image URL to showcase your products on Nexora.
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block font-bold text-[#1C1B1B] mb-1">Product Photo / Image URL (Max 5MB, Auto HD Resize & Frame Fit)</label>
-                    {actionNotice && (
-                      <div className="mb-2 p-2 bg-emerald-50 text-emerald-700 text-[11px] font-semibold rounded-lg border border-emerald-200 flex items-center gap-1.5 animate-in fade-in">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                        <span>{actionNotice}</span>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-3">
-                      <div className="relative flex-1">
-                        <input
-                          type="url"
-                          value={newProduct.imageUrl}
-                          onChange={(e) => setNewProduct({ ...newProduct, imageUrl: e.target.value })}
-                          placeholder="Paste image URL or click upload to resize photo"
-                          className="w-full p-3 border border-[#EAE5DE] rounded-xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] text-xs font-semibold"
-                        />
-                      </div>
-                      <label className="cursor-pointer px-4 py-3 bg-[#FFF0F5] hover:bg-[#FFE0EC] text-[#B8005A] font-bold rounded-xl border border-[#FFD1E3] flex items-center gap-2 shrink-0 transition-colors shadow-2xs">
-                        <Upload className="w-4 h-4" />
-                        <span>Upload Photo</span>
-                        <input 
-                          type="file" 
-                          accept="image/*" 
-                          onChange={handleImageUpload} 
-                          className="hidden" 
-                        />
-                      </label>
-                    </div>
-                    {newProduct.imageUrl && (
-                      <div className="mt-3 relative w-full h-44 bg-[#F6F3F2] rounded-xl overflow-hidden border border-[#EAE5DE] flex items-center justify-center group">
-                        <img 
-                          src={newProduct.imageUrl} 
-                          alt="Preview Frame" 
-                          className="w-full h-full object-contain"
-                        />
-                        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1">
-                          <Camera className="w-4 h-4" /> HD Fitted in Frame
-                        </div>
-                      </div>
-                    )}
+              <div className="space-y-6 py-2 animate-in fade-in duration-300">
+                {/* Media Upload Header */}
+                <div className="bg-[#FAF8F5] p-5 rounded-3xl border border-[#EAE5DE] relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-4 opacity-10">
+                    <Camera className="w-20 h-20" />
+                  </div>
+                  <div className="relative z-10">
+                    <h4 className="text-sm font-black text-[#1C1B1B] uppercase tracking-tight flex items-center gap-2">
+                      <ImageIcon className="w-4 h-4 text-[#B8005A]" />
+                      Visual Assets & Media
+                    </h4>
+                    <p className="text-xs text-[#737373] mt-1 font-medium max-w-md">
+                      Professional listings with multiple high-quality photos receive 85% more enquiries. Ensure products are shown in clean, salon-ready environments.
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex justify-between gap-3 pt-4 border-t border-[#E8E8E8]">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Main Product Image Dropzone */}
+                  <div className="space-y-3">
+                    <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px]">Primary Product Listing Image *</label>
+                    <label className={`relative group block h-72 border-2 border-dashed rounded-3xl transition-all overflow-hidden flex flex-col items-center justify-center cursor-pointer ${
+                      newProduct.imageUrl ? 'border-[#B8005A] bg-white' : 'border-[#EAE5DE] bg-[#FAFAFA] hover:bg-[#FDFBF9] hover:border-[#B8005A]/30'
+                    }`}>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleImageUpload} 
+                        className="hidden" 
+                      />
+                      {newProduct.imageUrl ? (
+                        <>
+                          <img 
+                            src={newProduct.imageUrl} 
+                            alt="Main product" 
+                            className="w-full h-full object-cover animate-in fade-in duration-500" 
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center text-white backdrop-blur-xs">
+                            <Edit2 className="w-8 h-8 mb-2" />
+                            <span className="text-xs font-black uppercase tracking-widest">Replace Primary Photo</span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="text-center p-8">
+                          <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#B8005A] mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
+                            <Camera className="w-8 h-8" />
+                          </div>
+                          <p className="text-sm font-black text-[#1C1B1B] mb-1">Click to Upload</p>
+                          <p className="text-[10px] text-gray-400 font-bold max-w-[200px] mx-auto leading-relaxed">
+                            Drag & drop or browse for high-resolution PNG or JPG. Recommended: 1000x1000px.
+                          </p>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+
+                  {/* Secondary Gallery & Video Section */}
+                  <div className="space-y-6">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px]">Secondary Gallery (Optional)</label>
+                        <span className="text-[9px] font-black text-[#B8005A] uppercase tracking-wider">Max 4 Photos</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        {[1, 2, 3, 4].map((i) => (
+                          <div key={i} className="aspect-square border-2 border-dashed border-[#EAE5DE] rounded-2xl bg-[#FAFAFA] hover:bg-[#FDFBF9] transition-all flex items-center justify-center cursor-pointer group">
+                            <PlusCircle className="w-6 h-6 text-gray-300 group-hover:text-[#B8005A] transition-colors" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="p-5 bg-emerald-50 rounded-2xl border border-emerald-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 rounded-xl bg-white border border-emerald-100 flex items-center justify-center text-emerald-600">
+                          <CheckCircle2 className="w-4 h-4" />
+                        </div>
+                        <h5 className="text-[11px] font-black text-emerald-900 uppercase tracking-widest">Image Auto-Optimization</h5>
+                      </div>
+                      <p className="text-[10px] text-emerald-700 font-medium leading-relaxed">
+                        Nexora automatically compresses and optimizes your images for ultra-fast loading while preserving professional color accuracy for the beauty industry.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Navigation Actions */}
+                <div className="flex justify-between items-center pt-6 border-t border-[#F2F0ED]">
                   <button
                     type="button"
                     onClick={() => setModalStep(2)}
-                    className="px-4 py-2.5 border border-[#EAE5DE] text-[#594047] font-bold rounded-xl hover:bg-[#F1EDEC] flex items-center gap-1.5 cursor-pointer transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 text-xs font-black text-[#737373] hover:text-[#1C1B1B] uppercase tracking-widest transition-all cursor-pointer"
                   >
-                    <ArrowLeft className="w-4 h-4" />
-                    <span>Back to Details</span>
+                    <ArrowRight className="w-4 h-4 rotate-180" />
+                    Back to Details
                   </button>
                   <div className="flex gap-3">
                     <button
                       type="button"
-                      onClick={() => {
-                        setActionNotice('✅ Draft saved successfully!');
-                        setTimeout(() => setActionNotice(null), 4000);
+                      onClick={(e) => {
+                        handleAddProductSubmit(e, true);
                         setIsAddProductOpen(false);
                       }}
-                      className="px-5 py-2.5 border border-[#E8E8E8] text-[#594047] font-bold rounded-xl hover:bg-[#F1EDEC] cursor-pointer transition-colors"
+                      className="px-6 py-3 border border-[#EAE5DE] text-[#594047] font-black rounded-2xl hover:bg-[#FAF8F5] transition-all cursor-pointer text-xs uppercase tracking-widest"
                     >
                       Save Draft
                     </button>
                     <button
                       type="button"
                       onClick={() => setModalStep(4)}
-                      className="px-5 py-2.5 bg-[#B8005A] hover:bg-[#8E004B] text-white font-bold rounded-xl flex items-center gap-1.5 cursor-pointer transition-colors"
+                      className="px-8 py-3 bg-[#B8005A] hover:bg-[#8E004B] text-white font-black rounded-2xl shadow-md shadow-[#B8005A]/20 transition-all flex items-center gap-2 cursor-pointer text-xs uppercase tracking-widest"
                     >
                       <span>Continue to Pricing</span>
                       <ArrowRight className="w-4 h-4" />
@@ -2348,290 +2412,160 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
             )}
 
             {modalStep === 4 && (
-              <form onSubmit={handleAddProductSubmit} className="mt-5 space-y-4 text-xs animate-in fade-in duration-200">
-                <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#EAE5DE] mb-4">
-                  <h4 className="text-xs font-extrabold text-[#1C1B1B] flex items-center gap-1.5 uppercase tracking-wider">
-                    <Tag className="w-4 h-4 text-[#B8005A]" />
-                    Commercial Pricing & Minimum Order Quantity (MOQ)
-                  </h4>
-                  <p className="text-[11px] text-[#737373] mt-1">
-                    Define your wholesale conditions, Indian tax values (MRP), variant-specific pricing, and bulk terms.
-                  </p>
-                </div>
-
-                {/* Pricing Toggles and Inputs */}
-                <div>
-                  <label className="block font-bold text-[#1C1B1B] mb-1.5">Wholesale Price Type *</label>
-                  <div className="grid grid-cols-3 gap-2.5">
-                    {(['Fixed Price', 'Starting From', 'Price on Request'] as const).map((type) => {
-                      const isSelected = priceType === type;
-                      return (
-                        <button
-                          key={type}
-                          type="button"
-                          onClick={() => setPriceType(type)}
-                          className={`p-2.5 rounded-xl border text-center font-bold transition-all cursor-pointer ${
-                            isSelected
-                              ? 'bg-[#FFF0F5] border-[#B8005A] text-[#B8005A]'
-                              : 'bg-[#FAFAFA] border-[#EAE5DE] text-gray-600 hover:bg-gray-100'
-                          }`}
-                        >
-                          <span className="block text-[11px]">{type}</span>
-                        </button>
-                      );
-                    })}
+              <div className="space-y-6 py-2 animate-in fade-in duration-300">
+                {/* Pricing Strategy Info */}
+                <div className="bg-[#1C1B1B] p-5 rounded-3xl text-white relative overflow-hidden shadow-xl">
+                  <div className="absolute top-0 right-0 p-4 opacity-10">
+                    <Sparkles className="w-20 h-20" />
                   </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-bold text-[#1C1B1B] mb-1">MRP (₹) <span className="text-[10px] font-normal text-gray-400">(Optional)</span></label>
-                    <input
-                      type="number"
-                      value={mrp}
-                      onChange={(e) => setMrp(e.target.value)}
-                      placeholder="e.g. 5000"
-                      className="w-full p-3 border border-[#EAE5DE] rounded-xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] text-xs font-semibold"
-                    />
-                    <p className="text-[10px] text-gray-400 mt-1">Indian standard retail price. Wholesale price must be lower than MRP.</p>
-                  </div>
-
-                  <div>
-                    <label className="block font-bold text-[#1C1B1B] mb-1">
-                      Wholesale Price (₹) {priceType !== 'Price on Request' && '*'}
-                    </label>
-                    <input
-                      type="number"
-                      step="1"
-                      required={priceType !== 'Price on Request'}
-                      disabled={priceType === 'Price on Request'}
-                      value={priceType === 'Price on Request' ? '' : newProduct.price}
-                      onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-                      placeholder={priceType === 'Price on Request' ? 'Price on Request (Hidden)' : 'e.g. 2500'}
-                      className={`w-full p-3 border border-[#EAE5DE] rounded-xl focus:outline-none bg-[#FAFAFA] text-xs font-semibold ${
-                        priceType === 'Price on Request' ? 'opacity-50 cursor-not-allowed border-[#F0ECE7]' : 'focus:border-[#B8005A]'
-                      }`}
-                    />
-                    <p className="text-[10px] text-gray-400 mt-1">
-                      {priceType === 'Price on Request' 
-                        ? 'Pricing is hidden from discovery list and set on custom enquiry.' 
-                        : 'Wholesale price per unit listed for business-to-business discovery.'}
+                  <div className="relative z-10">
+                    <h4 className="text-sm font-black uppercase tracking-tight flex items-center gap-2">
+                      <Tag className="w-4 h-4 text-[#B8005A]" />
+                      B2B Pricing & Wholesale Strategy
+                    </h4>
+                    <p className="text-[11px] text-gray-400 mt-1 font-medium max-w-lg leading-relaxed">
+                      Set competitive wholesale prices and Minimum Order Quantities (MOQ). Professional buyers look for scaled pricing based on volume. All prices are displayed excluding GST.
                     </p>
                   </div>
                 </div>
 
-                {/* MRP Exceed Warning */}
-                {mrp && priceType !== 'Price on Request' && newProduct.price && parseFloat(newProduct.price) > parseFloat(mrp) && (
-                  <div className="p-3 bg-amber-50 text-amber-800 text-[11px] font-bold rounded-xl border border-amber-200 flex items-center gap-1.5 animate-pulse">
-                    <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-                    <span>Trade Warning: Wholesale price (₹{parseFloat(newProduct.price).toLocaleString('en-IN')}) is set higher than Retail MRP (₹{parseFloat(mrp).toLocaleString('en-IN')}). Standard wholesale margins should typically be lower.</span>
-                  </div>
-                )}
-
-                {/* Variants Pricing override list */}
-                {variants.length > 0 && (
-                  <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#EAE5DE] space-y-3">
-                    <h5 className="font-extrabold text-[#1C1B1B] text-xs uppercase tracking-wide">Variant-Specific overrides</h5>
-                    <p className="text-[10px] text-gray-500 font-semibold">Enable checkboxes below to set custom wholesale price and MOQ requirements for each variant.</p>
-                    <div className="space-y-2.5">
-                      {variants.map((v, i) => {
-                        const vp = variantPricing[i] || { price: '', moq: '', active: false };
-                        return (
-                          <div key={i} className="p-3 bg-white rounded-xl border border-[#EAE5DE] flex items-center justify-between gap-3 flex-wrap">
-                            <div className="flex items-center gap-2">
-                              <input 
-                                type="checkbox"
-                                checked={vp.active}
-                                onChange={(e) => {
-                                  setVariantPricing(prev => ({
-                                    ...prev,
-                                    [i]: {
-                                      ...prev[i] || { price: '', moq: '' },
-                                      active: e.target.checked
-                                    }
-                                  }));
-                                }}
-                                className="w-4 h-4 accent-[#B8005A] rounded cursor-pointer"
-                              />
-                              <span className="font-bold text-[#1C1B1B]">
-                                {v.name} ({v.size} {v.unit})
-                              </span>
-                            </div>
-
-                            {vp.active && (
-                              <div className="flex items-center gap-3 animate-in fade-in slide-in-from-top-1">
-                                <div className="flex items-center gap-1.5">
-                                  <span className="text-[10px] font-semibold text-gray-500">Price: ₹</span>
-                                  <input 
-                                    type="number"
-                                    placeholder="e.g. 2400"
-                                    value={vp.price}
-                                    onChange={(e) => {
-                                      setVariantPricing(prev => ({
-                                        ...prev,
-                                        [i]: {
-                                          ...prev[i] || { active: true, moq: '' },
-                                          price: e.target.value
-                                        }
-                                      }));
-                                    }}
-                                    className="w-24 p-1.5 border border-[#EAE5DE] rounded-lg bg-[#FAFAFA] text-[11px] font-semibold focus:outline-none focus:border-[#B8005A]"
-                                  />
-                                </div>
-                                <div className="flex items-center gap-1.5">
-                                  <span className="text-[10px] font-semibold text-gray-500">MOQ:</span>
-                                  <input 
-                                    type="number"
-                                    placeholder="e.g. 40"
-                                    value={vp.moq}
-                                    onChange={(e) => {
-                                      setVariantPricing(prev => ({
-                                        ...prev,
-                                        [i]: {
-                                          ...prev[i] || { active: true, price: '' },
-                                          moq: e.target.value
-                                        }
-                                      }));
-                                    }}
-                                    className="w-20 p-1.5 border border-[#EAE5DE] rounded-lg bg-[#FAFAFA] text-[11px] font-semibold focus:outline-none focus:border-[#B8005A]"
-                                  />
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Core Pricing Column */}
+                  <div className="space-y-5">
+                    <div className="pb-2 border-b border-[#F2F0ED]">
+                      <h5 className="text-[10px] font-black text-[#1C1B1B] uppercase tracking-widest">Base Wholesale Pricing</h5>
                     </div>
-                  </div>
-                )}
 
-                {/* Minimum Order quantity structure */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block font-bold text-[#1C1B1B] mb-1">Minimum Order Qty (MOQ) *</label>
-                    <input
-                      type="number"
-                      required
-                      value={newProduct.moq}
-                      onChange={(e) => setNewProduct({ ...newProduct, moq: e.target.value })}
-                      placeholder="e.g. 50"
-                      className="w-full p-3 border border-[#EAE5DE] rounded-xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] text-xs font-semibold"
-                    />
-                    <p className="text-[10px] text-gray-400 mt-1">Minimum quantity required to place a wholesale order.</p>
-                  </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px] mb-2">Wholesale Price (₹) *</label>
+                        <div className="relative">
+                          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-black text-xs">₹</div>
+                          <input
+                            type="number"
+                            required
+                            value={newProduct.price}
+                            onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                            className="w-full pl-8 pr-4 py-4 border border-[#EAE5DE] rounded-2xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] font-black text-sm"
+                            placeholder="0.00"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px] mb-2">Retail / MRP (₹)</label>
+                        <div className="relative">
+                          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-black text-xs">₹</div>
+                          <input
+                            type="number"
+                            value={mrp}
+                            onChange={(e) => setMrp(e.target.value)}
+                            className="w-full pl-8 pr-4 py-4 border border-[#EAE5DE] rounded-2xl focus:outline-none bg-[#FAFAFA] font-black text-sm"
+                            placeholder="0.00"
+                          />
+                        </div>
+                      </div>
+                    </div>
 
-                  <div>
-                    <label className="block font-bold text-[#1C1B1B] mb-1">MOQ Unit *</label>
-                    <select
-                      value={moqUnit}
-                      onChange={(e) => setMoqUnit(e.target.value)}
-                      className="w-full p-3 border border-[#EAE5DE] rounded-xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] text-xs font-semibold"
-                    >
-                      <option value="Piece">Piece(s)</option>
-                      <option value="Box">Box(es)</option>
-                      <option value="Pack">Pack(s)</option>
-                      <option value="Set">Set(s)</option>
-                      <option value="Kit">Kit(s)</option>
-                      <option value="Case">Case(s)</option>
-                      <option value="Carton">Carton(s)</option>
-                      <option value="Other">Other</option>
-                    </select>
-                    <p className="text-[10px] text-gray-400 mt-1">Select the standard unit metric for wholesale trade.</p>
-                  </div>
-                </div>
-
-                {/* MOQ Notes Optional input with 250 max limit characters count */}
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <label className="block font-bold text-[#1C1B1B]">MOQ Notes <span className="text-[10px] font-normal text-gray-400">(Optional)</span></label>
-                    <span className="text-[10px] font-semibold text-gray-400">{moqNotes.length}/250</span>
-                  </div>
-                  <textarea
-                    maxLength={250}
-                    value={moqNotes}
-                    onChange={(e) => setMoqNotes(e.target.value)}
-                    placeholder="e.g. Free delivery on orders above 100 pieces. Custom formulation variants may require additional lead times."
-                    rows={2}
-                    className="w-full p-3 border border-[#EAE5DE] rounded-xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] text-xs font-semibold"
-                  />
-                  <p className="text-[10px] text-gray-400 mt-1">Maximum 250 characters. Mention custom delivery or packaging criteria.</p>
-                </div>
-
-                {/* Toggle Swaps */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-[#FAFAFA] rounded-xl border border-[#EAE5DE]">
                     <div>
-                      <span className="block font-bold text-[#1C1B1B]">Bulk Discount Available</span>
-                      <span className="block text-[10px] text-gray-400">Toggle ON if you offer tier-wise discounts for large-volume orders.</span>
+                      <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px] mb-2">Tax Settings (GST)</label>
+                      <select className="w-full p-4 border border-[#EAE5DE] rounded-2xl focus:outline-none bg-[#FAFAFA] font-black text-[11px] appearance-none cursor-pointer">
+                        <option>Excluding 18% GST (Beauty Standard)</option>
+                        <option>Including all Taxes</option>
+                        <option>Exempt / Nil Rated</option>
+                      </select>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setBulkDiscountToggle(!bulkDiscountToggle)}
-                      className={`w-11 h-6 rounded-full transition-colors flex items-center p-0.5 cursor-pointer ${
-                        bulkDiscountToggle ? 'bg-emerald-500 justify-end' : 'bg-gray-200 justify-start'
-                      }`}
-                    >
-                      <motion.div 
-                        layout 
-                        className="w-5 h-5 rounded-full bg-white shadow-xs" 
-                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                      />
-                    </button>
+
+                    <div className="p-4 bg-[#FFF0F5] border border-[#B8005A]/10 rounded-2xl flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-xl bg-[#B8005A] text-white flex items-center justify-center shadow-sm">
+                          <Tag className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-[#B8005A] font-black uppercase tracking-widest">Margin Estimate</p>
+                          <p className="text-[11px] font-black text-[#1C1B1B]">
+                            {newProduct.price && mrp ? `${Math.round(((parseFloat(mrp) - parseFloat(newProduct.price)) / parseFloat(mrp)) * 100)}% Margin for Retailers` : 'Enter prices to calculate'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 bg-[#FAFAFA] rounded-xl border border-[#EAE5DE]">
-                    <div>
-                      <span className="block font-bold text-[#1C1B1B]">Show Wholesale Price Publicly</span>
-                      <span className="block text-[10px] text-gray-400">If OFF, listing will show "Price on Request" to protect your commercial privacy.</span>
+                  {/* MOQ & Volume Column */}
+                  <div className="space-y-5">
+                    <div className="pb-2 border-b border-[#F2F0ED]">
+                      <h5 className="text-[10px] font-black text-[#1C1B1B] uppercase tracking-widest">Order Constraints</h5>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowPricePublicly(!showPricePublicly)}
-                      className={`w-11 h-6 rounded-full transition-colors flex items-center p-0.5 cursor-pointer ${
-                        showPricePublicly ? 'bg-[#B8005A] justify-end' : 'bg-gray-200 justify-start'
-                      }`}
-                    >
-                      <motion.div 
-                        layout 
-                        className="w-5 h-5 rounded-full bg-white shadow-xs" 
-                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                      />
-                    </button>
+
+                    <div>
+                      <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px] mb-2">Minimum Order Quantity (MOQ) *</label>
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="number"
+                          required
+                          value={newProduct.moq}
+                          onChange={(e) => setNewProduct({ ...newProduct, moq: e.target.value })}
+                          className="flex-1 p-4 border border-[#EAE5DE] rounded-2xl focus:outline-none focus:border-[#B8005A] bg-[#FAFAFA] font-black text-sm"
+                          placeholder="e.g. 5"
+                        />
+                        <div className="px-5 py-4 bg-[#F2F0ED] rounded-2xl font-black text-[11px] text-[#737373] uppercase tracking-widest">
+                          {moqUnit}
+                        </div>
+                      </div>
+                      <p className="text-[10px] text-[#737373] mt-2 font-medium">The smallest quantity a buyer can purchase in a single enquiry.</p>
+                    </div>
+
+                    <div className="p-5 bg-[#FAF8F5] border border-[#EAE5DE] rounded-2xl space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h6 className="text-[10px] font-black text-[#1C1B1B] uppercase tracking-widest">Bulk Tiered Pricing</h6>
+                        <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] font-black rounded-full">Recommended</span>
+                      </div>
+                      <div className="flex items-center justify-between p-3 bg-white border border-[#EAE5DE] rounded-xl text-[10px] font-bold text-gray-400 border-dashed">
+                        <span>Setup tiered pricing for high-volume orders</span>
+                        <button type="button" className="text-[#B8005A] hover:underline font-black cursor-pointer">+ Configure</button>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-start gap-3">
+                      <Shield className="w-4 h-4 text-emerald-600 mt-0.5" />
+                      <p className="text-[10px] text-emerald-800 font-medium leading-relaxed">
+                        Prices are only visible to <span className="font-black">Verified Business Buyers</span>. Your retail pricing remains protected from regular consumers.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                {/* Step Actions */}
-                <div className="flex justify-between gap-3 pt-4 border-t border-[#E8E8E8]">
+                {/* Navigation Actions */}
+                <div className="flex justify-between items-center pt-6 border-t border-[#F2F0ED]">
                   <button
                     type="button"
                     onClick={() => setModalStep(3)}
-                    className="px-4 py-2.5 border border-[#EAE5DE] text-[#594047] font-bold rounded-xl hover:bg-[#F1EDEC] flex items-center gap-1 cursor-pointer transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 text-xs font-black text-[#737373] hover:text-[#1C1B1B] uppercase tracking-widest transition-all cursor-pointer"
                   >
-                    <ArrowLeft className="w-4 h-4" />
-                    <span>Back to Media</span>
+                    <ArrowRight className="w-4 h-4 rotate-180" />
+                    Back to Media
                   </button>
                   <div className="flex gap-3">
                     <button
                       type="button"
-                      onClick={() => {
-                        setActionNotice('✅ Draft saved successfully!');
-                        setTimeout(() => setActionNotice(null), 4000);
+                      onClick={(e) => {
+                        handleAddProductSubmit(e, true);
                         setIsAddProductOpen(false);
                       }}
-                      className="px-5 py-2.5 border border-[#E8E8E8] text-[#594047] font-bold rounded-xl hover:bg-[#F1EDEC] cursor-pointer"
+                      className="px-6 py-3 border border-[#EAE5DE] text-[#594047] font-black rounded-2xl hover:bg-[#FAF8F5] transition-all cursor-pointer text-xs uppercase tracking-widest"
                     >
                       Save Draft
                     </button>
                     <button
-                      type="submit"
-                      className="px-5 py-2.5 bg-[#B8005A] hover:bg-[#8E004B] text-white font-bold rounded-xl shadow-xs cursor-pointer transition-colors font-extrabold uppercase tracking-wide flex items-center gap-1.5"
+                      type="button"
+                      onClick={() => setModalStep(5)}
+                      className="px-8 py-3 bg-[#B8005A] hover:bg-[#8E004B] text-white font-black rounded-2xl shadow-md shadow-[#B8005A]/20 transition-all flex items-center gap-2 cursor-pointer text-xs uppercase tracking-widest"
                     >
-                      <span>Continue to Stock</span>
+                      <span>Continue to Inventory</span>
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
-              </form>
+              </div>
             )}
 
             {modalStep === 5 && (
@@ -2787,31 +2721,181 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
               </form>
             )}
 
-            {modalStep === 6 && (
-              <div className="mt-5 space-y-6 animate-in fade-in duration-200 text-xs">
-                {/* Form Review Section */}
-                <div className="space-y-6">
-                    {/* Step Intro Header */}
-                    <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#EAE5DE]">
-                      <h4 className="text-xs font-extrabold text-[#1C1B1B] flex items-center gap-1.5 uppercase tracking-wider">
-                        <Sparkles className="w-4 h-4 text-[#B8005A]" />
-                        Review Product Listing
-                      </h4>
-                      <p className="text-[11px] text-[#737373] mt-1">
-                        Verify your product listing details exactly as buyers will see them on Nexora. Make any adjustments before publishing.
-                      </p>
-                    </div>
+            {modalStep === 5 && (
+              <div className="space-y-6 py-2 animate-in fade-in duration-300">
+                {/* Inventory Status Header */}
+                <div className="bg-[#FAF8F5] p-5 rounded-3xl border border-[#EAE5DE] flex items-center gap-4 relative overflow-hidden">
+                  <div className="w-12 h-12 rounded-2xl bg-white border border-[#EAE5DE] flex items-center justify-center shadow-sm shrink-0">
+                    <Boxes className="w-6 h-6 text-[#B8005A]" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-black uppercase tracking-tight text-[#1C1B1B]">Live Inventory Status</h4>
+                    <p className="text-[11px] text-[#737373] mt-0.5 font-medium">Set the current availability to manage buyer expectations.</p>
+                  </div>
+                </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                      {/* Left: Summary Cards and Checklist (7 cols) */}
-                      <div className="lg:col-span-7 space-y-5">
-                        
-                        {/* 1. Listing Completeness Checklist */}
-                        <div className="bg-white p-5 rounded-2xl border border-[#EAE5DE] space-y-3.5 shadow-xs">
-                          <h5 className="font-extrabold text-[#1C1B1B] text-[11px] uppercase tracking-wider flex items-center gap-1.5 border-b border-[#EAE5DE] pb-2">
-                            <Check className="w-4 h-4 text-emerald-600" />
-                            Listing Completeness Checklist
-                          </h5>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {(['In Stock', 'Out of Stock', 'Available on Request'] as const).map((status) => {
+                    const isSelected = availabilityStatus === status;
+                    let icon = <CheckCircle2 className="w-5 h-5" />;
+                    
+                    if (status === 'Out of Stock') {
+                      icon = <XCircle className="w-5 h-5" />;
+                    } else if (status === 'Available on Request') {
+                      icon = <Clock className="w-5 h-5" />;
+                    }
+
+                    return (
+                      <button
+                        key={status}
+                        type="button"
+                        onClick={() => setAvailabilityStatus(status)}
+                        className={`p-5 rounded-3xl border-2 text-left transition-all duration-300 group cursor-pointer ${
+                          isSelected 
+                            ? `border-[#B8005A] bg-[#FFF0F5] scale-[1.02] shadow-lg shadow-[#B8005A]/5` 
+                            : 'border-[#F2F0ED] bg-white hover:border-[#EAE5DE] hover:bg-[#FAFAFA]'
+                        }`}
+                      >
+                        <div className={`w-10 h-10 rounded-xl mb-4 flex items-center justify-center transition-transform group-hover:scale-110 ${
+                          isSelected ? 'bg-[#B8005A] text-white shadow-md' : 'bg-[#FAF8F5] text-gray-400'
+                        }`}>
+                          {icon}
+                        </div>
+                        <h5 className={`text-[11px] font-black uppercase tracking-widest ${isSelected ? 'text-[#B8005A]' : 'text-[#1C1B1B]'}`}>
+                          {status}
+                        </h5>
+                        <p className="text-[10px] text-[#737373] mt-2 font-medium leading-relaxed">
+                          {status === 'In Stock' && 'Ready for immediate dispatch from warehouse.'}
+                          {status === 'Out of Stock' && 'Currently unavailable. Enquiries still active.'}
+                          {status === 'Available on Request' && 'Lead times apply. Production on demand.'}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div className="pb-2 border-b border-[#F2F0ED]">
+                      <h5 className="text-[10px] font-black text-[#1C1B1B] uppercase tracking-widest text-gray-400">Dispatch Details</h5>
+                    </div>
+                    <div>
+                      <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px] mb-2">Estimated Lead Time</label>
+                      <select className="w-full p-4 border border-[#EAE5DE] rounded-2xl focus:outline-none bg-[#FAFAFA] font-black text-[11px] appearance-none cursor-pointer">
+                        <option>Ships within 24-48 Hours</option>
+                        <option>3-5 Business Days</option>
+                        <option>7-14 Business Days</option>
+                        <option>Custom / Made to Order</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="pb-2 border-b border-[#F2F0ED]">
+                      <h5 className="text-[10px] font-black text-[#1C1B1B] uppercase tracking-widest text-gray-400">Stock Visibility</h5>
+                    </div>
+                    <div className="p-4 bg-[#F2F0ED]/50 rounded-2xl border border-[#EAE5DE] flex items-center justify-between">
+                      <div>
+                        <p className="text-[10px] font-black text-[#1C1B1B] uppercase tracking-widest">Show Exact Stock Count</p>
+                        <p className="text-[9px] text-[#737373] font-medium mt-0.5">Let buyers see the exact number of units available.</p>
+                      </div>
+                      <button type="button" className="w-10 h-6 bg-gray-200 rounded-full p-1 cursor-pointer">
+                        <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Navigation Actions */}
+                <div className="flex justify-between items-center pt-6 border-t border-[#F2F0ED]">
+                  <button
+                    type="button"
+                    onClick={() => setModalStep(4)}
+                    className="flex items-center gap-2 px-6 py-3 text-xs font-black text-[#737373] hover:text-[#1C1B1B] uppercase tracking-widest transition-all cursor-pointer"
+                  >
+                    <ArrowRight className="w-4 h-4 rotate-180" />
+                    Back to Pricing
+                  </button>
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        handleAddProductSubmit(e, true);
+                        setIsAddProductOpen(false);
+                      }}
+                      className="px-6 py-3 border border-[#EAE5DE] text-[#594047] font-black rounded-2xl hover:bg-[#FAF8F5] transition-all cursor-pointer text-xs uppercase tracking-widest"
+                    >
+                      Save Draft
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setModalStep(6)}
+                      className="px-8 py-3 bg-[#B8005A] hover:bg-[#8E004B] text-white font-black rounded-2xl shadow-md shadow-[#B8005A]/20 transition-all flex items-center gap-2 cursor-pointer text-xs uppercase tracking-widest"
+                    >
+                      <span>Final Review</span>
+                      <ShieldCheck className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {modalStep === 6 && (
+              <div className="space-y-8 py-2 animate-in fade-in zoom-in-95 duration-300">
+                {/* Review Header */}
+                <div className="text-center space-y-2">
+                  <div className="w-16 h-16 bg-[#FFF0F5] rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Sparkles className="w-8 h-8 text-[#B8005A]" />
+                  </div>
+                  <h4 className="text-xl font-black uppercase tracking-tight text-[#1C1B1B]">Listing Preview</h4>
+                  <p className="text-[11px] text-[#737373] font-medium max-w-sm mx-auto">
+                    Your product listing is almost ready for the Nexora B2B marketplace. Review the details below before going live.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                  {/* Left: Summary Card */}
+                  <div className="lg:col-span-7 space-y-6">
+                    <div className="bg-white border border-[#F2F0ED] rounded-3xl overflow-hidden shadow-sm">
+                      <div className="p-6 border-b border-[#F2F0ED] bg-[#FAF8F5]">
+                        <h5 className="text-[10px] font-black text-[#1C1B1B] uppercase tracking-widest flex items-center gap-2">
+                          <Layout className="w-4 h-4 text-[#B8005A]" />
+                          Product Display Summary
+                        </h5>
+                      </div>
+                      <div className="p-8 flex gap-8">
+                        <div className="w-32 h-32 rounded-2xl bg-[#FAFAFA] border border-[#EAE5DE] flex items-center justify-center shrink-0">
+                          {newProduct.imageUrl ? (
+                            <img src={newProduct.imageUrl} alt="Preview" className="w-full h-full object-cover rounded-2xl" />
+                          ) : (
+                            <ImageIcon className="w-8 h-8 text-gray-300" />
+                          )}
+                        </div>
+                        <div className="space-y-4 flex-1">
+                          <div>
+                            <span className="px-2 py-1 bg-[#1C1B1B] text-white text-[9px] font-black uppercase rounded-md tracking-widest">
+                              {newProduct.category || 'Uncategorized'}
+                            </span>
+                            <h3 className="text-xl font-black text-[#1C1B1B] mt-2 leading-tight">
+                              {newProduct.name || 'Untitled Product'}
+                            </h3>
+                            <p className="text-[11px] text-[#737373] font-medium mt-1 uppercase tracking-widest">
+                              by {brand || 'Nexora Supplier'}
+                            </p>
+                          </div>
+                          <div className="flex gap-8 border-t border-[#F2F0ED] pt-4">
+                            <div>
+                              <p className="text-[9px] text-gray-400 font-black uppercase tracking-widest">Wholesale Price</p>
+                              <p className="text-lg font-black text-[#B8005A]">₹{newProduct.price || '0.00'}</p>
+                            </div>
+                            <div>
+                              <p className="text-[9px] text-gray-400 font-black uppercase tracking-widest">Min. Order (MOQ)</p>
+                              <p className="text-lg font-black text-[#1C1B1B]">{newProduct.moq || '0'} {moqUnit}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                           
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                             {/* Required fields */}
@@ -2879,7 +2963,6 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                               </div>
                             </div>
                           </div>
-                        </div>
 
                         {/* 2. Business Information Preview */}
                         <div className="bg-white p-5 rounded-2xl border border-[#EAE5DE] space-y-3 shadow-xs">
@@ -3344,7 +3427,6 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                       </div>
                     </div>
                   </div>
-                </div>
               )}
             </>
           )}

@@ -834,7 +834,7 @@ export const RegisterWizardModal: React.FC<RegisterWizardModalProps> = ({
                           className="mt-0.5 w-4 h-4 rounded border-[#E0BEC6] text-[#8E004B] focus:ring-[#8E004B] cursor-pointer"
                         />
                         <span className="text-xs text-[#594047] group-hover:text-[#1C1B1B] transition-colors">
-                          I agree to Nexora <button type="button" onClick={() => alert('Nexora Luxe Terms of Service: All B2B supplier listings are verified and subject to platform terms.')} className="text-[#8E004B] underline font-medium hover:text-[#B90064] cursor-pointer">Terms of Service</button> & <button type="button" onClick={() => alert('Nexora Luxe Privacy Policy: Your business contact details are protected under end-to-end B2B privacy standards.')} className="text-[#8E004B] underline font-medium hover:text-[#B90064] cursor-pointer">Privacy Policy</button>.
+                          I agree to Nexora <a href="#" className="text-[#8E004B] underline font-medium">Terms of Service</a> & <a href="#" className="text-[#8E004B] underline font-medium">Privacy Policy</a>.
                         </span>
                       </label>
 

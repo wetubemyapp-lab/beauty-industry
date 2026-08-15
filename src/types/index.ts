@@ -38,7 +38,7 @@ export interface Product {
   price: number;
   unit: string;
   moq: number;
-  stockStatus: 'In Stock' | 'Low Stock' | 'Made to Order' | 'Out of Stock' | 'Available on Request';
+  stockStatus: 'In Stock' | 'Low Stock' | 'Made to Order' | 'Out of Stock' | 'Available on Request' | 'Draft';
   status?: 'Draft' | 'Published' | 'Out of Stock' | 'Available on Request' | 'Archived';
   image: string;
   gallery?: string[];
@@ -52,6 +52,13 @@ export interface Product {
   rating?: number;
   reviewsCount?: number;
   wholesaleTiers?: WholesaleTier[];
+  availabilityNote?: string;
+  handlingTime?: string;
+  dispatchDetails?: string;
+  priceType?: string;
+  mrp?: number;
+  highlights?: string[];
+  variants?: { name: string; size: string; unit: string }[];
 }
 
 export interface SupplierPartner {
@@ -74,6 +81,17 @@ export interface SupplierPartner {
   phone: string;
   establishedYear: number;
   coverImage?: string;
+  logo?: string;
+  stats?: {
+    listings?: string | number;
+    rating?: string | number;
+    responseRate?: string;
+    totalOrders?: number;
+    verified?: boolean;
+    yearsInBusiness?: number;
+    responseTime?: string;
+    ratingAvg?: number;
+  };
   sampleImages?: string[];
   whatsapp?: string;
   businessTypeDetail?: string;

@@ -73,7 +73,7 @@ export const DistributorsView: React.FC<DistributorsViewProps> = ({
 
   // Business Type Quick Navigation Tab State
   const [activeFilterType, setActiveFilterType] = useState<
-    'all' | 'verified_distributors' | 'oem_manufacturers' | 'wholesalers' | 'custom'
+    'all' | 'verified_distributors' | 'oem_manufacturers' | 'wholesalers' | 'brands' | 'custom'
   >('all');
 
   // Sidebar Filter States
@@ -379,12 +379,12 @@ export const DistributorsView: React.FC<DistributorsViewProps> = ({
         <nav aria-label="Breadcrumb" className="flex text-sm text-[#594047]">
           <ol className="inline-flex items-center space-x-1 md:space-x-2">
             <li className="inline-flex items-center">
-              <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-xs font-medium hover:text-[#B90064] transition-colors cursor-pointer">Home</button>
+              <a href="#" className="text-xs font-medium hover:text-[#B90064] transition-colors">Home</a>
             </li>
             <li>
               <div className="flex items-center">
                 <span className="text-xs mx-1">›</span>
-                <button onClick={() => handleFilterTypeChange('all')} className="text-xs font-medium hover:text-[#B90064] transition-colors cursor-pointer">Beauty Industry Directory</button>
+                <a href="#" className="text-xs font-medium hover:text-[#B90064] transition-colors">Beauty Industry Directory</a>
               </div>
             </li>
             <li aria-current="page">
@@ -1663,7 +1663,9 @@ export const DistributorsView: React.FC<DistributorsViewProps> = ({
                 </div>
                 <div className="mt-4 flex items-center gap-2">
                   <h3 className="text-2xl font-extrabold text-[#1C1B1B]">Lumina Cosmetics</h3>
-                  <CheckCircle2 className="w-6 h-6 text-[#B90064]" title="Verified Supplier" />
+                  <span title="Verified Supplier">
+                    <CheckCircle2 className="w-6 h-6 text-[#B90064]" />
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 mt-2 text-[#594047] bg-[#F7F2F2] w-max px-3 py-1.5 rounded-lg border border-[#E8E8E8]">
                   <LinkIcon className="w-4 h-4 text-[#B90064]" />
