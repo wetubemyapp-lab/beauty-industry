@@ -288,7 +288,7 @@ export const VideoTestimonials: React.FC<VideoTestimonialsProps> = ({
                                 {linkedProduct?.name || video.featuredProductName}
                               </span>
                               <span className="text-[10px] text-[#B8005A] font-extrabold">
-                                ${(linkedProduct?.price || video.featuredProductPrice || 0).toFixed(2)}
+                                ₹{(linkedProduct?.price || video.featuredProductPrice || 0).toLocaleString('en-IN')}
                               </span>
                             </div>
                           </div>

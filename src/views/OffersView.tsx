@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  Search, Category, MapPin, ChevronDown, CheckCircle2, ChevronUp, 
+  Search, MapPin, ChevronDown, CheckCircle2, ChevronUp, 
   Sparkles, Filter, X, ArrowRight, Tag, ShieldCheck, Store, Calendar,
   TrendingUp, Clock, PackageCheck, Send, Layers, Check
 } from 'lucide-react';
@@ -28,7 +28,7 @@ const INITIAL_OFFERS: OfferItem[] = [
   {
     id: 'off-featured',
     title: 'Luminous Peptide Serum - Bulk Launch Deal',
-    supplier: 'Aura Beauty Corp.',
+    supplier: 'Aura Beauty India',
     isVerified: true,
     category: 'Skincare',
     offerType: 'New Product Offers',
@@ -38,13 +38,13 @@ const INITIAL_OFFERS: OfferItem[] = [
     image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=800',
     isFeatured: true,
     validUntil: 'End of Month',
-    originalPrice: '$180.00 / unit',
-    offerPrice: '$126.00 / unit'
+    originalPrice: '₹15,000 / unit',
+    offerPrice: '₹10,500 / unit'
   },
   {
     id: 'off-1',
     title: 'Seasonal Glow Sale - Serum Collection',
-    supplier: 'Aura Beauty Corp',
+    supplier: 'Aura Beauty India',
     isVerified: true,
     category: 'Skincare',
     offerType: 'Seasonal Offers',
@@ -53,13 +53,13 @@ const INITIAL_OFFERS: OfferItem[] = [
     description: 'Stock up on premium hydration serums for the dry season with guaranteed 48-hour salon delivery.',
     image: 'https://images.unsplash.com/photo-1608248597260-20e365021e10?auto=format&fit=crop&q=80&w=600',
     validUntil: '12 Days Left',
-    originalPrice: '$140.00 / unit',
-    offerPrice: '$98.00 / unit'
+    originalPrice: '₹12,000 / unit',
+    offerPrice: '₹8,400 / unit'
   },
   {
     id: 'off-2',
     title: 'Salon Equipment Clearance',
-    supplier: 'SalonPro Distributors',
+    supplier: 'Bharat Backbar Wholesalers',
     isVerified: true,
     category: 'Equipment',
     offerType: 'Bulk Discounts',
@@ -68,13 +68,13 @@ const INITIAL_OFFERS: OfferItem[] = [
     description: 'End of year clearance on professional grade ionic dryers, steamers, and ergonomics styling chairs.',
     image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=600',
     validUntil: '5 Days Left',
-    originalPrice: '$650.00 / set',
-    offerPrice: 'From $420.00 / set'
+    originalPrice: '₹55,000 / set',
+    offerPrice: 'From ₹35,500 / set'
   },
   {
     id: 'off-3',
     title: 'New Brand Launch: Velvet Matte Mask',
-    supplier: 'Visage Essentiel',
+    supplier: 'Mumbai Beauty Imports',
     isVerified: false,
     category: 'Haircare',
     offerType: 'New Product Offers',
@@ -84,13 +84,13 @@ const INITIAL_OFFERS: OfferItem[] = [
     image: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&q=80&w=600',
     isNew: true,
     validUntil: '20 Days Left',
-    originalPrice: '$48.00 / unit',
-    offerPrice: '$38.40 / unit'
+    originalPrice: '₹4,100 / unit',
+    offerPrice: '₹3,280 / unit'
   },
   {
     id: 'off-4',
     title: 'Organic Botanical Elixir Masterpack',
-    supplier: 'Botanica Luxe Distributors',
+    supplier: 'Kavya Ayurvedic Botanicals',
     isVerified: true,
     category: 'Skincare',
     offerType: 'Wholesale Offers',
@@ -99,38 +99,38 @@ const INITIAL_OFFERS: OfferItem[] = [
     description: '100% cold-pressed organic face and body botanical oils. Certified eco-luxury packaging included.',
     image: 'https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?auto=format&fit=crop&q=80&w=600',
     validUntil: '18 Days Left',
-    originalPrice: '$92.00 / unit',
-    offerPrice: '$69.00 / unit'
+    originalPrice: '₹7,800 / unit',
+    offerPrice: '₹5,850 / unit'
   },
   {
     id: 'off-5',
     title: 'Pro Ionic Dryer & Styler Bundle',
-    supplier: 'Lumiere Salon Tech',
+    supplier: 'Vertex Salon Technologies',
     isVerified: true,
     category: 'Equipment',
     offerType: 'Bulk Discounts',
-    discountText: 'Save $180 / Set',
+    discountText: 'Save ₹15,000 / Set',
     moq: '3 Sets',
     description: 'Ultra-silent brushless digital motor dryers paired with ceramic titanium straightening irons.',
     image: 'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&q=80&w=600',
     validUntil: '8 Days Left',
-    originalPrice: '$550.00 / set',
-    offerPrice: '$370.00 / set'
+    originalPrice: '₹47,000 / set',
+    offerPrice: '₹31,500 / set'
   },
   {
     id: 'off-6',
-    title: 'Parisian Hydration Mask Masterpack',
-    supplier: 'Elegance Esthetique',
+    title: 'Ayurvedic Hydration Mask Masterpack',
+    supplier: 'Royal Glamour India Supplies',
     isVerified: true,
     category: 'Skincare',
     offerType: 'Wholesale Offers',
     discountText: 'Buy 50 Get 10 Free',
     moq: '50 Units',
-    description: 'Hyaluronic acid sheet masks engineered for post-peel aesthetic recovery and instant salon radiance.',
+    description: 'Saffron & aloe sheet masks engineered for post-peel aesthetic recovery and instant salon radiance.',
     image: 'https://images.unsplash.com/photo-1567928269937-ae146e45b428?auto=format&fit=crop&q=80&w=600',
     validUntil: '25 Days Left',
-    originalPrice: '$15.00 / mask',
-    offerPrice: 'Effective $12.50 / mask'
+    originalPrice: '₹1,250 / pack',
+    offerPrice: 'Effective ₹1,040 / pack'
   }
 ];
 
@@ -238,7 +238,7 @@ export const OffersView: React.FC<OffersViewProps> = ({
         {
           id: `off-more-${Date.now()}-1`,
           title: 'Hydra-Repair Intensive Night Treatment Batch',
-          supplier: 'Aura Beauty Corp',
+          supplier: 'Aura Beauty India',
           isVerified: true,
           category: 'Skincare',
           offerType: 'Wholesale Offers',
@@ -247,23 +247,23 @@ export const OffersView: React.FC<OffersViewProps> = ({
           description: 'Cellular recovery night cream formatted for medical spas and luxury estheticians.',
           image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&q=80&w=600',
           validUntil: '15 Days Left',
-          originalPrice: '$165.00 / unit',
-          offerPrice: '$107.25 / unit'
+          originalPrice: '₹14,000 / unit',
+          offerPrice: '₹9,115 / unit'
         },
         {
           id: `off-more-${Date.now()}-2`,
           title: 'Titanium Ergonomic Shears Set Deal',
-          supplier: 'Precision Edge Distributors',
+          supplier: 'South India Salon Depot',
           isVerified: true,
           category: 'Equipment',
           offerType: 'Bulk Discounts',
-          discountText: 'Save $120 / Pack',
+          discountText: 'Save ₹10,000 / Pack',
           moq: '5 Sets',
           description: 'Handcrafted Japanese stainless steel convex shears with gold ergonomic finger grips.',
           image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=600',
           validUntil: '3 Days Left',
-          originalPrice: '$320.00 / set',
-          offerPrice: '$200.00 / set'
+          originalPrice: '₹27,000 / set',
+          offerPrice: '₹17,000 / set'
         }
       ];
       setOffersList(prev => [...prev, ...newItems]);
@@ -274,24 +274,38 @@ export const OffersView: React.FC<OffersViewProps> = ({
 
   const handleClaimDeal = (offer: OfferItem) => {
     if (onAddToQuote) {
+      let mappedCategory: any = 'skincare';
+      const offerCatLower = offer.category.toLowerCase();
+      if (offerCatLower === 'haircare') mappedCategory = 'haircare';
+      else if (offerCatLower === 'equipment') mappedCategory = 'tools';
+      else if (offerCatLower === 'cosmetics') mappedCategory = 'makeup';
+      else if (offerCatLower === 'fragrance') mappedCategory = 'skincare';
+
       const mockProduct: Product = {
         id: offer.id,
         name: offer.title,
         brand: offer.supplier,
-        supplierId: 'sup-1',
-        categoryId: 'skincare',
-        price: parseFloat((offer.offerPrice || '$100').replace(/[^0-9.]/g, '')) || 100,
+        category: mappedCategory,
+        categoryLabel: offer.category,
+        tag: offer.isNew ? 'New' : 'Offer',
+        isVerified: offer.isVerified,
+        isWholesale: true,
+        price: parseFloat((offer.offerPrice || '₹10000').replace(/[^0-9.]/g, '')) || 10000,
+        unit: 'unit',
         moq: parseInt(offer.moq) || 10,
+        stockStatus: 'In Stock',
+        image: offer.image,
         description: offer.description,
+        specifications: {},
+        leadTimeDays: 3,
+        certifications: ['GMP Certified', 'ISO 22716'],
+        supplierId: 'sup-1',
+        supplierName: offer.supplier,
+        supplierLocation: 'Maharashtra',
         rating: 4.9,
         reviewsCount: 38,
-        inStock: true,
-        leadTimeDays: 3,
-        imageUrl: offer.image,
-        originCountry: 'France',
-        certifications: ['GMP Certified', 'ISO 22716'],
-        wholesalePriceTiers: [
-          { minQty: parseInt(offer.moq) || 10, pricePerUnit: parseFloat((offer.offerPrice || '$100').replace(/[^0-9.]/g, '')) || 100 }
+        wholesaleTiers: [
+          { minUnits: parseInt(offer.moq) || 10, pricePerUnit: parseFloat((offer.offerPrice || '₹10000').replace(/[^0-9.]/g, '')) || 10000 }
         ]
       };
       onAddToQuote(mockProduct, claimQuantity);
@@ -368,7 +382,7 @@ export const OffersView: React.FC<OffersViewProps> = ({
                 type="text"
                 value={locationQuery}
                 onChange={(e) => setLocationQuery(e.target.value)}
-                placeholder="City or Region (e.g., Paris, NY)"
+                placeholder="City or Region (e.g., Mumbai, Jaipur)"
                 className="w-full bg-transparent border-none focus:outline-none text-sm text-[#1C1B1B] placeholder-[#8C7077] py-2"
               />
             </div>
@@ -730,7 +744,7 @@ export const OffersView: React.FC<OffersViewProps> = ({
               </div>
               <div>
                 <p className="text-[10px] font-bold text-[#8C7077] uppercase">Est. Unit Price</p>
-                <p className="text-sm font-extrabold text-[#0150D6]">{selectedOfferModal.offerPrice || '$120 / unit'}</p>
+                <p className="text-sm font-extrabold text-[#0150D6]">{selectedOfferModal.offerPrice || '₹10,500 / unit'}</p>
               </div>
             </div>
 

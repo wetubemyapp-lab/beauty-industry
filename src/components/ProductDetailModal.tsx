@@ -269,7 +269,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <div>
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-3xl font-extrabold text-[#1E1E1E]">
-                      ${currentUnitPrice.toFixed(2)}
+                      ₹{currentUnitPrice.toLocaleString('en-IN')}
                     </span>
                     <span className="text-sm text-[#737373] font-medium">
                       / {product.unit}
@@ -413,7 +413,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                             : 'bg-white border-[#E5E5E5] text-[#555]'
                         }`}
                       >
-                        <span className="font-bold text-sm block">${tier.pricePerUnit.toFixed(2)}</span>
+                        <span className="font-bold text-sm block">₹{tier.pricePerUnit.toLocaleString('en-IN')}</span>
                         <span className="text-[10px] text-[#737373]">{tier.minUnits}+ units</span>
                       </div>
                     ))}
@@ -449,7 +449,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       <div className="p-3 bg-white rounded-xl border border-[#EFEFEF]">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-[#1E1E1E]">Maison de Beauté (Paris)</span>
+                            <span className="font-bold text-[#1E1E1E]">Apsara Beauty Lounge (Mumbai)</span>
                             <span className="text-[10px] bg-[#ECFDF5] text-[#059669] font-semibold px-2 py-0.5 rounded-md border border-[#A7F3D0]">
                               Verified Salon Buyer
                             </span>
@@ -505,7 +505,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <div className="text-right flex-1">
                   <span className="text-xs text-[#8E8E93]">Estimated Total ({quantity} {product.unit}s)</span>
                   <div className="text-lg sm:text-xl font-bold text-[#1E1E1E]">
-                    ${totalPrice.toFixed(2)}
+                    ₹{totalPrice.toLocaleString('en-IN')}
                   </div>
                 </div>
               </div>
@@ -751,7 +751,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         <div className="mt-2 pt-2 border-t border-[#F0F0F0] flex items-baseline justify-between">
                           <div>
                             <span className="text-sm font-extrabold text-[#1E1E1E]">
-                              ${simProd.price.toFixed(2)}
+                              ₹{simProd.price.toLocaleString('en-IN')}
                             </span>
                             <span className="text-[10px] text-[#737373]"> / {simProd.unit}</span>
                           </div>

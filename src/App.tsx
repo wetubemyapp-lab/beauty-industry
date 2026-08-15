@@ -49,7 +49,7 @@ export function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchScope, setSearchScope] = useState<'all' | 'products' | 'brands' | 'suppliers'>('all');
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | 'all'>('all');
-  const [selectedCity, setSelectedCity] = useState('Paris, EU');
+  const [selectedCity, setSelectedCity] = useState('Mumbai');
 
   // User & Quote Cart State
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(DEFAULT_USER);

@@ -50,7 +50,7 @@ const PRESET_POPULAR_QUERIES = [
   'AeroPro Salon Equipment',
   'Organic Essential Massage Oils',
   'Long-Wear Salon Gel Polish',
-  'Luxe Elite Distribution Paris',
+  'Mumbai Beauty Imports',
   'Global Glamour Cosmetics Supply'
 ];
 
@@ -69,7 +69,7 @@ const CATEGORY_ICON_MAP: Record<string, React.ReactNode> = {
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onSearch,
-  selectedCity = 'Paris, EU',
+  selectedCity = 'Mumbai',
   setSelectedCity,
   onOpenCitySelector,
   onSelectCategory

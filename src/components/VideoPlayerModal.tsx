@@ -392,7 +392,7 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
                     </h4>
                     <div className="flex items-baseline gap-2 mt-1">
                       <span className="text-sm font-extrabold text-[#FF85B2]">
-                        ${(linkedProduct?.price || video.featuredProductPrice || 0).toFixed(2)}
+                        ₹{(linkedProduct?.price || video.featuredProductPrice || 0).toLocaleString('en-IN')}
                       </span>
                       <span className="text-[10px] text-white/50">
                         MOQ: {linkedProduct?.moq || video.featuredProductMoq || 10} units

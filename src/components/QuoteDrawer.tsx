@@ -20,10 +20,10 @@ export const QuoteDrawer: React.FC<QuoteDrawerProps> = ({
   onRemoveItem,
   onClearQuote
 }) => {
-  const [businessName, setBusinessName] = useState('Élixir Salon & Spa');
-  const [contactEmail, setContactEmail] = useState('buyer@elixirspa.com');
-  const [shippingCity, setShippingCity] = useState('Paris, EU');
-  const [notes, setNotes] = useState('Please include estimated sea/air freight timeline and tester unit samples.');
+  const [businessName, setBusinessName] = useState('Jaipur Luxury Beauty Hub');
+  const [contactEmail, setContactEmail] = useState('ananya@royalglamour.in');
+  const [shippingCity, setShippingCity] = useState('Jaipur');
+  const [notes, setNotes] = useState('Please include estimated transport timeline and tester unit samples.');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [inquiryId, setInquiryId] = useState('');
 
@@ -146,14 +146,14 @@ export const QuoteDrawer: React.FC<QuoteDrawerProps> = ({
                             </span>
                             <h4 className="text-xs font-bold text-[#1E1E1E] truncate">{item.product.name}</h4>
                             <div className="flex items-center gap-2 text-xs text-[#737373] mt-1">
-                              <span className="font-bold text-[#B8005A]">${item.unitPrice.toFixed(2)}/unit</span>
+                              <span className="font-bold text-[#B8005A]">₹{item.unitPrice.toLocaleString('en-IN')}/{item.product.unit || 'unit'}</span>
                               <span>•</span>
                               <span>Qty: {item.quantity}</span>
                             </div>
                           </div>
 
                           <div className="text-right flex flex-col items-end gap-1.5 shrink-0">
-                            <span className="text-xs font-bold text-[#1E1E1E]">${item.totalPrice.toFixed(2)}</span>
+                            <span className="text-xs font-bold text-[#1E1E1E]">₹{item.totalPrice.toLocaleString('en-IN')}</span>
                             <button
                               onClick={() => onRemoveItem(item.product.id)}
                               className="text-[#EF4444] hover:text-[#DC2626] p-1 text-xs cursor-pointer transition-colors"
@@ -222,7 +222,7 @@ export const QuoteDrawer: React.FC<QuoteDrawerProps> = ({
                     <div className="p-4 rounded-2xl bg-[#FFF9FB] border border-[#FFD6E5] flex items-center justify-between">
                       <div>
                         <span className="text-xs text-[#737373] block">Estimated Wholesale Total</span>
-                        <span className="text-lg font-bold text-[#1E1E1E]">${grandTotal.toFixed(2)}</span>
+                        <span className="text-lg font-bold text-[#1E1E1E]">₹{grandTotal.toLocaleString('en-IN')}</span>
                       </div>
                       <div className="text-[11px] text-[#10B981] font-semibold flex items-center gap-1">
                         <ShieldCheck className="w-3.5 h-3.5" />

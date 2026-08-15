@@ -113,12 +113,12 @@ export const BusinessView: React.FC<BusinessViewProps> = ({ onOpenRegister }) =>
     },
     {
       id: 'enq-2',
-      name: 'Boutique & Co',
-      location: 'Paris, FR',
+      name: 'Lotus Wellness Group',
+      location: 'Jaipur, IN',
       timeAgo: '5h ago',
       message: 'Requesting wholesale sample kit for the new Velvet Matte Finish line before committing to 500 units...',
-      email: 'procurement@boutiqueco.fr',
-      phone: '+33 1 42 68 55 00'
+      email: 'procurement@lotuswellness.in',
+      phone: '+91 98765 43210'
     },
     {
       id: 'enq-3',
@@ -727,14 +727,14 @@ export const BusinessView: React.FC<BusinessViewProps> = ({ onOpenRegister }) =>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-[#1C1B1B] mb-1">Wholesale Price ($) *</label>
+                  <label className="block font-bold text-[#1C1B1B] mb-1">Wholesale Price (₹) *</label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="1"
                     required
                     value={newProduct.price}
                     onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-                    placeholder="29.99"
+                    placeholder="2500"
                     className="w-full p-3 border border-[#E8E8E8] rounded-xl focus:outline-none focus:border-[#B90064] bg-[#FCF9F8]"
                   />
                 </div>

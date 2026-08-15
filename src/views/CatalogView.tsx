@@ -153,7 +153,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
           </div>
           <div className="flex items-center justify-between gap-4 text-gray-300">
             <span>Avg Wholesale PO:</span>
-            <strong className="text-[#10B981] font-bold">${item.avgOrder}</strong>
+            <strong className="text-[#10B981] font-bold">₹{(item.avgOrder * 100).toLocaleString()}</strong>
           </div>
           <div className="text-[10px] text-gray-400 pt-1.5 border-t border-white/10 flex items-center gap-1 font-medium">
             <Sparkles className="w-3 h-3 text-[#B8005A]" />
@@ -281,7 +281,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
           <div className="bg-white/5 border border-white/10 p-3.5 rounded-2xl">
             <span className="text-[10px] text-gray-400 font-medium block">Avg Wholesale PO</span>
             <span className="text-base sm:text-lg font-black text-[#10B981] mt-0.5 block">
-              $1,850 / PO
+              ₹1,85,000 / PO
             </span>
           </div>
           <div className="bg-white/5 border border-white/10 p-3.5 rounded-2xl">
@@ -660,7 +660,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                     <div className="mt-4 pt-3.5 border-t border-[#F5F2EB] flex items-center justify-between">
                       <div className="flex items-baseline gap-1.5">
                         <span className="text-xl sm:text-2xl font-extrabold text-[#1A1A1A] tracking-tight">
-                          ${product.price.toFixed(2)}
+                          ₹{product.price.toLocaleString('en-IN')}
                         </span>
                         <span className="text-xs text-[#8E8E93] font-semibold">
                           / {product.unit}

@@ -97,7 +97,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
     (selectedProducts || []).forEach((p, idx) => {
       lines.push(
         `[Product ${idx + 1}] ${p.name} (${p.brand})`,
-        `Price: $${p.price.toFixed(2)} / ${p.unit} | MOQ: ${p.moq} units | Total Min: $${(p.price * p.moq).toFixed(2)}`,
+        `Price: ₹${p.price.toLocaleString('en-IN')} / ${p.unit} | MOQ: ${p.moq} units | Total Min: ₹${(p.price * p.moq).toLocaleString('en-IN')}`,
         `Stock: ${p.stockStatus} | Lead Time: ${p.leadTimeDays} days | Supplier: ${p.supplierName} (${p.supplierLocation})`,
         `Certifications: ${p.certifications?.join(', ') || 'N/A'}`,
         'Specifications:'
@@ -295,7 +295,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                     <div className="mt-3 pt-3 border-t border-[#EFEBE4] flex items-baseline justify-between">
                       <div className="flex items-baseline gap-1">
                         <span className="text-lg font-extrabold text-[#1A1A1A]">
-                          ${product.price.toFixed(2)}
+                          ₹{product.price.toLocaleString('en-IN')}
                         </span>
                         <span className="text-[11px] text-[#8E8E93] font-medium">
                           / {product.unit}
@@ -380,7 +380,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                                     {p.name}
                                   </div>
                                   <div className="text-[10px] text-[#737373]">
-                                    ${p.price.toFixed(2)} • MOQ: {p.moq}
+                                    ₹{p.price.toLocaleString('en-IN')} • MOQ: {p.moq}
                                   </div>
                                 </div>
                                 <Plus className="w-3.5 h-3.5 text-[#B8005A] opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -410,7 +410,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                       </div>
                       {selectedProducts.map((p) => (
                         <div key={p.id} className={`${selectedProducts.length === 1 ? 'col-span-6' : selectedProducts.length === 2 ? 'col-span-4' : 'col-span-3'} pr-3 font-semibold text-[#1A1A1A]`}>
-                          <span className="text-sm font-extrabold text-[#1A1A1A]">${p.price.toFixed(2)}</span>
+                          <span className="text-sm font-extrabold text-[#1A1A1A]">₹{p.price.toLocaleString('en-IN')}</span>
                           <span className="text-[#8E8E93] text-[11px] ml-1">/ {p.unit}</span>
                         </div>
                       ))}
@@ -442,9 +442,9 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                       <div className="col-span-3 font-bold text-[#4A4A4A]">Min. Order Investment</div>
                       {selectedProducts.map((p) => (
                         <div key={p.id} className={`${selectedProducts.length === 1 ? 'col-span-6' : selectedProducts.length === 2 ? 'col-span-4' : 'col-span-3'} pr-3 font-extrabold text-[#B8005A]`}>
-                          ${(p.price * p.moq).toFixed(2)}
+                          ₹{(p.price * p.moq).toLocaleString('en-IN')}
                           <span className="text-[10px] text-[#8E8E93] font-normal block">
-                            ({p.moq} units × ${p.price.toFixed(2)})
+                            ({p.moq} units × ₹{p.price.toLocaleString('en-IN')})
                           </span>
                         </div>
                       ))}
@@ -461,7 +461,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
                             p.wholesaleTiers.map((tier, idx) => (
                               <div key={idx} className="flex items-center justify-between text-[11px] bg-white border border-[#EFEBE4] px-2 py-1 rounded-lg">
                                 <span className="text-[#555] font-medium">{tier.minUnits}+ units:</span>
-                                <span className="font-extrabold text-[#1A1A1A]">${tier.pricePerUnit.toFixed(2)}/ea</span>
+                                <span className="font-extrabold text-[#1A1A1A]">₹{tier.pricePerUnit.toLocaleString('en-IN')}/ea</span>
                               </div>
                             ))
                           ) : (

@@ -278,15 +278,13 @@ export const DistributorsView: React.FC<DistributorsViewProps> = ({
                 className="w-full bg-transparent border-none focus:ring-0 text-sm md:text-base text-[#1C1B1B] outline-none cursor-pointer appearance-none font-medium pr-6"
               >
                 <option value="">All Cities</option>
+                <option value="jaipur">Jaipur</option>
+                <option value="delhi">Delhi</option>
                 <option value="mumbai">Mumbai</option>
-                <option value="delhi">Delhi NCR</option>
-                <option value="bangalore">Bangalore</option>
-                <option value="hyderabad">Hyderabad</option>
-                <option value="paris">Paris, EU</option>
-                <option value="new york">New York, NA</option>
-                <option value="milan">Milan, EU</option>
-                <option value="dubai">Dubai, UAE</option>
-                <option value="london">London, UK</option>
+                <option value="kolkata">Kolkata</option>
+                <option value="chennai">Chennai</option>
+                <option value="bengaluru">Bengaluru</option>
+                <option value="pune">Pune</option>
               </select>
               <ChevronDown className="w-4 h-4 text-[#594047] pointer-events-none absolute right-4" />
             </div>
@@ -572,7 +570,7 @@ export const DistributorsView: React.FC<DistributorsViewProps> = ({
 
               {openSections.location && (
                 <div className="px-5 pb-5 flex flex-col gap-2">
-                  {['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Paris', 'New York', 'Milan', 'Dubai'].map((city) => (
+                  {['Jaipur', 'Delhi', 'Mumbai', 'Kolkata', 'Chennai', 'Bengaluru', 'Pune'].map((city) => (
                     <button
                       key={city}
                       onClick={() => setSelectedCity(selectedCity === city.toLowerCase() ? '' : city.toLowerCase())}

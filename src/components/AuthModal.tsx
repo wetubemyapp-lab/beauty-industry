@@ -24,21 +24,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     if (role === 'buyer') {
       onLogin({
         id: 'usr-101',
-        name: 'Camille Laurent',
-        email: 'camille@spavendome.fr',
-        companyName: 'Spa Place Vendôme Paris',
+        name: 'Ananya Sharma',
+        email: 'ananya@royalglamour.in',
+        companyName: 'Jaipur Luxury Beauty Hub',
         role: 'buyer',
-        city: 'Paris, EU',
+        city: 'Jaipur',
         isVerified: true
       });
     } else {
       onLogin({
         id: 'usr-202',
-        name: 'Marc Lefebvre',
-        email: 'marc@luxe-elite.eu',
-        companyName: 'Luxe Elite Distribution',
+        name: 'Rohan Mehta',
+        email: 'rohan@mumbaimports.in',
+        companyName: 'Mumbai Beauty Imports',
         role: 'supplier',
-        city: 'Paris, EU',
+        city: 'Mumbai',
         isVerified: true
       });
     }
@@ -53,7 +53,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       email,
       companyName: 'Verified Beauty Partner',
       role: 'buyer',
-      city: 'Paris, EU',
+      city: 'Mumbai',
       isVerified: true
     });
     onClose();

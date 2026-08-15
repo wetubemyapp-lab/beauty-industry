@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { 
   ShieldCheck, ShieldAlert, CheckCircle2, XCircle, AlertTriangle, 
-  RotateCcw, EyeOff, Check, X, Filter, Sparkles, UserCheck, Lock, Play, RefreshCw, Eye
+  RotateCcw, EyeOff, Check, X, Filter, Sparkles, UserCheck, Lock, Play, RefreshCw, Eye,
+  ChevronDown
 } from 'lucide-react';
 import { GalleryItem, GalleryStatus, SalonTheme } from '../types/gallery';
 import { 
@@ -93,7 +94,16 @@ export const OwnerGalleryModeration: React.FC<OwnerGalleryModerationProps> = ({
 
   const handleConfirmReject = () => {
     if (!rejectingItemId) return;
-    const finalReason = customReason.trim() || selectedPresetReason;
+    
+    let finalReason = '';
+    if (selectedPresetReason === 'custom') {
+      finalReason = customReason.trim() || 'Unspecified custom rejection feedback.';
+    } else {
+      finalReason = selectedPresetReason || 'Unspecified rejection reason.';
+      if (customReason.trim()) {
+        finalReason += ` | Additional Feedback: ${customReason.trim()}`;
+      }
+    }
     
     onUpdateStatus(rejectingItemId, 'rejected', finalReason);
     showNotice(`❌ Gallery item rejected and hidden from customer view.`, 'error');
@@ -723,36 +733,45 @@ export const OwnerGalleryModeration: React.FC<OwnerGalleryModerationProps> = ({
 
             <div className="mt-4 space-y-3">
               <label className="block text-xs font-bold text-[#4A4A4A] uppercase tracking-wider">
-                Select Common Reason:
+                Select Standardized Rejection Reason:
               </label>
-              <div className="space-y-2">
-                {presetReasons.map((preset, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => {
-                      setSelectedPresetReason(preset);
+              
+              <div className="relative">
+                <select
+                  value={selectedPresetReason}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSelectedPresetReason(val);
+                    if (val !== 'custom') {
                       setCustomReason('');
-                    }}
-                    className={`w-full text-left p-2.5 rounded-xl text-xs font-medium border transition-all ${
-                      selectedPresetReason === preset && !customReason
-                        ? 'border-[#EF4444] bg-[#FEF2F2] text-[#991B1B] font-bold'
-                        : 'border-[#EDEDED] text-[#4A4A4A] hover:bg-[#FAFAFA]'
-                    }`}
-                  >
-                    {preset}
-                  </button>
-                ))}
+                    }
+                  }}
+                  className="w-full p-2.5 pr-10 text-xs font-medium border border-[#E0BEC6] rounded-xl bg-white focus:outline-none focus:ring-1 focus:ring-[#EF4444] focus:border-[#EF4444] text-[#1C1B1B] appearance-none cursor-pointer"
+                >
+                  {presetReasons.map((preset, idx) => (
+                    <option key={idx} value={preset}>
+                      {preset}
+                    </option>
+                  ))}
+                  <option value="custom">Other / Custom Reason...</option>
+                </select>
+                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-500">
+                  <ChevronDown className="w-4 h-4" />
+                </div>
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-[#4A4A4A] uppercase tracking-wider mb-1">
-                  Or Custom Rejection Reason:
+                  {selectedPresetReason === 'custom' ? 'Provide Custom Rejection Reason:' : 'Additional Feedback (Optional):'}
                 </label>
                 <textarea
                   value={customReason}
                   onChange={(e) => setCustomReason(e.target.value)}
-                  placeholder="Provide specific feedback for the uploader..."
+                  placeholder={
+                    selectedPresetReason === 'custom'
+                      ? "Explain the custom reason for rejecting this gallery item..."
+                      : "Provide optional specific feedback for the uploader..."
+                  }
                   rows={2}
                   className="w-full p-2.5 text-xs border border-[#EDEDED] rounded-xl focus:outline-none focus:border-[#EF4444] bg-[#FAFAFA]"
                 />

@@ -203,7 +203,7 @@ export const SubmitVideoModal: React.FC<SubmitVideoModalProps> = ({
               </label>
               <input
                 type="text"
-                placeholder="e.g. Salon Champs-Élysées Paris"
+                placeholder="e.g. Royal Glamour Lounge Mumbai"
                 value={salonOrBusiness}
                 onChange={(e) => setSalonOrBusiness(e.target.value)}
                 className={`w-full bg-[#FCFCFA] border ${
@@ -243,7 +243,7 @@ export const SubmitVideoModal: React.FC<SubmitVideoModalProps> = ({
             >
               {products.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.name} • ${p.price.toFixed(2)} (MOQ: {p.moq})
+                  {p.name} • ₹{p.price.toLocaleString('en-IN')} (MOQ: {p.moq})
                 </option>
               ))}
             </select>

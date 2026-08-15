@@ -36,25 +36,25 @@ export const RegisterWizardModal: React.FC<RegisterWizardModalProps> = ({
   ];
 
   // Step 2: Account & Business Details
-  const [fullName, setFullName] = useState('Jane Doe');
-  const [email, setEmail] = useState('contact@luxeaesthetics.com');
-  const [businessName, setBusinessName] = useState('Aurum Botanics Paris');
+  const [fullName, setFullName] = useState('Priyanka Sharma');
+  const [email, setEmail] = useState('contact@aurumbotanics.in');
+  const [businessName, setBusinessName] = useState('Aurum Botanics Jaipur');
   const [businessType, setBusinessType] = useState('Brand / Manufacturer');
-  const [contactPerson, setContactPerson] = useState('Jane Doe');
+  const [contactPerson, setContactPerson] = useState('Priyanka Sharma');
   const [yearEstablished, setYearEstablished] = useState('2018');
   const [businessDescription, setBusinessDescription] = useState('Curating exceptional organic luxury skincare formulations derived from rare botanical extracts.');
-  const [pincode, setPincode] = useState('75008');
-  const [city, setCity] = useState('Paris');
-  const [stateRegion, setStateRegion] = useState('Île-de-France');
-  const [address, setAddress] = useState('123 Luxury Avenue, Suite 4, Paris, France');
+  const [pincode, setPincode] = useState('302001');
+  const [city, setCity] = useState('Jaipur');
+  const [stateRegion, setStateRegion] = useState('Rajasthan');
+  const [address, setAddress] = useState('123 Malviya Nagar, Sector 4, Jaipur, Rajasthan, India');
   
   // Visual Identity & Media
   const [logoUploaded, setLogoUploaded] = useState(true);
   const [coverUploaded, setCoverUploaded] = useState(true);
 
   // Supply Regions
-  const [supplyRegions, setSupplyRegions] = useState<string[]>(['Pan India', 'Delhi NCR']);
-  const availableRegions = ['Pan India', 'Delhi NCR', 'Global', 'Europe', 'North America'];
+  const [supplyRegions, setSupplyRegions] = useState<string[]>(['Pan India', 'Jaipur']);
+  const availableRegions = ['Pan India', 'Jaipur', 'Delhi', 'Mumbai', 'Kolkata', 'Chennai', 'Bengaluru', 'Pune'];
 
   // Beauty Categories & Highlights
   const [selectedCategories, setSelectedCategories] = useState<string[]>(['skincare']);
@@ -686,7 +686,7 @@ export const RegisterWizardModal: React.FC<RegisterWizardModalProps> = ({
 
                             <div className="mt-2">
                               <div className="flex items-center gap-1">
-                                <h5 className="font-bold text-sm text-[#1C1B1B]">{businessName || 'Aurum Botanics Paris'}</h5>
+                                <h5 className="font-bold text-sm text-[#1C1B1B]">{businessName || 'Aurum Botanics Jaipur'}</h5>
                                 <BadgeCheck className="w-4 h-4 text-[#8E004B]" />
                               </div>
                               <p className="text-[11px] text-[#594047]">
@@ -805,12 +805,12 @@ export const RegisterWizardModal: React.FC<RegisterWizardModalProps> = ({
                           />
                         </div>
                         <div>
-                          <label className="block text-[11px] font-semibold text-[#594047] mb-1">Wholesale Price ($) / MOQ</label>
+                          <label className="block text-[11px] font-semibold text-[#594047] mb-1">Wholesale Price (₹) / MOQ</label>
                           <div className="flex gap-2">
                             <input 
                               type="text" 
-                              value={`$${wholesalePrice}`} 
-                              onChange={(e) => setWholesalePrice(e.target.value.replace('$', ''))} 
+                              value={`₹${wholesalePrice}`} 
+                              onChange={(e) => setWholesalePrice(e.target.value.replace('₹', ''))} 
                               className="w-1/2 bg-[#F7F2F2] border-b border-[#E0BEC6] py-1.5 px-2.5 text-xs font-medium text-[#1C1B1B] rounded-t focus:outline-none" 
                             />
                             <input 

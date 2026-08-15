@@ -245,7 +245,7 @@ export const SupplierModal: React.FC<SupplierModalProps> = ({
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-[#1E1E1E]">Wholesale Bulk Offer</h4>
-                  <p className="text-[11px] text-[#525252] mt-0.5">On orders above $5,000 across all professional skincare & backbar lines.</p>
+                  <p className="text-[11px] text-[#525252] mt-0.5">On orders above ₹2,50,000 across all professional skincare & backbar lines.</p>
                 </div>
               </div>
               <div className="mt-3 pt-2.5 border-t border-[#F0E6EC] flex items-center justify-between">
