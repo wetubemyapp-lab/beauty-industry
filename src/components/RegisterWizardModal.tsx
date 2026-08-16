@@ -138,10 +138,31 @@ export const RegisterWizardModal: React.FC<RegisterWizardModalProps> = ({
     setStep(2);
   };
 
+  const [validationError, setValidationError] = useState<string | null>(null);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (step < 3) {
-      setStep(step + 1);
+    setValidationError(null);
+
+    if (step === 1) {
+      if (!mobileNumber || mobileNumber.trim().length < 8) {
+        setValidationError('Please enter a valid mobile number.');
+        return;
+      }
+      setStep(2);
+      return;
+    }
+
+    if (step === 2) {
+      if (!businessName || !businessName.trim()) {
+        setValidationError('Please enter your Business Name.');
+        return;
+      }
+      if (!address || !address.trim()) {
+        setValidationError('Please enter your Headquarters Address.');
+        return;
+      }
+      setStep(3);
       return;
     }
 
@@ -265,6 +286,13 @@ export const RegisterWizardModal: React.FC<RegisterWizardModalProps> = ({
                 </span>
               </div>
             </div>
+
+            {validationError && (
+              <div className="mb-4 p-3 bg-red-50 text-red-700 text-xs font-semibold rounded-xl border border-red-200 flex items-center justify-between">
+                <span>⚠️ {validationError}</span>
+                <button type="button" onClick={() => setValidationError(null)} className="text-red-500 font-bold ml-2">✕</button>
+              </div>
+            )}
 
             {/* WIZARD COMPLETION STATE */}
             {isComplete ? (
