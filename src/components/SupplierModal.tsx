@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Building2, MapPin, Mail, Phone, Calendar, Star, FileText, Send, CheckCircle2, ArrowRight, MessageSquare, ShieldCheck, Award, Tag, Gift, Copy, Check, Globe, Shield, Package, PlusCircle, Edit2, Archive, LayoutGrid, List } from 'lucide-react';
+import { X, Sparkles, Building2, MapPin, Mail, Phone, Calendar, Star, FileText, Send, CheckCircle2, ArrowRight, MessageSquare, ShieldCheck, Award, Tag, Gift, Copy, Check, Globe, Shield, Package, PlusCircle, Edit2, Archive, LayoutGrid, List, TrendingUp, Heart } from 'lucide-react';
 import { SupplierPartner, Product } from '../types';
 import { StarRating } from './StarRating';
+import { GrowthDashboard } from './GrowthDashboard';
 
 interface SupplierModalProps {
   supplier: SupplierPartner | null;
   products: Product[];
+  wishlistProductIds?: string[];
+  onToggleWishlist?: (productId: string) => void;
   onClose: () => void;
   onSelectProduct: (product: Product) => void;
   onMessageSupplier?: (supplier: SupplierPartner) => void;
@@ -18,6 +21,8 @@ interface SupplierModalProps {
 export const SupplierModal: React.FC<SupplierModalProps> = ({
   supplier,
   products,
+  wishlistProductIds = [],
+  onToggleWishlist,
   onClose,
   onSelectProduct,
   onMessageSupplier,
@@ -32,6 +37,7 @@ export const SupplierModal: React.FC<SupplierModalProps> = ({
   const [sampleRequested, setSampleRequested] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState('All');
   const [archiveConfirmProduct, setArchiveConfirmProduct] = useState<Product | null>(null);
+  const [viewMode, setViewMode] = useState<'catalog' | 'growth'>('catalog');
 
   if (!supplier) return null;
 
@@ -335,8 +341,43 @@ export const SupplierModal: React.FC<SupplierModalProps> = ({
           </div>
         </div>
 
-        {/* Phase 9: Products & Catalogue Section */}
-        <div className="p-6 sm:p-8 bg-white">
+        {/* Navigation Tabs: Catalog vs Growth Dashboard */}
+        <div className="px-6 sm:px-8 pt-4 pb-0 bg-white border-b border-[#F0E6EC] flex items-center gap-3">
+          <button
+            onClick={() => setViewMode('catalog')}
+            className={`pb-3 px-3 text-xs sm:text-sm font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer ${
+              viewMode === 'catalog'
+                ? 'border-[#B8005A] text-[#B8005A]'
+                : 'border-transparent text-[#737373] hover:text-[#1E1E1E]'
+            }`}
+          >
+            <Package className="w-4 h-4" />
+            <span>Wholesale Catalog ({publishedCount})</span>
+          </button>
+          <button
+            onClick={() => setViewMode('growth')}
+            className={`pb-3 px-3 text-xs sm:text-sm font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer ${
+              viewMode === 'growth'
+                ? 'border-[#B8005A] text-[#B8005A]'
+                : 'border-transparent text-[#737373] hover:text-[#1E1E1E]'
+            }`}
+          >
+            <TrendingUp className="w-4 h-4" />
+            <span>Growth & RFQ Trends</span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FFF0F5] text-[#B8005A] border border-[#FFD1E3]">
+              Recharts
+            </span>
+          </button>
+        </div>
+
+        {viewMode === 'growth' ? (
+          <div className="p-4 sm:p-6 bg-[#FCF9F8]">
+            <GrowthDashboard partner={supplier} isStandalone={false} />
+          </div>
+        ) : (
+          <>
+            {/* Phase 9: Products & Catalogue Section */}
+            <div className="p-6 sm:p-8 bg-white">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
               <h3 className="text-lg sm:text-xl font-black text-[#1E1E1E] flex items-center gap-2">
@@ -434,6 +475,25 @@ export const SupplierModal: React.FC<SupplierModalProps> = ({
                           </span>
                         )}
                       </div>
+
+                      {onToggleWishlist && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleWishlist(p.id);
+                          }}
+                          className={`absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all shadow-md cursor-pointer ${
+                            wishlistProductIds.includes(p.id)
+                              ? 'bg-rose-50 border border-rose-200 text-rose-600 scale-105'
+                              : 'bg-white/95 hover:bg-[#FFF0F5] text-[#555] hover:text-[#B8005A] border border-white/60'
+                          }`}
+                          aria-label="Toggle wishlist"
+                          title={wishlistProductIds.includes(p.id) ? 'Saved in Wishlist' : 'Save to Wishlist'}
+                        >
+                          <Heart className={`w-3.5 h-3.5 ${wishlistProductIds.includes(p.id) ? 'fill-rose-500 text-rose-500' : ''}`} />
+                        </button>
+                      )}
                     </div>
                     
                     <div className="p-4 flex flex-col flex-1">
@@ -508,6 +568,8 @@ export const SupplierModal: React.FC<SupplierModalProps> = ({
             </div>
           )}
         </div>
+      </>
+    )}
 
         {/* Business Details & Trust Section */}
         <div className="p-6 sm:p-8 bg-[#FAFAFA] grid grid-cols-1 lg:grid-cols-12 gap-8 border-t border-[#F0E6EC]">

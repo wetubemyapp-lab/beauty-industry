@@ -6,6 +6,8 @@ import { StarRating } from './StarRating';
 
 interface TrendingCatalogProps {
   products: Product[];
+  wishlistProductIds?: string[];
+  onToggleWishlist?: (productId: string) => void;
   compareProductIds?: string[];
   onToggleCompare?: (product: Product) => void;
   onSelectProduct: (product: Product) => void;
@@ -14,6 +16,8 @@ interface TrendingCatalogProps {
 
 export const TrendingCatalog: React.FC<TrendingCatalogProps> = ({
   products,
+  wishlistProductIds = [],
+  onToggleWishlist,
   compareProductIds = [],
   onToggleCompare,
   onSelectProduct,
@@ -73,6 +77,7 @@ export const TrendingCatalog: React.FC<TrendingCatalogProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-7">
         {visibleProducts.map((product) => {
           const isCompared = compareProductIds.includes(product.id);
+          const isWishlisted = wishlistProductIds.includes(product.id);
 
           return (
             <motion.div
@@ -111,25 +116,46 @@ export const TrendingCatalog: React.FC<TrendingCatalogProps> = ({
                   )}
                 </div>
 
-                {/* Compare Toggle Button on Image */}
-                {onToggleCompare && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onToggleCompare(product);
-                    }}
-                    className={`absolute top-3.5 right-3.5 z-20 px-2.5 py-1 rounded-full text-[11px] font-extrabold transition-all flex items-center gap-1 shadow-md cursor-pointer ${
-                      isCompared
-                        ? 'bg-[#B8005A] text-white border border-[#B8005A]'
-                        : 'bg-white/95 hover:bg-[#FFF0F5] text-[#4A4A4A] hover:text-[#B8005A] border border-white/60 hover:border-[#FFD1E3]'
-                    }`}
-                    title={isCompared ? 'Remove from comparison' : 'Add to side-by-side comparison'}
-                  >
-                    <ArrowLeftRight className="w-3 h-3" />
-                    <span>{isCompared ? 'Comparing' : 'Compare'}</span>
-                  </button>
-                )}
+                {/* Top Right Action Buttons (Wishlist Heart + Compare) */}
+                <div className="absolute top-3.5 right-3.5 z-20 flex items-center gap-1.5">
+                  {onToggleWishlist && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleWishlist(product.id);
+                      }}
+                      className={`w-7 h-7 rounded-full flex items-center justify-center transition-all shadow-md cursor-pointer ${
+                        isWishlisted
+                          ? 'bg-rose-50 border border-rose-200 text-rose-600 scale-105'
+                          : 'bg-white/95 hover:bg-[#FFF0F5] text-[#555] hover:text-[#B8005A] border border-white/60 hover:border-[#FFD1E3]'
+                      }`}
+                      aria-label={isWishlisted ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
+                      title={isWishlisted ? 'Saved in Wishlist' : 'Save to Wishlist'}
+                    >
+                      <Heart className={`w-3.5 h-3.5 transition-transform ${isWishlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
+                    </button>
+                  )}
+
+                  {onToggleCompare && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleCompare(product);
+                      }}
+                      className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold transition-all flex items-center gap-1 shadow-md cursor-pointer ${
+                        isCompared
+                          ? 'bg-[#B8005A] text-white border border-[#B8005A]'
+                          : 'bg-white/95 hover:bg-[#FFF0F5] text-[#4A4A4A] hover:text-[#B8005A] border border-white/60 hover:border-[#FFD1E3]'
+                      }`}
+                      title={isCompared ? 'Remove from comparison' : 'Add to side-by-side comparison'}
+                    >
+                      <ArrowLeftRight className="w-3 h-3" />
+                      <span>{isCompared ? 'Comparing' : 'Compare'}</span>
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Content Container */}

@@ -7,53 +7,68 @@ export const CATEGORIES: Category[] = [
     subtext: 'Professional Formulations',
     iconName: 'Sparkles',
     itemCount: 420,
-    featuredImg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuACGmKxH3sKXQzfZ0ok5I09A_2UZ5Lk-zeaa_4Xt6mSPDZDL1IIZA2tVmblc0QziC47pQfp-5Wk6BBt42duT67QeBqYZkN6UH6HkVEU1iqTWHgMbCSUnsvb1PvD9o6hW_C1ySvLZ_q-7F2xmSh4Hn7gBVNzLuNTcqufs4ML63tl-Ng1UqB9kTB8g3uuBZvYf2yAOh8efzkvt74XQrLNEMOurN9E_4tW-0W_K5wpWHASxqrA6QQOfNH1'
+    featuredImg: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: 'haircare',
     name: 'Haircare',
+    subtext: 'Bulk Shampoos & Backbar Masks',
     iconName: 'Scissors',
-    itemCount: 310
+    itemCount: 310,
+    featuredImg: 'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: 'haircolor',
     name: 'Hair Color',
+    subtext: 'Ammonia-Free Salon Color Kits',
     iconName: 'Palette',
-    itemCount: 185
+    itemCount: 185,
+    featuredImg: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: 'makeup',
     name: 'Makeup',
+    subtext: 'HD Foundations & Pigments',
     iconName: 'Brush',
-    itemCount: 540
+    itemCount: 540,
+    featuredImg: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: 'nails',
     name: 'Nails',
+    subtext: 'UV Gel Polish & Nail Tech Kits',
     iconName: 'Hand',
-    itemCount: 260
+    itemCount: 260,
+    featuredImg: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: 'spa',
     name: 'Spa',
+    subtext: 'Aromatherapy & Herbal Body Oils',
     iconName: 'Flower2',
-    itemCount: 195
+    itemCount: 195,
+    featuredImg: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: 'massage',
     name: 'Massage',
+    subtext: 'Herbal Deep Tissue Gels & Creams',
     iconName: 'HeartHandshake',
-    itemCount: 140
+    itemCount: 140,
+    featuredImg: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: 'tattoo',
     name: 'Tattoo Studio',
+    subtext: 'Stencil Transfer & Aftercare',
     iconName: 'PenTool',
-    itemCount: 95
+    itemCount: 95,
+    featuredImg: 'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: 'furniture',
     name: 'Salon Furniture',
+    subtext: 'Hydraulic Styling Chairs & Beds',
     iconName: 'Armchair',
     itemCount: 110,
     featuredImg: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=800'
@@ -61,6 +76,7 @@ export const CATEGORIES: Category[] = [
   {
     id: 'tools',
     name: 'Salon Tools & Eq.',
+    subtext: 'Blow Dryers & Titanium Irons',
     iconName: 'Wrench',
     itemCount: 340,
     featuredImg: 'https://images.unsplash.com/photo-1582095133179-bfd08e2fc6b3?auto=format&fit=crop&q=80&w=800'
@@ -68,6 +84,7 @@ export const CATEGORIES: Category[] = [
   {
     id: 'backbar',
     name: 'Backbar Essentials',
+    subtext: 'Disposables, Towels & Capes',
     iconName: 'Package',
     itemCount: 190,
     featuredImg: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&q=80&w=800'
@@ -75,6 +92,7 @@ export const CATEGORIES: Category[] = [
   {
     id: 'aesthetic',
     name: 'Aesthetic Clinic Tools',
+    subtext: 'Hydra Dermabrasion & Laser Tech',
     iconName: 'Sparkles',
     itemCount: 125,
     featuredImg: 'https://images.unsplash.com/photo-1512290900672-8a25e2d6f28e?auto=format&fit=crop&q=80&w=800'
@@ -328,307 +346,511 @@ export const SUPPLIERS: SupplierPartner[] = [
 ];
 
 export const PRODUCTS: Product[] = [
+  // 1. Skincare
   {
-    id: 'prod-dryer-x2',
-    name: 'Ionic Salon Dryer X2',
-    brand: 'AEROPRO',
-    category: 'tools',
-    categoryLabel: 'Tools',
-    tag: 'Tools',
-    isVerified: false,
+    id: 'prod-skincare-serum-ha',
+    name: 'Hyaluronic Acid Hydrating Backbar Serum',
+    brand: 'NEXORA LABS INDIA',
+    category: 'skincare',
+    categoryLabel: 'Skincare',
+    tag: 'Skincare',
+    isVerified: true,
     isWholesale: true,
-    price: 12500,
-    unit: 'unit',
+    price: 1450,
+    unit: 'bottle (100ml)',
     moq: 10,
     stockStatus: 'In Stock',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBbJYm_SslFIku_82qLmRuk2k5zRvHZT8jce4mbMPDB-6-eB2ZZADEa8Z3fGAio0r-DI21vhJ1Mr_sndv1k6s18xexTuSiABEazFXa5yyXvh2nw9_0WqY-Z2BhWQ4LqO9JaZFxU8ERfPENI3Ajv5Cqh2UvAhHiDrKTp-qpqKryod_fnKK0f7bs2W8BMyOH87d0FN0e1IrvDAtynBYt3sUh2OSA8GMJ7ILRVo-517al6IOaan8oAJINt',
+    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1000&q=80',
     gallery: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBbJYm_SslFIku_82qLmRuk2k5zRvHZT8jce4mbMPDB-6-eB2ZZADEa8Z3fGAio0r-DI21vhJ1Mr_sndv1k6s18xexTuSiABEazFXa5yyXvh2nw9_0WqY-Z2BhWQ4LqO9JaZFxU8ERfPENI3Ajv5Cqh2UvAhHiDrKTp-qpqKryod_fnKK0f7bs2W8BMyOH87d0FN0e1IrvDAtynBYt3sUh2OSA8GMJ7ILRVo-517al6IOaan8oAJINt',
-      'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=1000&q=80'
+      'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1608248597358-752ba75fa05c?auto=format&fit=crop&w=1000&q=80'
     ],
-    description: 'Commercial brushless motor hair dryer engineered for back-to-back 12-hour salon shifts. Generates 110,000 RPM with negative ion saturation to cut blowout time by 45% while preserving cuticle moisture.',
+    description: 'High-potency triple molecular weight hyaluronic acid serum formulated specifically for Indian salon and aesthetic clinic backbar facial protocols. Penetrates deep dermal layers for immediate barrier plumping and 48-hour moisture retention.',
     specifications: {
-      'Motor': '110,000 RPM Brushless BLDC',
-      'Power': '2200W Dual Voltage',
-      'Weight': '390 grams ultralight',
-      'Warranty': '3 Years Commercial Salon Replacement',
-      'Noise Level': '< 68 dB Whisper Silent'
+      'Active Ingredients': 'Triple HA Complex (2%), D-Panthenol (1%), Allantoin',
+      'Volume': '100ml / 3.4 fl. oz. Backbar Pump',
+      'Skin Type': 'All Skin Types, Post-Facial, Dehydrated',
+      'Formulation': 'Ayurvedic Botanical Infusion, Fragrance-Free, Vegan'
     },
-    leadTimeDays: 3,
-    certifications: ['BIS Certified', 'CE Certified', 'RoHS Compliance'],
-    supplierId: 'le-dist',
-    supplierName: 'Mumbai Beauty Imports',
+    leadTimeDays: 2,
+    certifications: ['Ayush Approved', 'GMP Certified', 'Cruelty-Free', 'ISO 22716'],
+    supplierId: 'aura-beauty',
+    supplierName: 'Aura Beauty India',
     supplierLocation: 'Mumbai',
-    rating: 4.8,
-    reviewsCount: 64,
+    rating: 4.9,
+    reviewsCount: 112,
     wholesaleTiers: [
-      { minUnits: 10, pricePerUnit: 12500 },
-      { minUnits: 25, pricePerUnit: 11500 },
-      { minUnits: 50, pricePerUnit: 10500 },
-      { minUnits: 100, pricePerUnit: 8999 }
+      { minUnits: 10, pricePerUnit: 1450 },
+      { minUnits: 25, pricePerUnit: 1320 },
+      { minUnits: 50, pricePerUnit: 1180 },
+      { minUnits: 100, pricePerUnit: 990 }
     ]
   },
   {
     id: 'prod-peptide-cream',
     name: 'Peptide Rich Formula Cream',
-    brand: 'DERMAGLOW',
+    brand: 'DERMAGLOW INDIA',
     category: 'skincare',
     categoryLabel: 'Skincare',
     tag: 'Skincare',
     isVerified: true,
     isWholesale: true,
     price: 2450,
-    unit: 'unit',
-    moq: 50,
+    unit: 'unit (50g)',
+    moq: 15,
     stockStatus: 'In Stock',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCfreDlJ-MCj8fxVa3-PVT_YUiuBzlJRN5KNdyZlHZOXW3AmSHzgvWBqTbw3h-HssFukxf6rkndCzlkk0h5o6lmU6qr52z0r-W2Z_p3EdRT9dhis9nxhiCboXqJFw1krftGK-fWhAw5vidF0WEItAU16yUPhOArPd8ANmOcQhyw0LFCLaFzssHKPwIrBQyl6JbKPrqG3Gh2SQNNu5KT6VclKd4OG4KjqONnQ1hq1Bd3lk9pQxJlGdfa',
     gallery: [
       'https://lh3.googleusercontent.com/aida-public/AB6AXuCfreDlJ-MCj8fxVa3-PVT_YUiuBzlJRN5KNdyZlHZOXW3AmSHzgvWBqTbw3h-HssFukxf6rkndCzlkk0h5o6lmU6qr52z0r-W2Z_p3EdRT9dhis9nxhiCboXqJFw1krftGK-fWhAw5vidF0WEItAU16yUPhOArPd8ANmOcQhyw0LFCLaFzssHKPwIrBQyl6JbKPrqG3Gh2SQNNu5KT6VclKd4OG4KjqONnQ1hq1Bd3lk9pQxJlGdfa',
       'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1000&q=80'
     ],
-    description: 'Clinical grade anti-aging peptide concentrate with 6 bioactive oligopeptides, micro-encapsulated niacinamide, and marine collagen. Delivered in airtight rose gold frosted glass jars suitable for medi-spa retail or facial protocol integration.',
+    description: 'Clinical grade anti-aging peptide concentrate with 6 bioactive oligopeptides, micro-encapsulated niacinamide, and marine collagen.',
     specifications: {
       'Volume': '50ml / 1.7 fl. oz.',
       'Active Ingredients': 'Hexapeptide-8, Matrixyl 3000, 5% Niacinamide',
-      'Skin Type': 'Mature, Sensitive, Post-Laser',
-      'Formulation': 'Dermatologist Tested, Fragrance-Free',
-      'Packaging': 'Recyclable Frosted Glass & Rose Gold Lid'
+      'Skin Type': 'Mature, Sensitive, Post-Laser'
     },
-    leadTimeDays: 5,
-    certifications: ['GMP Certified', 'FDA Registered Facility', 'Cruelty-Free'],
+    leadTimeDays: 3,
+    certifications: ['GMP Certified', 'FDA Approved Facility', 'Cruelty-Free'],
     supplierId: 'gg-supply',
     supplierName: 'Royal Glamour India Supplies',
     supplierLocation: 'Pune',
     rating: 4.9,
     reviewsCount: 128,
     wholesaleTiers: [
-      { minUnits: 50, pricePerUnit: 2450 },
-      { minUnits: 150, pricePerUnit: 2100 },
-      { minUnits: 500, pricePerUnit: 1750 },
-      { minUnits: 1000, pricePerUnit: 1400 }
+      { minUnits: 15, pricePerUnit: 2450 },
+      { minUnits: 50, pricePerUnit: 2100 },
+      { minUnits: 100, pricePerUnit: 1750 }
     ]
   },
+
+  // 2. Haircare
   {
-    id: 'prod-brush-set',
-    name: 'Pro Master Brush Set',
-    brand: 'ARTISTRY',
-    category: 'makeup',
-    categoryLabel: 'Accessories',
-    tag: 'Accessories',
-    isVerified: false,
-    isWholesale: true,
-    price: 3850,
-    unit: 'set',
-    moq: 20,
-    stockStatus: 'Low Stock',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAAPJ7s1Is9p6ROSFxD5QwYLNnpW9zcd7gy4jUolnRl1hxcYyli05KabmouymmrhiaMqkHhiX8N-uPKzn7RKWae5_0c6jAqAm6VKscmUk3lIzA2r-XL28SLfq6U_gtGZGR0CA025LykCoeXpGU4iFGEkHl997C9ihvofSl9PNUyFQPBx_UABqeb9p25GNpb9nctP-IRJpS2zK7KJ-AMQxCo3K_7YMWMGDOnLIFws66zN1my6EnpmrFi',
-    gallery: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuAAPJ7s1Is9p6ROSFxD5QwYLNnpW9zcd7gy4jUolnRl1hxcYyli05KabmouymmrhiaMqkHhiX8N-uPKzn7RKWae5_0c6jAqAm6VKscmUk3lIzA2r-XL28SLfq6U_gtGZGR0CA025LykCoeXpGU4iFGEkHl997C9ihvofSl9PNUyFQPBx_UABqeb9p25GNpb9nctP-IRJpS2zK7KJ-AMQxCo3K_7YMWMGDOnLIFws66zN1my6EnpmrFi',
-      'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1000&q=80'
-    ],
-    description: '18-piece master artistry makeup brush kit featuring dual-density antimicrobial synthetic nanofiber bristles, weighted natural birchwood handles, and rose gold brass ferrules. Includes travel roll case.',
-    specifications: {
-      'Piece Count': '18 Brushes + Leatherette Roll Case',
-      'Bristle Tech': 'SilkNanofiber 2.0 (100% Vegan)',
-      'Handles': 'Ergonomic FSC Birchwood with Matte Finish',
-      'Ferrules': 'Seamless Double-Crimped Brass'
-    },
-    leadTimeDays: 4,
-    certifications: ['Vegan Certified', 'PETA Approved', 'ISO 9001'],
-    supplierId: 'gg-supply',
-    supplierName: 'Royal Glamour India Supplies',
-    supplierLocation: 'Pune',
-    rating: 4.7,
-    reviewsCount: 45,
-    wholesaleTiers: [
-      { minUnits: 20, pricePerUnit: 3850 },
-      { minUnits: 50, pricePerUnit: 3200 },
-      { minUnits: 100, pricePerUnit: 2750 }
-    ]
-  },
-  {
-    id: 'prod-gold-ampoules',
-    name: '24K Bio-Collagen Cellular Ampoules',
-    brand: 'NEXORA LABS',
-    category: 'skincare',
-    categoryLabel: 'Skincare',
-    tag: 'Skincare',
+    id: 'prod-haircare-shampoo-5l',
+    name: 'Keratin Infused Repair Shampoo 5L Bulk Container',
+    brand: 'BOTANICA PROFESSIONAL',
+    category: 'haircare',
+    categoryLabel: 'Haircare',
+    tag: 'Haircare',
     isVerified: true,
     isWholesale: true,
-    price: 5500,
-    unit: 'box (10x5ml)',
-    moq: 15,
+    price: 2200,
+    unit: 'can (5 Litres)',
+    moq: 5,
     stockStatus: 'In Stock',
-    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=1000&q=80',
     gallery: [
-      'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1000&q=80'
+      'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=1000&q=80'
     ],
-    description: 'Ultra-concentrated cellular infusion with 99.9% pure cosmetic 24K gold flakes, low-molecular weight hyaluronic acid, and stem cell ferment for instant red-carpet lifting.',
+    description: 'Salon backbar 5-litre bulk dispenser shampoo enriched with hydrolyzed wheat protein, keratin amino acids, and bhringraj extract. Specially balanced pH 5.5 prevents color stripping and restores chemically treated hair cuticle.',
     specifications: {
-      'Concentration': '99.9% Pure Gold Flakes + 4% Bio-Placenta',
-      'Packaging': '10 sterile vacuum-sealed glass ampoules with dropper',
-      'Origin': 'Formulated with luxury ingredients'
+      'Volume': '5000ml (5 Litres) with Heavy-Duty Backbar Pump',
+      'Key Actives': 'Hydrolyzed Keratin, Argan Oil, Bhringraj Root',
+      'Sulfate Free': 'Low-Foam Eco Mild Surfactants',
+      'Applications': 'Approx. 250+ Salon Washes per Can'
     },
-    leadTimeDays: 2,
-    certifications: ['ISO 22716', 'Ecocert', 'Dermatest 5-Star'],
-    supplierId: 'le-dist',
-    supplierName: 'Mumbai Beauty Imports',
+    leadTimeDays: 3,
+    certifications: ['GMP Certified', 'ISO 9001:2015', 'Paraben-Free'],
+    supplierId: 'aura-beauty',
+    supplierName: 'Aura Beauty India',
     supplierLocation: 'Mumbai',
-    rating: 5.0,
-    reviewsCount: 82,
+    rating: 4.8,
+    reviewsCount: 86,
     wholesaleTiers: [
-      { minUnits: 15, pricePerUnit: 5500 },
-      { minUnits: 40, pricePerUnit: 4600 },
-      { minUnits: 100, pricePerUnit: 3950 }
+      { minUnits: 5, pricePerUnit: 2200 },
+      { minUnits: 15, pricePerUnit: 1980 },
+      { minUnits: 30, pricePerUnit: 1750 }
     ]
   },
+
+  // 3. Hair Color
   {
-    id: 'prod-hair-color-palette',
-    name: 'Chromatic Lumina Micro-Pigment Dye Kit',
-    brand: 'MILANO PRO',
+    id: 'prod-haircolor-cream-kit',
+    name: 'Professional Ammonia-Free Salon Hair Color Cream Kit',
+    brand: 'CHROMA VITA INDIA',
     category: 'haircolor',
     categoryLabel: 'Hair Color',
     tag: 'Hair Color',
     isVerified: true,
     isWholesale: true,
-    price: 750,
-    unit: 'tube (100ml)',
-    moq: 60,
+    price: 480,
+    unit: 'kit (100ml tube + developer)',
+    moq: 20,
     stockStatus: 'In Stock',
     image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1000&q=80',
     gallery: [
       'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1000&q=80'
     ],
-    description: 'Italian formulation with cold-pressed argan oil and quinoa protein. 100% grey coverage with 64 intermixable shades and 30-wash fade resistance.',
+    description: '100% grey coverage zero-ammonia professional cream color infused with cold-pressed mustard & almond oil micro-lipids. High pigment retention for vibrant salon color lasting up to 35 washes without hair dryness.',
     specifications: {
-      'Shades': '64 Palette Nuances',
-      'Ammonia Level': '0.0% Zero Ammonia Formula',
-      'Size': '100ml / 3.4 fl oz per tube'
+      'Shades Available': '48 Intermixable Indian Skin Tone Nuances',
+      'Formula': '0.0% Ammonia, Odorless Conditioning Cream',
+      'Size': '100ml Aluminum Tube + 100ml Stabilized Developer',
+      'Processing Time': '25-35 minutes'
     },
-    leadTimeDays: 4,
-    certifications: ['Cosmetics Compliant', 'Eco-Certified Extracts'],
+    leadTimeDays: 2,
+    certifications: ['BIS Compliant', 'Dermatologically Tested', 'No PPD'],
     supplierId: 'mc-milano',
     supplierName: 'Shree Ram Beauty Supplies',
     supplierLocation: 'Jaipur',
     rating: 4.9,
-    reviewsCount: 110,
+    reviewsCount: 145,
     wholesaleTiers: [
-      { minUnits: 60, pricePerUnit: 750 },
-      { minUnits: 200, pricePerUnit: 620 },
-      { minUnits: 500, pricePerUnit: 520 }
+      { minUnits: 20, pricePerUnit: 480 },
+      { minUnits: 50, pricePerUnit: 420 },
+      { minUnits: 100, pricePerUnit: 360 }
     ]
   },
+
+  // 4. Makeup
   {
-    id: 'prod-spa-bed',
-    name: 'Hydraulic Cloud Spa Treatment Bed',
-    brand: 'AURA LUXE',
-    category: 'furniture',
-    categoryLabel: 'Salon Furniture',
-    tag: 'Furniture',
+    id: 'prod-makeup-liquid-foundation',
+    name: 'Matte Finish Waterproof Liquid Foundation Bulk Pack',
+    brand: 'GLAMART PRO INDIA',
+    category: 'makeup',
+    categoryLabel: 'Makeup',
+    tag: 'Makeup',
     isVerified: true,
     isWholesale: true,
-    price: 76500,
-    unit: 'unit',
-    moq: 2,
-    stockStatus: 'Made to Order',
-    image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1000&q=80',
-    gallery: [
-      'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1000&q=80'
-    ],
-    description: 'Triple-motor whisper-quiet medical massage and facial recliner with built-in heated memory foam mattress and antimicrobial premium PU leather.',
-    specifications: {
-      'Motors': '3 Precision Actuators',
-      'Weight Capacity': '320 kg (700 lbs)',
-      'Dimensions': '195cm x 75cm x 60-90cm adjustable',
-      'Upholstery': 'Hospital-grade PU leather, stain resistant'
-    },
-    leadTimeDays: 14,
-    certifications: ['Medical Grade', 'ISO 13485'],
-    supplierId: 'td-dubai',
-    supplierName: 'Jaipur Luxury Beauty Hub',
-    supplierLocation: 'Jaipur',
-    rating: 4.9,
-    reviewsCount: 38,
-    wholesaleTiers: [
-      { minUnits: 2, pricePerUnit: 76500 },
-      { minUnits: 5, pricePerUnit: 67000 },
-      { minUnits: 10, pricePerUnit: 59000 }
-    ]
-  },
-  {
-    id: 'prod-hyaluronic-serum',
-    name: 'Multi-Molecular Barrier Repair Serum',
-    brand: 'NEXORA LABS',
-    category: 'skincare',
-    categoryLabel: 'Skincare',
-    tag: 'Skincare',
-    isVerified: true,
-    isWholesale: true,
-    price: 2950,
-    unit: 'bottle (30ml)',
-    moq: 30,
+    price: 650,
+    unit: 'pack (6x30ml shades)',
+    moq: 15,
     stockStatus: 'In Stock',
-    image: 'https://images.unsplash.com/photo-1608248597358-752ba75fa05c?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1000&q=80',
     gallery: [
-      'https://images.unsplash.com/photo-1608248597358-752ba75fa05c?auto=format&fit=crop&w=1000&q=80'
+      'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1000&q=80'
     ],
-    description: 'Triple-weight hyaluronic acid serum enriched with ceramides NP/AP/EOP and Centella Asiatica for intensive epidermal hydration and barrier restoration.',
+    description: 'Bridal and bridal-party grade HD liquid foundation with 18-hour sweatproof wear. Tailored for warm, olive, and golden undertones with oil-absorbing silica beads and SPF 25 PA++ protection.',
     specifications: {
-      'Volume': '30ml / 1.0 fl. oz.',
-      'Active Ingredients': '5 Hyaluronic Weights, Ceramide Complex (1%), Centella 3%',
-      'Skin Type': 'All Skin Types, Dehydrated, Post-Peel',
-      'Formulation': 'Oil-Free, Non-Comedogenic, Vegan',
-      'Packaging': 'UV-Protective Amber Dropper Bottle'
+      'Coverage': 'Medium to Full Buildable Velvet Matte',
+      'Finish': 'Photo-Ready Non-Flashback HD',
+      'Formulation': 'Non-Comedogenic, Transfer-Proof',
+      'Pack Size': '6 Assorted Bottles (30ml each)'
+    },
+    leadTimeDays: 4,
+    certifications: ['FDA Approved', 'Cruelty-Free', 'ISO 22716'],
+    supplierId: 'gg-supply',
+    supplierName: 'Royal Glamour India Supplies',
+    supplierLocation: 'Pune',
+    rating: 4.7,
+    reviewsCount: 68,
+    wholesaleTiers: [
+      { minUnits: 15, pricePerUnit: 650 },
+      { minUnits: 40, pricePerUnit: 580 },
+      { minUnits: 100, pricePerUnit: 490 }
+    ]
+  },
+
+  // 5. Nails
+  {
+    id: 'prod-nails-uv-gel-kit',
+    name: 'UV Gel Nail Polish 36-Color Salon Master Kit',
+    brand: 'VELVET NAIL LABS',
+    category: 'nails',
+    categoryLabel: 'Nails',
+    tag: 'Nails',
+    isVerified: true,
+    isWholesale: true,
+    price: 3800,
+    unit: 'kit (36 bottles + Base & Top)',
+    moq: 2,
+    stockStatus: 'In Stock',
+    image: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1000&q=80'
+    ],
+    description: 'Complete nail tech salon starter master collection including 36 high-pigment gel shades, 2 Rubber Base Coats, 2 No-Wipe Diamond Top Coats, and 1 Matte Top Coat. Chip-free 4-week durability under UV/LED lamps.',
+    specifications: {
+      'Bottle Volume': '15ml / bottle (36 colors + 5 finishing bottles)',
+      'Cure Time': '60s LED / 120s UV',
+      'Toxicity Standard': '9-Free Non-Toxic Formulation',
+      'Durability': 'Up to 28 Days High Gloss'
     },
     leadTimeDays: 3,
-    certifications: ['GMP Certified', 'Cruelty-Free', 'Ecocert', 'ISO 22716'],
-    supplierId: 'le-dist',
-    supplierName: 'Mumbai Beauty Imports',
-    supplierLocation: 'Mumbai',
-    rating: 4.8,
-    reviewsCount: 94,
+    certifications: ['CE Certified', 'MSDS Verified', 'Vegan & Cruelty Free'],
+    supplierId: 'gg-supply',
+    supplierName: 'Royal Glamour India Supplies',
+    supplierLocation: 'Pune',
+    rating: 4.9,
+    reviewsCount: 54,
     wholesaleTiers: [
-      { minUnits: 30, pricePerUnit: 2950 },
-      { minUnits: 100, pricePerUnit: 2500 },
-      { minUnits: 300, pricePerUnit: 1999 }
+      { minUnits: 2, pricePerUnit: 3800 },
+      { minUnits: 5, pricePerUnit: 3400 },
+      { minUnits: 10, pricePerUnit: 2990 }
     ]
   },
+
+  // 6. Spa
   {
-    id: 'prod-sonic-infusion',
-    name: 'Cryo-Thermal Infusion Pro Wand',
-    brand: 'AEROPRO',
-    category: 'tools',
-    categoryLabel: 'Tools',
-    tag: 'Tools',
+    id: 'prod-spa-body-oils-set',
+    name: 'Botanical Aromatherapy Massage & Body Oils Set',
+    brand: 'KAVYA AYURVEDIC BOTANICALS',
+    category: 'spa',
+    categoryLabel: 'Spa',
+    tag: 'Spa',
     isVerified: true,
     isWholesale: true,
-    price: 16500,
+    price: 1250,
+    unit: 'set (4x500ml blends)',
+    moq: 8,
+    stockStatus: 'In Stock',
+    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80'
+    ],
+    description: 'Cold-pressed authentic Ayurvedic spa body oil assortment: Sandalwood Calm, Lemongrass Detox, Rose Glow, and Eucalyptus Muscle Relief. Formulated with pure sesame and sweet almond carrier oil base for luxury wellness resorts.',
+    specifications: {
+      'Kit Contents': '4 x 500ml Amber Dispenser Bottles',
+      'Key Extracts': 'Mysore Sandalwood, Kashmiri Rose, Nilgiri Eucalyptus',
+      'Base Oil': '100% Pure Cold-Pressed Virgin Sesame & Almond',
+      'Texture': 'Non-Sticky High Glide Professional Absorption'
+    },
+    leadTimeDays: 2,
+    certifications: ['Ayush Ministry Certified', 'GMP Eco-Cert', '100% Natural'],
+    supplierId: 'kavya-botanicals',
+    supplierName: 'Kavya Ayurvedic Botanicals',
+    supplierLocation: 'Bengaluru',
+    rating: 5.0,
+    reviewsCount: 97,
+    wholesaleTiers: [
+      { minUnits: 8, pricePerUnit: 1250 },
+      { minUnits: 20, pricePerUnit: 1080 },
+      { minUnits: 50, pricePerUnit: 920 }
+    ]
+  },
+
+  // 7. Massage
+  {
+    id: 'prod-massage-herbal-gel-2kg',
+    name: 'Professional Deep Tissue Herbal Massage Gel 2Kg',
+    brand: 'VEDA MASSAGE LAB',
+    category: 'massage',
+    categoryLabel: 'Massage',
+    tag: 'Massage',
+    isVerified: true,
+    isWholesale: true,
+    price: 980,
+    unit: 'tub (2 Kg Bulk Jar)',
+    moq: 10,
+    stockStatus: 'In Stock',
+    image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1000&q=80'
+    ],
+    description: 'Cooling-warming dual action deep tissue massage gel formulated with wintergreen oil, camphor, ashwagandha, and menthol crystals for sports massage clinics, luxury spas, and wellness centers.',
+    specifications: {
+      'Net Weight': '2000 grams (2 Kg) Backbar Tub',
+      'Actives': 'Wintergreen (Gandhapura), Ashwagandha, Menthol Crystals',
+      'Water-Soluble': 'Easily wiped with warm towel without grease marks',
+      'Shelf Life': '24 Months'
+    },
+    leadTimeDays: 3,
+    certifications: ['Ayush Approved', 'GMP Certified', 'Paraben Free'],
+    supplierId: 'kavya-botanicals',
+    supplierName: 'Kavya Ayurvedic Botanicals',
+    supplierLocation: 'Bengaluru',
+    rating: 4.8,
+    reviewsCount: 42,
+    wholesaleTiers: [
+      { minUnits: 10, pricePerUnit: 980 },
+      { minUnits: 25, pricePerUnit: 860 },
+      { minUnits: 50, pricePerUnit: 740 }
+    ]
+  },
+
+  // 8. Tattoo Studio
+  {
+    id: 'prod-tattoo-transfer-bundle',
+    name: 'Stencil Transfer Solution & Aftercare Cream Bundle',
+    brand: 'INKSHIELD PRO',
+    category: 'tattoo',
+    categoryLabel: 'Tattoo Studio',
+    tag: 'Tattoo Studio',
+    isVerified: true,
+    isWholesale: true,
+    price: 1150,
+    unit: 'bundle (250ml Stencil Gel + 12 Aftercare Tins)',
+    moq: 10,
+    stockStatus: 'In Stock',
+    image: 'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=1000&q=80'
+    ],
+    description: 'Professional tattoo studio prep and aftercare combo. Lock-in stencil transfer gel yields crisp, smudge-proof lines for up to 8 hours of needlework. Includes 12 herbal calendula-panthenol healing balms.',
+    specifications: {
+      'Stencil Gel': '250ml Precision Pump Bottle',
+      'Aftercare Balms': '12 x 30g Aluminum Pocket Tins',
+      'Key Ingredients': 'Organic Calendula Extract, D-Panthenol, Shea Butter',
+      'Safety': '100% Petroleum-Free, Hypoallergenic'
+    },
+    leadTimeDays: 2,
+    certifications: ['Dermatologist Tested', 'Vegan Certified', 'ISO 9001'],
+    supplierId: 'luxe-color-dist',
+    supplierName: 'Bharat Backbar Wholesalers',
+    supplierLocation: 'Delhi',
+    rating: 4.9,
+    reviewsCount: 39,
+    wholesaleTiers: [
+      { minUnits: 10, pricePerUnit: 1150 },
+      { minUnits: 25, pricePerUnit: 990 },
+      { minUnits: 50, pricePerUnit: 850 }
+    ]
+  },
+
+  // 9. Salon Furniture
+  {
+    id: 'prod-furniture-hydraulic-chair',
+    name: 'Hydraulic Reclining Salon & Styling Chair',
+    brand: 'VERTEX SALON TECH',
+    category: 'furniture',
+    categoryLabel: 'Salon Furniture',
+    tag: 'Salon Furniture',
+    isVerified: true,
+    isWholesale: true,
+    price: 14500,
     unit: 'unit',
-    moq: 5,
+    moq: 1,
     stockStatus: 'In Stock',
     image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1000&q=80',
     gallery: [
       'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1000&q=80'
     ],
-    description: 'Dual-mode hot & cold sonic micro-infusion device for professional estheticians. Enhances serum penetration up to 8x with 42°C heating and 6°C cryo-firming.',
+    description: 'Commercial heavy-duty hydraulic styling chair with 360-degree rotation, lockable swivel mechanism, and 160-degree recline for hair styling, shaving, and threading.',
     specifications: {
-      'Motor': '12,000 VPM Micro-Sonic Vibration',
-      'Power': 'Rechargeable Li-Ion 2500mAh (Wireless)',
-      'Weight': '210 grams ultra-portable',
-      'Warranty': '2 Years Commercial Replacement',
-      'Noise Level': '< 45 dB Ultra Quiet'
+      'Pump': 'Heavy-Duty Cast Iron Chrome Hydraulic Base',
+      'Weight Capacity': '220 kg Tested Loading',
+      'Upholstery': 'High-Density Molded Foam with Spill-Proof Matte PU Leather',
+      'Warranty': '3 Years Onsite Mechanical Hydraulic Warranty'
     },
-    leadTimeDays: 3,
-    certifications: ['CE Certified', 'FDA Cleared Class I', 'RoHS Compliance'],
+    leadTimeDays: 5,
+    certifications: ['BIS Approved', 'ISO 9001:2015 Commercial Standard'],
+    supplierId: 'vertex-salon',
+    supplierName: 'Vertex Salon Technologies',
+    supplierLocation: 'Kolkata',
+    rating: 4.8,
+    reviewsCount: 47,
+    wholesaleTiers: [
+      { minUnits: 1, pricePerUnit: 14500 },
+      { minUnits: 3, pricePerUnit: 13200 },
+      { minUnits: 6, pricePerUnit: 11900 }
+    ]
+  },
+
+  // 10. Salon Tools & Eq.
+  {
+    id: 'prod-tools-hair-dryer-2400w',
+    name: 'Professional High-Velocity Salon Hair Dryer 2400W',
+    brand: 'AEROPRO INDIA',
+    category: 'tools',
+    categoryLabel: 'Salon Tools & Eq.',
+    tag: 'Salon Tools',
+    isVerified: true,
+    isWholesale: true,
+    price: 3200,
+    unit: 'unit',
+    moq: 4,
+    stockStatus: 'In Stock',
+    image: 'https://images.unsplash.com/photo-1582095133179-bfd08e2fc6b3?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1582095133179-bfd08e2fc6b3?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=1000&q=80'
+    ],
+    description: 'Salon-grade 2400W AC motor blow dryer delivering 110 km/h air velocity. Built-in blue tourmaline ionic generator cuts blowout drying time by 50% while sealing cuticle shine.',
+    specifications: {
+      'Motor': 'Long-Life 2400W Italian-Spec Commercial AC Motor',
+      'Heat/Speed': '3 Heat Levels + 2 Speed Modes + Cold Shot Lock',
+      'Cable Length': '3.2m Salon Swivel Cord with Indian 3-Pin Plug',
+      'Accessories': '2 Magnetic Concentrator Nozzles + 1 Deep Diffuser'
+    },
+    leadTimeDays: 2,
+    certifications: ['BIS Certified', 'CE Approved', 'RoHS Compliance'],
     supplierId: 'le-dist',
     supplierName: 'Mumbai Beauty Imports',
     supplierLocation: 'Mumbai',
     rating: 4.9,
-    reviewsCount: 52,
+    reviewsCount: 78,
     wholesaleTiers: [
-      { minUnits: 5, pricePerUnit: 16500 },
-      { minUnits: 15, pricePerUnit: 14200 },
-      { minUnits: 50, pricePerUnit: 12300 }
+      { minUnits: 4, pricePerUnit: 3200 },
+      { minUnits: 10, pricePerUnit: 2850 },
+      { minUnits: 25, pricePerUnit: 2450 }
+    ]
+  },
+
+  // 11. Backbar Essentials
+  {
+    id: 'prod-backbar-aprons-towels',
+    name: 'Disposable Salon Aprons & Towels Pack',
+    brand: 'BHARAT BACKBAR ESSENTIALS',
+    category: 'backbar',
+    categoryLabel: 'Backbar Essentials',
+    tag: 'Backbar',
+    isVerified: true,
+    isWholesale: true,
+    price: 450,
+    unit: 'pack (100 aprons + 50 non-woven towels)',
+    moq: 25,
+    stockStatus: 'In Stock',
+    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1000&q=80'
+    ],
+    description: 'High-density waterproof disposable salon client capes & ultra-absorbent embossed non-woven hair wash towels. 100% hygienic, anti-tear, and eco-degradable for premium salon standards.',
+    specifications: {
+      'Pack Contents': '100 Transparent PE Client Aprons + 50 Embossed Salon Towels',
+      'Towels Size': '40cm x 80cm High Absorbency (70 GSM)',
+      'Apron Size': '120cm x 150cm Full Body Protection',
+      'Biodegradable': 'Eco-Friendly Plant Fiber Compostable'
+    },
+    leadTimeDays: 1,
+    certifications: ['ISO 14001', 'Hygienic Grade Verified'],
+    supplierId: 'luxe-color-dist',
+    supplierName: 'Bharat Backbar Wholesalers',
+    supplierLocation: 'Delhi',
+    rating: 4.8,
+    reviewsCount: 160,
+    wholesaleTiers: [
+      { minUnits: 25, pricePerUnit: 450 },
+      { minUnits: 50, pricePerUnit: 390 },
+      { minUnits: 100, pricePerUnit: 320 }
+    ]
+  },
+
+  // 12. Aesthetic Clinic Tools
+  {
+    id: 'prod-aesthetic-hydra-machine',
+    name: 'Multi-Head Hydra Dermabrasion & Facial Machine',
+    brand: 'DERMALASE CLINICAL',
+    category: 'aesthetic',
+    categoryLabel: 'Aesthetic Clinic Tools',
+    tag: 'Aesthetic Clinic',
+    isVerified: true,
+    isWholesale: true,
+    price: 42000,
+    unit: 'unit (Machine + 6 Probes Kit)',
+    moq: 1,
+    stockStatus: 'In Stock',
+    image: 'https://images.unsplash.com/photo-1512290900672-8a25e2d6f28e?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1512290900672-8a25e2d6f28e?auto=format&fit=crop&w=1000&q=80'
+    ],
+    description: '7-in-1 multifunctional smart hydra dermabrasion, RF skin tightening, cold hammer cryo, and oxygen spray infusion workstation for dermatologists and cosmetology clinics.',
+    specifications: {
+      'Functions': 'Hydro-Peel Vacuum, Bipolar RF, Ultrasonic Scrubber, Oxygen Spray, Cold Hammer, LED Light',
+      'Vacuum Pressure': '90 kPa High Suction with Vortex Tip Technology',
+      'Touchscreen': '8-inch Color HD Smart Interface with Pre-set Protocols',
+      'Warranty': '2 Years Full Clinic Equipment Warranty + On-Site Training'
+    },
+    leadTimeDays: 4,
+    certifications: ['Medical CE', 'FDA Registered Device', 'ISO 13485'],
+    supplierId: 'vertex-salon',
+    supplierName: 'Vertex Salon Technologies',
+    supplierLocation: 'Kolkata',
+    rating: 5.0,
+    reviewsCount: 29,
+    wholesaleTiers: [
+      { minUnits: 1, pricePerUnit: 42000 },
+      { minUnits: 2, pricePerUnit: 38500 },
+      { minUnits: 5, pricePerUnit: 34000 }
     ]
   }
 ];

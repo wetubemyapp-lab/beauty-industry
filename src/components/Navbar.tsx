@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, User, FileText, Sparkles, Menu, X, LogOut, Check, Bell, Settings, Building2 } from 'lucide-react';
+import { MapPin, User, FileText, Sparkles, Menu, X, LogOut, Check, Bell, Settings, Building2, Plus, Heart } from 'lucide-react';
 import { UserProfile } from '../types';
 
 export type NavTab = 'home' | 'discover' | 'products' | 'brands' | 'distributors' | 'business' | 'offers' | 'gallery' | 'gallery-moderation';
@@ -17,10 +17,13 @@ interface NavbarProps {
   onOpenQuote?: () => void;
   onOpenQuoteDrawer?: () => void;
   quoteCount: number;
+  wishlistCount?: number;
+  onOpenWishlist?: () => void;
   priceAlertsCount?: number;
   user: UserProfile | null;
   onLogout?: () => void;
   onOpenOnboarding?: () => void;
+  onListBusiness?: () => void;
   onOpenBusinessProfile?: () => void;
 }
 
@@ -37,10 +40,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenQuote,
   onOpenQuoteDrawer,
   quoteCount,
+  wishlistCount = 0,
+  onOpenWishlist,
   priceAlertsCount = 0,
   user,
   onLogout,
   onOpenOnboarding,
+  onListBusiness,
   onOpenBusinessProfile
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -64,21 +70,38 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   };
 
+  const handleTriggerListBusiness = () => {
+    if (onListBusiness) {
+      onListBusiness();
+    } else if (user) {
+      onOpenOnboarding?.();
+    } else {
+      onOpenAuth();
+    }
+  };
+
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#F0E6EC] transition-all">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        {/* Brand Logo */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2">
+        {/* Brand Logo & Context */}
         <div 
           onClick={() => handleNav('home')}
-          className="flex items-center gap-2 cursor-pointer group select-none"
+          className="flex items-center gap-2.5 cursor-pointer group select-none shrink-0"
         >
           <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#B8005A] font-serif group-hover:opacity-90 transition-opacity">
             Nexora Luxe
           </span>
+          {active === 'distributors' && (
+            <div className="hidden sm:flex flex-col border-l border-[#F0E6EC] pl-2.5">
+              <span className="text-[9px] font-black uppercase tracking-wider text-[#B8005A] bg-[#FFF0F5] px-1.5 py-0.5 rounded border border-[#FFD6E5]">
+                Nexora B2B Beauty Directory
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-3 lg:gap-5 xl:gap-6 text-xs xl:text-sm font-medium text-[#4A4A4A] whitespace-nowrap overflow-x-auto no-scrollbar">
+        <nav className="hidden md:flex items-center gap-2 lg:gap-4 xl:gap-5 text-xs xl:text-sm font-medium text-[#4A4A4A] whitespace-nowrap overflow-x-auto no-scrollbar">
           <button
             onClick={() => handleNav('discover')}
             className={`transition-colors relative py-1 hover:text-[#B8005A] shrink-0 ${
@@ -165,7 +188,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-2 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {/* Location Button */}
           <button
             onClick={onOpenCitySelector}
@@ -278,6 +301,23 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                 </div>
 
+                {onOpenWishlist && (
+                  <button
+                    onClick={() => {
+                      setUserMenuOpen(false);
+                      onOpenWishlist();
+                    }}
+                    className="w-full text-left px-2 py-1.5 text-xs font-medium text-[#555] hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> My Saved Wishlist
+                    </span>
+                    <span className="text-[11px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
+                      {wishlistCount}
+                    </span>
+                  </button>
+                )}
+
                 {onLogout && (
                   <button
                     onClick={() => {
@@ -293,10 +333,31 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
+          {/* Wishlist Favorites Button */}
+          {onOpenWishlist && (
+            <button
+              onClick={onOpenWishlist}
+              className={`relative flex items-center gap-1 text-xs font-semibold p-2 rounded-full transition-all cursor-pointer ${
+                wishlistCount > 0
+                  ? 'text-rose-600 hover:text-rose-700 bg-rose-50/70 hover:bg-rose-100/70'
+                  : 'text-[#4A4A4A] hover:text-[#B8005A] hover:bg-[#FFF0F5]'
+              }`}
+              title="Saved Favorites / Wishlist"
+              aria-label={`Wishlist with ${wishlistCount} items`}
+            >
+              <Heart className={`w-4 h-4 transition-transform hover:scale-110 ${wishlistCount > 0 ? 'fill-rose-500 text-rose-500' : ''}`} />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-rose-500 to-[#B8005A] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                  {wishlistCount}
+                </span>
+              )}
+            </button>
+          )}
+
           {/* Quote / RFQ Cart */}
           <button
             onClick={handleOpenQuote}
-            className="relative flex items-center gap-1 text-xs font-semibold text-[#4A4A4A] hover:text-[#B8005A] p-2 rounded-full hover:bg-[#FFF0F5] transition-all"
+            className="relative flex items-center gap-1 text-xs font-semibold text-[#4A4A4A] hover:text-[#B8005A] p-2 rounded-full hover:bg-[#FFF0F5] transition-all cursor-pointer"
             title="Wholesale Inquiries & Quotes"
           >
             <FileText className="w-4 h-4" />
@@ -321,6 +382,28 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-[#F0E6EC] px-4 py-4 space-y-3 animate-in slide-in-from-top-2 duration-200">
+          {/* Mobile Supplier Acquisition Banner */}
+          <div className="bg-gradient-to-br from-[#FFF5F8] to-[#FFF0F5] p-3 rounded-2xl border border-[#FFD6E5]">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[9px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-200">
+                100% FREE FOR SUPPLIERS
+              </span>
+              <span className="text-[9px] font-bold uppercase tracking-wider text-[#737373]">
+                ZERO COMMISSION
+              </span>
+            </div>
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                handleTriggerListBusiness();
+              }}
+              className="w-full bg-[#B8005A] hover:bg-[#99004B] text-white py-2.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>+ List Your Business</span>
+            </button>
+          </div>
+
           <div className="grid grid-cols-2 gap-2 pb-3 border-b border-[#F0E6EC]">
             <button
               onClick={() => handleNav('discover')}
@@ -386,7 +469,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           </div>
 
-          <div className="flex items-center justify-between pt-1">
+          <div className="flex items-center justify-between pt-1 gap-2">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
@@ -398,20 +481,36 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>{selectedCity}</span>
             </button>
             
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                handleOpenQuote();
-              }}
-              className="text-xs font-semibold text-[#B8005A] flex items-center gap-1"
-            >
-              <FileText className="w-3.5 h-3.5" />
-              <span>Quote Requests ({quoteCount})</span>
-            </button>
+            <div className="flex items-center gap-3">
+              {onOpenWishlist && (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenWishlist();
+                  }}
+                  className="text-xs font-semibold text-rose-600 flex items-center gap-1"
+                >
+                  <Heart className="w-3.5 h-3.5 fill-rose-500 text-rose-500" />
+                  <span>Wishlist ({wishlistCount})</span>
+                </button>
+              )}
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleOpenQuote();
+                }}
+                className="text-xs font-semibold text-[#B8005A] flex items-center gap-1"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>Quotes ({quoteCount})</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
     </header>
   );
 };
+
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Sparkles, Building2, MapPin, CheckCircle2, ShieldCheck, Truck, Plus, Minus, FileText, MessageSquare, Bell, BellRing, Star, Zap, Layers, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
+import { X, Sparkles, Building2, MapPin, CheckCircle2, ShieldCheck, Truck, Plus, Minus, FileText, MessageSquare, Bell, BellRing, Star, Zap, Layers, ChevronLeft, ChevronRight, Eye, Heart } from 'lucide-react';
 import { Product, SupplierPartner } from '../types';
 import { StarRating } from './StarRating';
 import { MOCK_PRODUCTS } from '../data/mockData';
@@ -10,6 +10,8 @@ interface ProductDetailModalProps {
   supplier?: SupplierPartner;
   allProducts?: Product[];
   isPriceAlertEnabled?: boolean;
+  isWishlisted?: boolean;
+  onToggleWishlist?: (productId: string) => void;
   onClose: () => void;
   onAddToQuote: (product: Product, quantity: number) => void;
   onViewSupplier: (supplier: SupplierPartner) => void;
@@ -23,6 +25,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   supplier,
   allProducts,
   isPriceAlertEnabled = false,
+  isWishlisted = false,
+  onToggleWishlist,
   onClose,
   onAddToQuote,
   onViewSupplier,
@@ -132,14 +136,31 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/65 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border border-[#EDEDED] relative flex flex-col">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-[#FFF0F5] text-[#555] hover:text-[#B8005A] border border-[#E5E5E5] flex items-center justify-center transition-all shadow-xs cursor-pointer"
-          aria-label="Close modal"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        {/* Header Action Buttons */}
+        <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+          {onToggleWishlist && (
+            <button
+              onClick={() => onToggleWishlist(product.id)}
+              className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all shadow-xs cursor-pointer ${
+                isWishlisted
+                  ? 'bg-rose-50 border-rose-200 text-rose-600 scale-105'
+                  : 'bg-white/90 hover:bg-[#FFF0F5] text-[#555] hover:text-[#B8005A] border-[#E5E5E5]'
+              }`}
+              title={isWishlisted ? 'Saved in Wishlist' : 'Add to Wishlist'}
+              aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+            >
+              <Heart className={`w-5 h-5 transition-transform ${isWishlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
+            </button>
+          )}
+
+          <button
+            onClick={onClose}
+            className="w-10 h-10 rounded-full bg-white/90 hover:bg-[#FFF0F5] text-[#555] hover:text-[#B8005A] border border-[#E5E5E5] flex items-center justify-center transition-all shadow-xs cursor-pointer"
+            aria-label="Close modal"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 p-6 sm:p-8">
           {/* Left Column: Image Gallery */}

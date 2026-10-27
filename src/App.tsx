@@ -5,6 +5,8 @@ import { HeroSection } from './components/HeroSection';
 import { PremiumPartners } from './components/PremiumPartners';
 import { TrendingCatalog } from './components/TrendingCatalog';
 import { ListBusinessBanner } from './components/ListBusinessBanner';
+import { InteractiveWholesaleHub } from './components/InteractiveWholesaleHub';
+import { WholesaleInquirySection } from './components/WholesaleInquirySection';
 import { Footer } from './components/Footer';
 
 // Modals and Drawers
@@ -15,6 +17,7 @@ import { RegisterWizardModal } from './components/RegisterWizardModal';
 import { AuthModal } from './components/AuthModal';
 import { CitySelectorModal } from './components/CitySelectorModal';
 import { QuoteDrawer } from './components/QuoteDrawer';
+import { WishlistDrawer } from './components/WishlistDrawer';
 import { CompareModal } from './components/CompareModal';
 import { CompareFloatingBar } from './components/CompareFloatingBar';
 import { VideoPlayerModal } from './components/VideoPlayerModal';
@@ -60,8 +63,8 @@ export function App() {
     {
       product: MOCK_PRODUCTS[0],
       quantity: 10,
-      unitPrice: 145.0,
-      totalPrice: 1450.0
+      unitPrice: 1450,
+      totalPrice: 14500
     }
   ]);
 
@@ -101,9 +104,19 @@ export function App() {
   const [isCityModalOpen, setIsCityModalOpen] = useState(false);
   const [isQuoteDrawerOpen, setIsQuoteDrawerOpen] = useState(false);
   const [isBusinessOnboardingOpen, setIsBusinessOnboardingOpen] = useState(false);
+  const [pendingOpenOnboarding, setPendingOpenOnboarding] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [initialEditProduct, setInitialEditProduct] = useState<Product | null>(null);
   const [forceOpenAddModal, setForceOpenAddModal] = useState(false);
+
+  const handleListBusiness = () => {
+    if (currentUser) {
+      setIsBusinessOnboardingOpen(true);
+    } else {
+      setPendingOpenOnboarding(true);
+      setIsAuthOpen(true);
+    }
+  };
 
   // Toast Notification
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'info' } | null>(null);
@@ -117,6 +130,47 @@ export function App() {
       return {};
     }
   });
+
+  // Wishlist State to store favorite products
+  const [wishlist, setWishlist] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('nexora_wishlist');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error('Failed to parse wishlist from localStorage', e);
+    }
+    return ['prod-1', 'prod-3'];
+  });
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+
+  const toggleWishlist = (productId: string) => {
+    setWishlist((prev) => {
+      const exists = prev.includes(productId);
+      const next = exists ? prev.filter((id) => id !== productId) : [...prev, productId];
+      try {
+        localStorage.setItem('nexora_wishlist', JSON.stringify(next));
+      } catch (e) {
+        console.error('Failed to save wishlist to localStorage', e);
+      }
+      const product = allProducts.find((p) => p.id === productId);
+      if (exists) {
+        showToast(`Removed "${product?.name || 'Product'}" from Wishlist`, 'info');
+      } else {
+        showToast(`Saved "${product?.name || 'Product'}" to Wishlist ❤️`, 'success');
+      }
+      return next;
+    });
+  };
+
+  const handleClearWishlist = () => {
+    setWishlist([]);
+    try {
+      localStorage.setItem('nexora_wishlist', JSON.stringify([]));
+    } catch (e) {
+      console.error('Failed to clear wishlist from localStorage', e);
+    }
+    showToast('Wishlist cleared', 'info');
+  };
 
   const showToast = (text: string, type: 'success' | 'info' = 'success') => {
     setToastMessage({ text, type });
@@ -345,11 +399,14 @@ export function App() {
         selectedCity={selectedCity}
         onOpenCitySelector={() => setIsCityModalOpen(true)}
         quoteCount={quoteItems.length}
+        wishlistCount={wishlist.length}
+        onOpenWishlist={() => setIsWishlistOpen(true)}
         priceAlertsCount={Object.values(priceAlerts).filter(Boolean).length}
         onOpenQuote={() => setIsQuoteDrawerOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenEditProfile={() => setIsEditProfileOpen(true)}
         onOpenRegister={() => setIsRegisterOpen(true)}
+        onListBusiness={handleListBusiness}
         user={currentUser}
         onLogout={() => {
           setCurrentUser(null);
@@ -381,6 +438,8 @@ export function App() {
         {currentTab === 'discover' && (
           <DiscoverView
             products={MOCK_PRODUCTS}
+            wishlistProductIds={wishlist}
+            onToggleWishlist={toggleWishlist}
             selectedCategory={selectedCategory}
             selectedCity={selectedCity}
             onSelectCategory={(cat) => {
@@ -422,10 +481,21 @@ export function App() {
             {/* 4. Trending in Catalog matching screenshot */}
             <TrendingCatalog
               products={MOCK_PRODUCTS}
+              wishlistProductIds={wishlist}
+              onToggleWishlist={toggleWishlist}
               compareProductIds={compareProductIds}
               onToggleCompare={handleToggleCompare}
               onSelectProduct={(product) => setSelectedProduct(product)}
               onRequestQuote={(product) => handleAddToQuote(product, product.moq)}
+            />
+
+            {/* Interactive B2B Wholesale Actions Hub (Action buttons displaying messages & calculator) */}
+            <InteractiveWholesaleHub
+              onOpenCatalog={() => {
+                setCurrentTab('products');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onOpenRegister={() => setIsRegisterOpen(true)}
             />
 
             {/* 5. List Your Beauty Business - Free banner matching screenshot */}
@@ -447,6 +517,8 @@ export function App() {
             compareProductIds={compareProductIds}
             onToggleCompare={handleToggleCompare}
             onOpenCompareModal={() => setIsCompareModalOpen(true)}
+            wishlistProductIds={wishlist}
+            onToggleWishlist={toggleWishlist}
             onSelectProduct={(product) => setSelectedProduct(product)}
             onSelectCategory={(cat) => setSelectedCategory(cat)}
             currentUser={currentUser}
@@ -481,12 +553,18 @@ export function App() {
             onAddToQuote={handleAddToQuote}
             likedVideoIds={likedVideoIds}
             onLikeVideo={handleLikeVideo}
+            onNavigate={(tab) => {
+              setCurrentTab(tab);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onListBusiness={handleListBusiness}
           />
         )}
 
         {currentTab === 'business' && (
           <BusinessView
             onOpenRegister={() => setIsRegisterOpen(true)}
+            onOpenOnboarding={() => setIsBusinessOnboardingOpen(true)}
           />
         )}
 
@@ -514,6 +592,9 @@ export function App() {
           />
         )}
       </main>
+ 
+      {/* Interactive Responsive Wholesale Inquiry & Email Form */}
+      <WholesaleInquirySection />
 
       {/* Footer matching screenshot */}
       <Footer
@@ -551,6 +632,8 @@ export function App() {
         }
         allProducts={allProducts}
         isPriceAlertEnabled={selectedProduct ? !!priceAlerts[selectedProduct.id] : false}
+        isWishlisted={selectedProduct ? wishlist.includes(selectedProduct.id) : false}
+        onToggleWishlist={toggleWishlist}
         onClose={() => setSelectedProduct(null)}
         onAddToQuote={handleAddToQuote}
         onViewSupplier={(sup) => {
@@ -567,6 +650,8 @@ export function App() {
       <SupplierModal
         supplier={selectedSupplier}
         products={allProducts}
+        wishlistProductIds={wishlist}
+        onToggleWishlist={toggleWishlist}
         onClose={() => setSelectedSupplier(null)}
         onSelectProduct={(product) => {
           setSelectedSupplier(null);
@@ -613,15 +698,26 @@ export function App() {
             isVerified: true
           });
           showToast(`Welcome ${newUser.name}! Your business listing is live.`);
+          if (pendingOpenOnboarding) {
+            setPendingOpenOnboarding(false);
+            setIsBusinessOnboardingOpen(true);
+          }
         }}
       />
 
       <AuthModal
         isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
+        onClose={() => {
+          setIsAuthOpen(false);
+          setPendingOpenOnboarding(false);
+        }}
         onLogin={(user) => {
           setCurrentUser(user);
           showToast(`Signed in as ${user.name} (${user.companyName})`);
+          if (pendingOpenOnboarding) {
+            setPendingOpenOnboarding(false);
+            setIsBusinessOnboardingOpen(true);
+          }
         }}
         onOpenRegister={() => setIsRegisterOpen(true)}
       />
@@ -644,6 +740,24 @@ export function App() {
         onUpdateQuantity={handleUpdateQuoteQuantity}
         onRemoveItem={handleRemoveQuoteItem}
         onClearQuote={handleClearQuote}
+      />
+
+      {/* Wishlist Drawer for Saved Favorites */}
+      <WishlistDrawer
+        isOpen={isWishlistOpen}
+        onClose={() => setIsWishlistOpen(false)}
+        wishlistIds={wishlist}
+        products={allProducts}
+        onToggleWishlist={toggleWishlist}
+        onClearWishlist={handleClearWishlist}
+        onSelectProduct={(product) => {
+          setSelectedProduct(product);
+        }}
+        onAddToQuote={handleAddToQuote}
+        onExploreCatalog={() => {
+          setCurrentTab('products');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
       />
 
       {/* Floating Compare Selection Tray */}

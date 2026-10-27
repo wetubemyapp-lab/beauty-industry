@@ -325,8 +325,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <span>Exclusive B2B Wholesale & Distribution Portal</span>
         </div>
 
-        {/* Exact Headline */}
-        <h1 className="text-3xl sm:text-5xl md:text-[54px] leading-tight sm:leading-[1.15] font-extrabold text-white tracking-tight max-w-4xl drop-shadow-lg">
+        {/* Exact Headline with CSS Media Query Class */}
+        <h1 className="responsive-hero-title text-3xl sm:text-5xl md:text-[54px] leading-tight sm:leading-[1.15] font-extrabold text-white tracking-tight max-w-4xl drop-shadow-lg">
           The Premier Network for Luxury Beauty Businesses & Products
         </h1>
 

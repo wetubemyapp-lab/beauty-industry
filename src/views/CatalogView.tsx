@@ -13,6 +13,7 @@ import {
   X, 
   Tag, 
   ArrowLeftRight,
+  Heart,
   TrendingUp,
   BarChart3,
   Flame,
@@ -131,6 +132,8 @@ interface CatalogViewProps {
   compareProductIds?: string[];
   onToggleCompare?: (product: Product) => void;
   onOpenCompareModal?: () => void;
+  wishlistProductIds?: string[];
+  onToggleWishlist?: (productId: string) => void;
   onSelectProduct: (product: Product) => void;
   onSelectCategory: (cat: CategoryId | 'all') => void;
   currentUser?: any;
@@ -151,6 +154,8 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   compareProductIds = [],
   onToggleCompare,
   onOpenCompareModal,
+  wishlistProductIds = [],
+  onToggleWishlist,
   onSelectProduct,
   onSelectCategory,
   currentUser,
@@ -163,6 +168,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   const [localSearch, setLocalSearch] = useState(initialSearchQuery || '');
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [wholesaleOnly, setWholesaleOnly] = useState(false);
+  const [wishlistOnly, setWishlistOnly] = useState(false);
   const [sortBy, setSortBy] = useState<'featured' | 'price-low' | 'price-high' | 'moq'>('featured');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   
@@ -235,6 +241,9 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   const [handlingTime, setHandlingTime] = useState('2-3 Days');
   const [variantAvailability, setVariantAvailability] = useState<Record<number, 'In Stock' | 'Out of Stock' | 'Available on Request'>>({});
 
+  // Phase 3 Secondary Gallery Media states (up to 4 extra photos)
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+
   // Phase 6 Product Review states
   const [previewDevice, setPreviewDevice] = useState<'desktop' | 'mobile'>('desktop');
   const [publishSuccess, setPublishSuccess] = useState(false);
@@ -288,6 +297,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
     setPublishSuccess(false);
     setNewlyCreatedProduct(null);
     setPreviewDevice('desktop');
+    setGalleryImages([]);
     setNewProduct({
       name: '',
       sku: '',
@@ -346,13 +356,87 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
           ctx.drawImage(img, 0, 0, width, height);
           const hdDataUrl = canvas.toDataURL('image/jpeg', 0.92);
           setNewProduct({ ...newProduct, imageUrl: hdDataUrl });
-          setActionNotice('Photo auto-resized, converted to HD, and fitted into frame!');
+          setActionNotice('Primary photo auto-resized, converted to HD, and fitted into frame!');
           setTimeout(() => setActionNotice(null), 4000);
         }
       };
       img.src = event.target?.result as string;
     };
     reader.readAsDataURL(file);
+  };
+
+  // Secondary Gallery upload handler (Supports individual slot upload & multi-file upload up to 4 photos)
+  const handleSecondaryImageUpload = (e: React.ChangeEvent<HTMLInputElement>, targetIndex?: number) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const fileList = Array.from(files) as File[];
+
+    fileList.forEach((file, idx) => {
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`"${file.name}" exceeds 5MB limit. Please upload an image under 5MB.`);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_DIM = 1200;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_DIM) {
+              height *= MAX_DIM / width;
+              width = MAX_DIM;
+            }
+          } else {
+            if (height > MAX_DIM) {
+              width *= MAX_DIM / height;
+              height = MAX_DIM;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const hdDataUrl = canvas.toDataURL('image/jpeg', 0.92);
+
+            setGalleryImages(prev => {
+              const updated = [...prev];
+              if (targetIndex !== undefined) {
+                const insertIdx = targetIndex + idx;
+                if (insertIdx < 4) {
+                  updated[insertIdx] = hdDataUrl;
+                }
+              } else {
+                if (updated.length < 4) {
+                  updated.push(hdDataUrl);
+                }
+              }
+              return updated.slice(0, 4);
+            });
+
+            setActionNotice('Gallery photo uploaded & optimized successfully!');
+            setTimeout(() => setActionNotice(null), 3000);
+          }
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+    // Reset file input target
+    e.target.value = '';
+  };
+
+  const handleRemoveSecondaryImage = (index: number) => {
+    setGalleryImages(prev => prev.filter((_, i) => i !== index));
+    setActionNotice('Photo removed from secondary gallery.');
+    setTimeout(() => setActionNotice(null), 3000);
   };
 
   const handleAddProductSubmit = (e: React.FormEvent, isDraft = false) => {
@@ -403,6 +487,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
       stockStatus: isDraft ? 'Draft' as any : availabilityStatus,
       status: isDraft ? 'Draft' : 'Published',
       image: newProduct.imageUrl || 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&q=80&w=300',
+      gallery: [newProduct.imageUrl, ...galleryImages].filter(Boolean),
       description: description || 'Verified professional salon-grade premium formulation.',
       specifications: { 
         'SKU': newProduct.sku || 'N/A', 
@@ -513,6 +598,14 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
     setAvailabilityStatus(product.status === 'Draft' ? 'In Stock' : (product.stockStatus as any || 'In Stock'));
     setAvailabilityNote(product.specifications['Availability Note'] || '');
 
+    // Secondary Gallery Photos
+    if (product.gallery && product.gallery.length > 0) {
+      const secondaries = product.gallery.filter((img) => img !== product.image);
+      setGalleryImages(secondaries.length > 0 ? secondaries.slice(0, 4) : product.gallery.slice(1, 5));
+    } else {
+      setGalleryImages([]);
+    }
+
     setModalStep(1);
     setIsAddProductOpen(true);
   };
@@ -557,6 +650,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
         if (activeCategory !== 'all' && p.category !== activeCategory) return false;
         if (verifiedOnly && !p.isVerified) return false;
         if (wholesaleOnly && !p.isWholesale) return false;
+        if (wishlistOnly && !wishlistProductIds.includes(p.id)) return false;
         if (localSearch.trim()) {
           const q = localSearch.toLowerCase().trim();
           const matchesName = p.name.toLowerCase().includes(q);
@@ -573,7 +667,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
         if (sortBy === 'moq') return a.moq - b.moq;
         return 0;
       });
-  }, [localProducts, activeCategory, verifiedOnly, wholesaleOnly, localSearch, sortBy]);
+  }, [localProducts, activeCategory, verifiedOnly, wholesaleOnly, wishlistOnly, wishlistProductIds, localSearch, sortBy]);
 
   // Phase 8: Management View Filtering
   const myProducts = useMemo(() => {
@@ -863,6 +957,19 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
             </div>
             <span>Wholesale Pricing</span>
           </button>
+
+          {/* Wishlist Favorites Toggle */}
+          <button
+            onClick={() => setWishlistOnly(!wishlistOnly)}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border ${
+              wishlistOnly
+                ? 'bg-rose-50 text-rose-600 border-rose-200'
+                : 'bg-[#FAFAFA] text-[#737373] border-[#EAE5DE] hover:border-rose-200'
+            }`}
+          >
+            <Heart className={`w-3.5 h-3.5 ${wishlistOnly ? 'fill-rose-500 text-rose-500' : 'text-[#8E8E93]'}`} />
+            <span>Saved Favorites ({wishlistProductIds.length})</span>
+          </button>
         </div>
 
         <div className="flex items-center gap-3 ml-auto">
@@ -930,6 +1037,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
               setActiveCategory('all');
               setVerifiedOnly(false);
               setWholesaleOnly(false);
+              setWishlistOnly(false);
             }}
             className="mt-4 bg-[#B8005A] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xs cursor-pointer"
           >
@@ -946,6 +1054,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
         >
           {filteredProducts.map((product) => {
             const isCompared = compareProductIds.includes(product.id);
+            const isWishlisted = wishlistProductIds.includes(product.id);
 
             return (
               <motion.div
@@ -993,25 +1102,46 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                     )}
                   </div>
 
-                  {/* Compare Toggle Pill on Image */}
-                  {onToggleCompare && (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onToggleCompare(product);
-                      }}
-                      className={`absolute top-3.5 right-3.5 z-20 px-2.5 py-1 rounded-full text-[11px] font-extrabold transition-all flex items-center gap-1 shadow-md cursor-pointer ${
-                        isCompared
-                          ? 'bg-[#B8005A] text-white border border-[#B8005A]'
-                          : 'bg-white/95 hover:bg-[#FFF0F5] text-[#4A4A4A] hover:text-[#B8005A] border border-white/60 hover:border-[#FFD1E3]'
-                      }`}
-                      title={isCompared ? 'Remove from comparison' : 'Add to side-by-side comparison'}
-                    >
-                      <ArrowLeftRight className="w-3 h-3" />
-                      <span>{isCompared ? 'Comparing' : 'Compare'}</span>
-                    </button>
-                  )}
+                  {/* Top Right Action Buttons (Wishlist Heart + Compare) */}
+                  <div className="absolute top-3.5 right-3.5 z-20 flex items-center gap-1.5">
+                    {onToggleWishlist && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onToggleWishlist(product.id);
+                        }}
+                        className={`w-7 h-7 rounded-full flex items-center justify-center transition-all shadow-md cursor-pointer ${
+                          isWishlisted
+                            ? 'bg-rose-50 border border-rose-200 text-rose-600 scale-105'
+                            : 'bg-white/95 hover:bg-[#FFF0F5] text-[#555] hover:text-[#B8005A] border border-white/60 hover:border-[#FFD1E3]'
+                        }`}
+                        aria-label={isWishlisted ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
+                        title={isWishlisted ? 'Saved in Wishlist' : 'Save to Wishlist'}
+                      >
+                        <Heart className={`w-3.5 h-3.5 transition-transform ${isWishlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
+                      </button>
+                    )}
+
+                    {onToggleCompare && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onToggleCompare(product);
+                        }}
+                        className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold transition-all flex items-center gap-1 shadow-md cursor-pointer ${
+                          isCompared
+                            ? 'bg-[#B8005A] text-white border border-[#B8005A]'
+                            : 'bg-white/95 hover:bg-[#FFF0F5] text-[#4A4A4A] hover:text-[#B8005A] border border-white/60 hover:border-[#FFD1E3]'
+                        }`}
+                        title={isCompared ? 'Remove from comparison' : 'Add to side-by-side comparison'}
+                      >
+                        <ArrowLeftRight className="w-3 h-3" />
+                        <span>{isCompared ? 'Comparing' : 'Compare'}</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {/* Info Body */}
@@ -2351,16 +2481,88 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                   <div className="space-y-6">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px]">Secondary Gallery (Optional)</label>
-                        <span className="text-[9px] font-black text-[#B8005A] uppercase tracking-wider">Max 4 Photos</span>
+                        <div>
+                          <label className="block font-black text-[#1C1B1B] uppercase tracking-widest text-[9px]">Secondary Gallery (Optional)</label>
+                          <p className="text-[10px] text-[#737373] font-medium mt-0.5">Upload up to 4 additional product photos (angles, textures, packaging).</p>
+                        </div>
+                        <span className="text-[10px] font-black text-[#B8005A] uppercase tracking-wider bg-[#FFF0F5] px-2.5 py-1 rounded-full border border-[#FFD6E5]">
+                          {galleryImages.length}/4 Photos
+                        </span>
                       </div>
+
+                      {/* 4 Photo Upload Slots */}
                       <div className="grid grid-cols-2 gap-3">
-                        {[1, 2, 3, 4].map((i) => (
-                          <div key={i} className="aspect-square border-2 border-dashed border-[#EAE5DE] rounded-2xl bg-[#FAFAFA] hover:bg-[#FDFBF9] transition-all flex items-center justify-center cursor-pointer group">
-                            <PlusCircle className="w-6 h-6 text-gray-300 group-hover:text-[#B8005A] transition-colors" />
-                          </div>
-                        ))}
+                        {[0, 1, 2, 3].map((index) => {
+                          const img = galleryImages[index];
+                          return (
+                            <div key={index} className="relative aspect-square">
+                              {img ? (
+                                <div className="relative group w-full h-full rounded-2xl overflow-hidden border-2 border-[#B8005A]/30 bg-white shadow-xs">
+                                  <img
+                                    src={img}
+                                    alt={`Gallery photo ${index + 1}`}
+                                    className="w-full h-full object-cover animate-in fade-in duration-300"
+                                    referrerPolicy="no-referrer"
+                                  />
+                                  <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-xs text-white text-[9px] font-bold px-2 py-0.5 rounded-md">
+                                    Photo #{index + 1}
+                                  </div>
+                                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-2 p-2 backdrop-blur-xs">
+                                    <label className="p-2 bg-white text-[#1C1B1B] hover:text-[#B8005A] rounded-xl shadow-md cursor-pointer transition-transform hover:scale-105" title="Replace Photo">
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => handleSecondaryImageUpload(e, index)}
+                                        className="hidden"
+                                      />
+                                      <Edit2 className="w-4 h-4" />
+                                    </label>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRemoveSecondaryImage(index)}
+                                      className="p-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow-md transition-transform hover:scale-105 cursor-pointer"
+                                      title="Remove Photo"
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <label className="w-full h-full border-2 border-dashed border-[#EAE5DE] hover:border-[#B8005A] rounded-2xl bg-[#FAFAFA] hover:bg-[#FFF0F5]/50 transition-all flex flex-col items-center justify-center cursor-pointer group p-3 text-center">
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => handleSecondaryImageUpload(e, index)}
+                                    className="hidden"
+                                  />
+                                  <div className="w-9 h-9 rounded-xl bg-white shadow-2xs border border-[#EAE5DE] flex items-center justify-center text-gray-400 group-hover:text-[#B8005A] group-hover:scale-110 transition-all mb-1.5">
+                                    <PlusCircle className="w-5 h-5" />
+                                  </div>
+                                  <span className="text-[11px] font-black text-[#1C1B1B] group-hover:text-[#B8005A] transition-colors">
+                                    Photo #{index + 1}
+                                  </span>
+                                  <span className="text-[9px] text-gray-400 font-bold mt-0.5">Click to Upload</span>
+                                </label>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
+
+                      {/* Multi-upload shortcut */}
+                      {galleryImages.length < 4 && (
+                        <label className="w-full py-2 px-3 border border-[#FFD6E5] bg-[#FFF5F8] hover:bg-[#FFEBF1] text-[#B8005A] rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition-colors">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => handleSecondaryImageUpload(e)}
+                            className="hidden"
+                          />
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>Select Multiple Photos at Once</span>
+                        </label>
+                      )}
                     </div>
 
                     <div className="p-5 bg-emerald-50 rounded-2xl border border-emerald-100">
@@ -3133,37 +3335,67 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                           <div className="flex justify-between items-center border-b border-[#EAE5DE] pb-2">
                             <h5 className="font-extrabold text-[#1C1B1B] text-[11px] uppercase tracking-wider flex items-center gap-1.5">
                               <Boxes className="w-4 h-4 text-[#B8005A]" />
-                              Media Uploaded ({newProduct.imageUrl ? 1 : 0}/1)
+                              Media Uploaded ({(newProduct.imageUrl ? 1 : 0) + galleryImages.length}/5)
                             </h5>
                             <button
                               type="button"
                               onClick={() => setModalStep(3)}
-                              className="text-[10px] text-[#B8005A] font-extrabold hover:underline"
+                              className="text-[10px] text-[#B8005A] font-extrabold hover:underline cursor-pointer"
                             >
                               Edit Media
                             </button>
                           </div>
 
-                          {newProduct.imageUrl ? (
-                            <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-2xl border border-gray-100">
-                              <img 
-                                src={newProduct.imageUrl} 
-                                alt="Main preview" 
-                                className="w-14 h-14 rounded-xl object-cover border border-[#EAE5DE] bg-white shrink-0" 
-                                referrerPolicy="no-referrer"
-                              />
-                              <div>
-                                <span className="text-[10px] text-emerald-600 font-black flex items-center gap-1 uppercase tracking-wider">
-                                  ✓ Primary Product Image Verified
+                          <div className="grid grid-cols-5 gap-2">
+                            {/* Primary Image */}
+                            {newProduct.imageUrl ? (
+                              <div className="relative aspect-square rounded-xl overflow-hidden border-2 border-[#B8005A] bg-white shadow-2xs">
+                                <img 
+                                  src={newProduct.imageUrl} 
+                                  alt="Main preview" 
+                                  className="w-full h-full object-cover" 
+                                  referrerPolicy="no-referrer"
+                                />
+                                <span className="absolute bottom-1 inset-x-1 text-center bg-black/75 text-white text-[7px] font-black uppercase py-0.5 rounded tracking-tighter">
+                                  Primary
                                 </span>
-                                <p className="text-[9px] text-gray-400 font-bold mt-0.5">High-resolution listing thumbnail ready for search & discovery grids.</p>
                               </div>
-                            </div>
-                          ) : (
-                            <div className="p-4 bg-rose-50 border border-rose-100 text-rose-700 text-center rounded-xl font-bold">
-                              No product image found. Click Edit Media to upload a product thumbnail.
-                            </div>
-                          )}
+                            ) : (
+                              <div className="aspect-square rounded-xl border border-dashed border-rose-300 bg-rose-50 flex items-center justify-center text-rose-500 text-[9px] font-bold text-center p-1">
+                                No Primary
+                              </div>
+                            )}
+
+                            {/* Secondary Gallery Images */}
+                            {[0, 1, 2, 3].map((idx) => {
+                              const img = galleryImages[idx];
+                              return (
+                                <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-[#EAE5DE] bg-[#FAFAFA] flex items-center justify-center shadow-2xs">
+                                  {img ? (
+                                    <>
+                                      <img 
+                                        src={img} 
+                                        alt={`Gallery ${idx + 1}`} 
+                                        className="w-full h-full object-cover"
+                                        referrerPolicy="no-referrer"
+                                      />
+                                      <span className="absolute bottom-1 inset-x-1 text-center bg-black/60 text-white text-[7px] font-black uppercase py-0.5 rounded tracking-tighter">
+                                        Photo {idx + 1}
+                                      </span>
+                                    </>
+                                  ) : (
+                                    <span className="text-[8px] text-gray-300 font-bold uppercase tracking-tighter">Slot {idx + 1}</span>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          <p className="text-[9px] text-gray-400 font-bold mt-1">
+                            {galleryImages.length > 0 
+                              ? `Primary image plus ${galleryImages.length} additional angle photo${galleryImages.length > 1 ? 's' : ''} ready for salon buyers.`
+                              : 'Tip: Add up to 4 more photos to give buyers a complete view of textures, packaging, and labels.'}
+                          </p>
                         </div>
                       </div>
 

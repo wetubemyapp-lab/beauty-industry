@@ -1,5 +1,21 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Building2, Store, CheckCircle2, ArrowRight, ShieldCheck, HeartHandshake, MapPin, Camera, Link, Image as ImageIcon, Upload, Plus, Trash2, Clock } from 'lucide-react';
+import { 
+  X, Sparkles, Building2, Store, CheckCircle2, ArrowRight, ShieldCheck, HeartHandshake, 
+  MapPin, Camera, Link, Image as ImageIcon, Upload, Plus, Trash2, Clock, 
+  TrendingUp, Eye, FileText, BarChart3, Zap, ArrowUpRight, Maximize2 
+} from 'lucide-react';
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip
+} from 'recharts';
+import { GrowthDashboard } from './GrowthDashboard';
 
 const popularSubcategories: Record<string, string[]> = {
   'Skincare': ['Anti-Aging', 'Acne Treatment', 'Moisturizers', 'Serums & Essences', 'Sun Protection', 'Facial Cleansers', 'Face Masks', 'Chemical Peels', 'Brightening'],
@@ -144,6 +160,8 @@ export const BusinessOnboardingModal: React.FC<BusinessOnboardingModalProps> = (
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showFullGrowthPreview, setShowFullGrowthPreview] = useState(false);
+  const [growthMetricFocus, setGrowthMetricFocus] = useState<'both' | 'views' | 'quotes'>('both');
 
   if (!isOpen) return null;
 
@@ -228,7 +246,7 @@ export const BusinessOnboardingModal: React.FC<BusinessOnboardingModalProps> = (
         <div className="w-full bg-[#F0E6EC] h-1.5 flex">
           <div
             className="bg-[#B8005A] transition-all duration-300"
-            style={{ width: (step / 7) * 100 + '%' }}
+            style={{ width: (step / 8) * 100 + '%' }}
           />
         </div>
 
@@ -239,7 +257,7 @@ export const BusinessOnboardingModal: React.FC<BusinessOnboardingModalProps> = (
           {step === 1 && (
             <div className="space-y-4 animate-in fade-in duration-200">
               <div>
-                <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 1 of 7</span>
+                <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 1 of 8</span>
                 <h3 className="text-lg font-bold text-[#1E1E1E]">What best describes your business?</h3>
                 <p className="text-xs text-[#737373]">This helps us match you with verified manufacturers and wholesale pricing tiers.</p>
               </div>
@@ -293,7 +311,7 @@ export const BusinessOnboardingModal: React.FC<BusinessOnboardingModalProps> = (
           {step === 2 && (
             <div className="space-y-4 animate-in fade-in duration-200">
               <div>
-                <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 2 of 7</span>
+                <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 2 of 8</span>
                 <h3 className="text-lg font-bold text-[#1E1E1E]">Select your primary services & sourcing needs</h3>
                 <p className="text-xs text-[#737373]">Choose all categories you regularly stock or provide to your clientele.</p>
               </div>
@@ -329,7 +347,7 @@ export const BusinessOnboardingModal: React.FC<BusinessOnboardingModalProps> = (
           {step === 3 && (
             <div className="space-y-5 animate-in fade-in duration-200">
               <div>
-                <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 3 of 7</span>
+                <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 3 of 8</span>
                 <h3 className="text-lg font-bold text-[#1E1E1E]">Estimated Monthly Sourcing Budget</h3>
                 <p className="text-xs text-[#737373]">This unlocks bulk wholesale volume discounts & direct factory rebates.</p>
               </div>
@@ -365,7 +383,7 @@ export const BusinessOnboardingModal: React.FC<BusinessOnboardingModalProps> = (
           {step === 4 && (
             <div className="space-y-5 animate-in fade-in duration-200">
               <div>
-                <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 4 of 7</span>
+                <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 4 of 8</span>
                 <h3 className="text-lg font-bold text-[#1E1E1E]">Branding & Visual Identity</h3>
                 <p className="text-xs text-[#737373]">Help buyers recognize your business with your logo and showcase photos.</p>
               </div>
@@ -506,7 +524,7 @@ export const BusinessOnboardingModal: React.FC<BusinessOnboardingModalProps> = (
           {step === 5 && (
             <div className="space-y-5 animate-in fade-in duration-200">
               <div>
-                <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 5 of 7</span>
+                <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 5 of 8</span>
                 <h3 className="text-lg font-bold text-[#1E1E1E]">Business Categories</h3>
                 <p className="text-xs text-[#737373]">Select your primary beauty category and key brands handled.</p>
               </div>
@@ -655,7 +673,7 @@ export const BusinessOnboardingModal: React.FC<BusinessOnboardingModalProps> = (
           {step === 6 && (
             <div className="space-y-5 animate-in fade-in duration-200">
               <div>
-                <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 6 of 7</span>
+                <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 6 of 8</span>
                 <h3 className="text-lg font-bold text-[#1E1E1E]">Operating Hours</h3>
                 <p className="text-xs text-[#737373]">Set your standard business working hours.</p>
               </div>
@@ -696,12 +714,197 @@ export const BusinessOnboardingModal: React.FC<BusinessOnboardingModalProps> = (
             </div>
           )}
 
-          {/* STEP 7: FINAL REVIEW */}
+          {/* STEP 7: PROJECTED GROWTH & PERFORMANCE METRICS (RECHARTS) */}
           {step === 7 && (
             <div className="space-y-5 animate-in fade-in duration-200">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 7 of 8</span>
+                  <h3 className="text-lg font-bold text-[#1E1E1E]">Projected Growth & RFQ Demand Trajectory</h3>
+                  <p className="text-xs text-[#737373]">
+                    Estimated wholesale product views and salon quote trends based on {companyType} profile in {city}.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowFullGrowthPreview(true)}
+                  className="self-start sm:self-auto flex items-center gap-1.5 px-3 py-1.5 bg-[#FFF0F5] border border-[#FFD1E3] text-[#B8005A] rounded-xl text-xs font-bold hover:bg-[#FFE4EE] transition-all cursor-pointer shadow-xs"
+                >
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  <span>Interactive Growth Demo</span>
+                </button>
+              </div>
+
+              {/* 4 Performance KPI Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <div className="bg-[#FAFAFA] p-3 rounded-2xl border border-[#EAE5DE]">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#737373] uppercase tracking-wider mb-1">
+                    <Eye className="w-3.5 h-3.5 text-[#B8005A]" />
+                    <span>Est. Views</span>
+                  </div>
+                  <div className="text-base font-bold text-[#1E1E1E]">5,200+</div>
+                  <div className="text-[10px] text-[#10B981] font-semibold flex items-center gap-0.5 mt-0.5">
+                    <TrendingUp className="w-3 h-3" />
+                    <span>+28% MoM</span>
+                  </div>
+                </div>
+
+                <div className="bg-[#FAFAFA] p-3 rounded-2xl border border-[#EAE5DE]">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#737373] uppercase tracking-wider mb-1">
+                    <FileText className="w-3.5 h-3.5 text-[#4F46E5]" />
+                    <span>RFQ Quotes</span>
+                  </div>
+                  <div className="text-base font-bold text-[#1E1E1E]">380 / mo</div>
+                  <div className="text-[10px] text-[#10B981] font-semibold flex items-center gap-0.5 mt-0.5">
+                    <TrendingUp className="w-3 h-3" />
+                    <span>+42% MoM</span>
+                  </div>
+                </div>
+
+                <div className="bg-[#FAFAFA] p-3 rounded-2xl border border-[#EAE5DE]">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#737373] uppercase tracking-wider mb-1">
+                    <Zap className="w-3.5 h-3.5 text-[#F59E0B]" />
+                    <span>Conversion</span>
+                  </div>
+                  <div className="text-base font-bold text-[#1E1E1E]">7.3%</div>
+                  <div className="text-[10px] text-[#737373] font-medium mt-0.5">Top 15% rank</div>
+                </div>
+
+                <div className="bg-[#FAFAFA] p-3 rounded-2xl border border-[#EAE5DE]">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#737373] uppercase tracking-wider mb-1">
+                    <Sparkles className="w-3.5 h-3.5 text-[#10B981]" />
+                    <span>Est. Pipeline</span>
+                  </div>
+                  <div className="text-base font-bold text-[#10B981]">₹24.5L</div>
+                  <div className="text-[10px] text-[#737373] font-medium mt-0.5">Quarterly GMV</div>
+                </div>
+              </div>
+
+              {/* Recharts Area Chart Container */}
+              <div className="bg-white p-4 rounded-2xl border border-[#F0E6EC] shadow-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                  <div>
+                    <h4 className="text-xs font-bold text-[#1E1E1E] flex items-center gap-1.5">
+                      <BarChart3 className="w-4 h-4 text-[#B8005A]" />
+                      <span>Onboarding Ramp: Product Views vs. Quote Requests</span>
+                    </h4>
+                    <span className="text-[11px] text-[#737373]">First 12-week verified trajectory in {primaryCategory}</span>
+                  </div>
+
+                  <div className="flex items-center bg-[#F4F1ED] p-0.5 rounded-lg text-[10px] font-bold">
+                    <button
+                      type="button"
+                      onClick={() => setGrowthMetricFocus('both')}
+                      className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
+                        growthMetricFocus === 'both' ? 'bg-white text-[#B8005A] shadow-xs' : 'text-[#737373]'
+                      }`}
+                    >
+                      All Trends
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGrowthMetricFocus('views')}
+                      className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
+                        growthMetricFocus === 'views' ? 'bg-[#B8005A] text-white shadow-xs' : 'text-[#737373]'
+                      }`}
+                    >
+                      Views Only
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGrowthMetricFocus('quotes')}
+                      className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
+                        growthMetricFocus === 'quotes' ? 'bg-[#4F46E5] text-white shadow-xs' : 'text-[#737373]'
+                      }`}
+                    >
+                      Quotes Only
+                    </button>
+                  </div>
+                </div>
+
+                <div className="h-[200px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart
+                      data={[
+                        { label: 'Wk 1', views: 420, quotes: 24, conversion: 5.7 },
+                        { label: 'Wk 2', views: 890, quotes: 52, conversion: 5.8 },
+                        { label: 'Wk 4', views: 1650, quotes: 110, conversion: 6.6 },
+                        { label: 'Wk 6', views: 2400, quotes: 175, conversion: 7.3 },
+                        { label: 'Wk 8', views: 3600, quotes: 260, conversion: 7.2 },
+                        { label: 'Wk 12', views: 5200, quotes: 380, conversion: 7.3 }
+                      ]}
+                      margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                    >
+                      <defs>
+                        <linearGradient id="onboardViewsGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#B8005A" stopOpacity={0.25} />
+                          <stop offset="95%" stopColor="#B8005A" stopOpacity={0.0} />
+                        </linearGradient>
+                        <linearGradient id="onboardQuotesGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.25} />
+                          <stop offset="95%" stopColor="#4F46E5" stopOpacity={0.0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F0E6EC" />
+                      <XAxis dataKey="label" stroke="#8E8E93" fontSize={11} tickLine={false} axisLine={false} />
+                      <YAxis stroke="#8E8E93" fontSize={11} tickLine={false} axisLine={false} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#1E1E1E',
+                          borderColor: '#383838',
+                          borderRadius: '12px',
+                          color: '#FFFFFF',
+                          fontSize: '11px',
+                          padding: '6px 10px'
+                        }}
+                        formatter={(value: any, name: any) => [
+                          name === 'views' ? `${value} Views` : `${value} RFQ Quotes`,
+                          name === 'views' ? 'Product Views' : 'Quote Requests'
+                        ]}
+                      />
+                      {(growthMetricFocus === 'both' || growthMetricFocus === 'views') && (
+                        <Area
+                          type="monotone"
+                          dataKey="views"
+                          name="views"
+                          stroke="#B8005A"
+                          strokeWidth={2.5}
+                          fillOpacity={1}
+                          fill="url(#onboardViewsGrad)"
+                        />
+                      )}
+                      {(growthMetricFocus === 'both' || growthMetricFocus === 'quotes') && (
+                        <Area
+                          type="monotone"
+                          dataKey="quotes"
+                          name="quotes"
+                          stroke="#4F46E5"
+                          strokeWidth={2.5}
+                          fillOpacity={1}
+                          fill="url(#onboardQuotesGrad)"
+                        />
+                      )}
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Informational Callout */}
+              <div className="bg-[#FFF0F5] border border-[#FFD1E3] rounded-2xl p-3.5 flex items-start gap-3">
+                <Sparkles className="w-4 h-4 text-[#B8005A] shrink-0 mt-0.5" />
+                <div className="text-xs text-[#525252] leading-relaxed">
+                  <strong className="text-[#B8005A]">Live Growth Analytics Included:</strong> Your dedicated <span className="font-semibold text-[#1E1E1E]">GrowthDashboard</span> tab will activate automatically in your partner portal once onboarding is finalized.
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 8: FINAL REVIEW */}
+          {step === 8 && (
+            <div className="space-y-5 animate-in fade-in duration-200">
               <div>
-                <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 7 of 7</span>
-                <h3 className="text-lg font-bold text-[#1E1E1E]">Review Profile</h3>
+                <span className="text-[11px] font-bold text-[#B8005A] uppercase tracking-wider">Step 8 of 8</span>
+                <h3 className="text-lg font-bold text-[#1E1E1E]">Review Profile & Launch</h3>
                 <p className="text-xs text-[#737373]">Please review your business details before publishing.</p>
               </div>
               
@@ -736,22 +939,22 @@ export const BusinessOnboardingModal: React.FC<BusinessOnboardingModalProps> = (
           {step > 1 ? (
             <button
               onClick={() => setStep(step - 1)}
-              className="px-4 py-2.5 rounded-xl border border-[#EAE5DE] bg-white text-xs font-bold text-[#525252] hover:bg-[#F5F5F5] transition-colors"
+              className="px-4 py-2.5 rounded-xl border border-[#EAE5DE] bg-white text-xs font-bold text-[#525252] hover:bg-[#F5F5F5] transition-colors cursor-pointer"
             >
               Back
             </button>
           ) : (
             <button
               onClick={onClose}
-              className="text-xs font-semibold text-[#737373] hover:text-[#1E1E1E]"
+              className="text-xs font-semibold text-[#737373] hover:text-[#1E1E1E] cursor-pointer"
             >
               Skip for now
             </button>
           )}
-          {step < 7 ? (
+          {step < 8 ? (
             <button
               onClick={() => setStep(step + 1)}
-              className="bg-[#B8005A] hover:bg-[#A0004E] text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-2"
+              className="bg-[#B8005A] hover:bg-[#A0004E] text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-2 cursor-pointer"
             >
               <span>Continue</span>
               <ArrowRight className="w-4 h-4" />
@@ -773,6 +976,34 @@ export const BusinessOnboardingModal: React.FC<BusinessOnboardingModalProps> = (
             </button>
           )}
         </div>
+
+        {/* Full Growth Dashboard Preview Modal during Onboarding */}
+        {showFullGrowthPreview && (
+          <div className="fixed inset-0 z-60 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-in fade-in">
+            <div className="bg-white w-full max-w-6xl max-h-[92vh] rounded-3xl overflow-y-auto shadow-2xl border border-[#F0E6EC] p-4 sm:p-6 relative">
+              <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md pb-4 pt-1 mb-4 border-b border-[#F0E6EC] flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#FFF0F5] text-[#B8005A] text-[10px] font-bold uppercase tracking-wider">
+                      Onboarding Live Preview
+                    </span>
+                    <span className="text-xs text-[#737373] hidden sm:inline">Recharts-Powered Partner Performance</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-[#1E1E1E] mt-0.5">Nexora Partner Growth & Quote Metrics</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowFullGrowthPreview(false)}
+                  className="p-2 text-[#737373] hover:text-[#1E1E1E] hover:bg-black/5 rounded-full transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <GrowthDashboard isStandalone onClose={() => setShowFullGrowthPreview(false)} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

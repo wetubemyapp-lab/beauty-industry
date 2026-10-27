@@ -17,6 +17,8 @@ import { CATEGORIES } from '../data/mockData';
 
 interface DiscoverViewProps {
   products: Product[];
+  wishlistProductIds?: string[];
+  onToggleWishlist?: (productId: string) => void;
   selectedCategory: CategoryId | 'all';
   selectedCity: string;
   onSelectCategory: (cat: CategoryId | 'all') => void;
@@ -27,6 +29,8 @@ interface DiscoverViewProps {
 
 export const DiscoverView: React.FC<DiscoverViewProps> = ({
   products,
+  wishlistProductIds = [],
+  onToggleWishlist,
   selectedCategory,
   selectedCity,
   onSelectCategory,
@@ -112,37 +116,53 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {displayProducts.map((product) => (
-            <div 
-              key={product.id}
-              onClick={() => onSelectProduct(product)}
-              className="bg-white rounded-2xl shadow-xs overflow-hidden border border-[#E8E8E8] hover:shadow-xl transition-all cursor-pointer flex flex-col group"
-            >
-              <div className="h-64 bg-[#F6F3F2] relative overflow-hidden">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                
-                {/* Badges for Professional Business Users */}
-                <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
-                  <span className="bg-gradient-to-r from-[#B8005A] to-[#931248] text-white text-[10px] font-black tracking-wider uppercase px-3 py-1 rounded-full flex items-center gap-1 shadow-md border border-white/20">
-                    <ShieldCheck className="w-3.5 h-3.5 text-[#FFD700]" />
-                    VERIFIED PRO
-                  </span>
-                  {product.isWholesale !== false && (
-                    <span className="bg-white/95 backdrop-blur-md text-[#1A1A1A] text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs border border-[#EAE5DE]">
-                      <Award className="w-3 h-3 text-[#B8005A]" />
-                      WHOLESALE READY
-                    </span>
-                  )}
-                </div>
+          {displayProducts.map((product) => {
+            const isWishlisted = wishlistProductIds.includes(product.id);
 
-                <button className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-md rounded-full text-[#605E5E] hover:text-[#B90064] transition-colors shadow-sm">
-                  <Heart className="w-4 h-4" />
-                </button>
-              </div>
+            return (
+              <div 
+                key={product.id}
+                onClick={() => onSelectProduct(product)}
+                className="bg-white rounded-2xl shadow-xs overflow-hidden border border-[#E8E8E8] hover:shadow-xl transition-all cursor-pointer flex flex-col group"
+              >
+                <div className="h-64 bg-[#F6F3F2] relative overflow-hidden">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  
+                  {/* Badges for Professional Business Users */}
+                  <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+                    <span className="bg-gradient-to-r from-[#B8005A] to-[#931248] text-white text-[10px] font-black tracking-wider uppercase px-3 py-1 rounded-full flex items-center gap-1 shadow-md border border-white/20">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#FFD700]" />
+                      VERIFIED PRO
+                    </span>
+                    {product.isWholesale !== false && (
+                      <span className="bg-white/95 backdrop-blur-md text-[#1A1A1A] text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs border border-[#EAE5DE]">
+                        <Award className="w-3 h-3 text-[#B8005A]" />
+                        WHOLESALE READY
+                      </span>
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onToggleWishlist?.(product.id);
+                    }}
+                    className={`absolute top-3 right-3 p-2 rounded-full transition-all shadow-sm cursor-pointer ${
+                      isWishlisted
+                        ? 'bg-rose-50 text-rose-600 border border-rose-200 scale-105'
+                        : 'bg-white/90 backdrop-blur-md text-[#605E5E] hover:text-[#B90064] hover:bg-white'
+                    }`}
+                    aria-label={isWishlisted ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
+                    title={isWishlisted ? 'Saved in Wishlist' : 'Save to Wishlist'}
+                  >
+                    <Heart className={`w-4 h-4 transition-transform ${isWishlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
+                  </button>
+                </div>
               <div className="p-6 flex flex-col flex-grow">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-bold uppercase tracking-wider text-[#605E5E]">{product.brand}</span>
@@ -171,7 +191,8 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                 </div>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
       </section>
 

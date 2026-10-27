@@ -5,9 +5,11 @@ import {
   TrendingUp, AlertTriangle, MoreVertical, MapPin, MessageSquare, Mail as MailIcon,
   X, CheckCircle2, AlertCircle, Edit, Trash2, Send, ExternalLink, ShieldAlert, Upload, Camera
 } from 'lucide-react';
+import { GrowthDashboard } from '../components/GrowthDashboard';
 
 interface BusinessViewProps {
   onOpenRegister: () => void;
+  onOpenOnboarding?: () => void;
 }
 
 interface ProductItem {
@@ -31,8 +33,8 @@ interface EnquiryItem {
   phone: string;
 }
 
-export const BusinessView: React.FC<BusinessViewProps> = ({ onOpenRegister }) => {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'overview'>('dashboard');
+export const BusinessView: React.FC<BusinessViewProps> = ({ onOpenRegister, onOpenOnboarding }) => {
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'growth' | 'overview'>('dashboard');
 
   // Inventory Table State
   const [searchQuery, setSearchQuery] = useState('');
@@ -277,6 +279,17 @@ export const BusinessView: React.FC<BusinessViewProps> = ({ onOpenRegister }) =>
                 Live Business Dashboard
               </button>
               <button
+                onClick={() => setActiveTab('growth')}
+                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  activeTab === 'growth'
+                    ? 'bg-[#B90064] text-white shadow-xs'
+                    : 'text-[#594047] hover:text-[#1C1B1B]'
+                }`}
+              >
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>Growth & Trends (Recharts)</span>
+              </button>
+              <button
                 onClick={() => setActiveTab('overview')}
                 className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'overview'
@@ -287,11 +300,26 @@ export const BusinessView: React.FC<BusinessViewProps> = ({ onOpenRegister }) =>
                 Supplier Program Overview
               </button>
             </div>
+
+            {onOpenOnboarding && (
+              <button
+                type="button"
+                onClick={onOpenOnboarding}
+                className="hidden xl:flex items-center gap-1.5 px-3.5 py-2 bg-[#FFF0F5] border border-[#FFD1E3] text-[#B8005A] rounded-xl text-xs font-bold hover:bg-[#FFE4EE] transition-all cursor-pointer shadow-xs"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Onboarding & Projections</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      {activeTab === 'dashboard' ? (
+      {activeTab === 'growth' ? (
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <GrowthDashboard />
+        </div>
+      ) : activeTab === 'dashboard' ? (
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-6">
           {/* Main Column (KPIs & Table) */}
           <main className="flex-1 min-w-0 space-y-8">
@@ -371,10 +399,17 @@ export const BusinessView: React.FC<BusinessViewProps> = ({ onOpenRegister }) =>
                   </div>
                 </div>
                 <div className="relative z-10">
-                  <div className="text-3xl font-bold text-[#B90064] mb-1">Top 15%</div>
+                  <div className="text-3xl font-bold text-[#B90064] mb-0.5">Top 15%</div>
                   <div className="text-[11px] font-semibold text-[#594047]">
                     in Luxury Skincare & Salon Distribution
                   </div>
+                  <button 
+                    onClick={() => setActiveTab('growth')}
+                    className="text-[11px] font-bold text-[#B90064] hover:underline flex items-center gap-1 mt-1 text-left cursor-pointer"
+                  >
+                    <span>View Views & RFQ Trends</span>
+                    <TrendingUp className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               </div>
             </section>
